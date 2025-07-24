@@ -1,3 +1,120 @@
+.quizForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.quizFormControl {
+  font-size: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafbfc;
+  color: #222;
+  outline: none;
+  transition: border 0.2s;
+  width: 100%;
+  appearance: none;
+  padding-right: 40px;
+}
+
+.quizFormControl:focus {
+  border: 1.5px solid #5856d6;
+  background: #fff;
+  color: #222;
+}
+
+.quizFormControl option {
+  color: #222;
+  background: #fff;
+}
+
+select.quizFormControl {
+  appearance: none;
+  background: #fafbfc
+    url('data:image/svg+xml;utf8,<svg fill="%23222" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+    no-repeat right 12px center/20px 20px;
+  padding-right: 40px;
+}
+
+.quizFormBtn {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.quizFormBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quizFormError {
+  color: #d50000;
+  background: #fff0f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.quizFormStatus {
+  color: #5856d6;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.formLabel {
+  color: #888;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.requiredMark {
+  color: #ff3b30;
+  margin-left: 2px;
+}
+
+.gradientText {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.gradientTextHr {
+  border: none;
+  height: 0.5px;
+  width: 100%;
+  margin: 8px 0 0 0;
+  background: #ccc;
+  border-radius: 1px;
+}
+
+@media (max-width: 600px) {
+  .quizForm {
+    gap: 12px;
+  }
+  .quizFormControl,
+  .quizFormBtn {
+    font-size: 15px;
+    padding: 11px 10px;
+  }
+}
+
 .container {
   padding: 24px 0;
 
@@ -91,5 +208,57 @@
         margin-left: 8px;
       }
     }
+  }
+}
+
+.detailsModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detailsModalCard {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
+}
+.detailsModalTitle {
+  margin-bottom: 16px;
+}
+.detailsModalMainWord,
+.detailsModalTranslation,
+.detailsModalExplanation {
+  margin-bottom: 8px;
+}
+.detailsModalMainWordTranslation {
+  margin-left: 8px;
+  color: #007aff;
+}
+.detailsModalCloseBtn {
+  margin-top: 16px;
+  width: 100%;
+}
+.quizFormInputFlex {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0;
+    min-height: 100vh;
+    background: #fff;
+    width: 100vw;
+    margin: 0;
   }
 }

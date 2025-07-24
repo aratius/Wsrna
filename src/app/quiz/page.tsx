@@ -6,71 +6,7 @@ import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "./quiz.module.scss";
-
-function DetailsModal({ open, onClose, quiz }: any) {
-  if (!open || !quiz) return null;
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        background: "rgba(0,0,0,0.3)",
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 12,
-          maxWidth: 400,
-          width: "90vw",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          padding: 24,
-          boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
-        }}
-      >
-        <h2 style={{ marginBottom: 16 }}>Details</h2>
-        {quiz.main_word && (
-          <div style={{ marginBottom: 8 }}>
-            <b>Main word:</b> {quiz.main_word}
-            {Array.isArray(quiz.main_word_translations) &&
-              quiz.main_word_translations.length > 0 && (
-                <span style={{ marginLeft: 8, color: "#007AFF" }}>
-                  [
-                  {quiz.main_word_translations.map((t: string, i: number) => (
-                    <span key={i}>
-                      {t}
-                      {i < quiz.main_word_translations.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
-                  ]
-                </span>
-              )}
-          </div>
-        )}
-        {quiz.explanation && (
-          <div style={{ marginBottom: 8 }}>
-            <b>Explanation:</b> {quiz.explanation}
-          </div>
-        )}
-        <button
-          className="btn"
-          onClick={onClose}
-          style={{ marginTop: 16, width: "100%" }}
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  );
-}
+import DetailsModal from "@/components/DetailsModal";
 
 export default function QuizPage() {
   const session = useSession();
@@ -176,35 +112,31 @@ export default function QuizPage() {
     filteredReviews.length > 0 && currentIndex >= filteredReviews.length;
 
   return (
-    <div className={styles.container}>
-      {/* タブUI */}
-      <nav className={styles.tabNav + " tab-scrollbar"}>
-        {languagePairs.map((lp) => {
-          const active = selectedPairId === lp.id;
-          return (
-            <button
-              key={lp.id}
-              onClick={() => setSelectedPairId(lp.id)}
-              className={
-                styles.tabButton + (active ? " " + styles.activeTab : "")
-              }
-            >
-              {(lp.from_lang || "").toUpperCase()}
-              <span className={styles.tabArrow}>›</span>
-              {(lp.to_lang || "").toUpperCase()}
-            </button>
-          );
-        })}
-      </nav>
+    <div className={`card ${styles.container}`}>
       <div className={`card ${styles.cardMargin}`}>
-        <div className={`card-header ${styles.cardHeaderMargin}`}>
-          Today's Quiz List
-        </div>
+        <div className={styles.gradientText}>Today's Quiz List</div>
+        <div className={`card-header ${styles.cardHeaderMargin}`}></div>
         <div className="card-body">
-          {loading && <div>Loading...</div>}
-          {error && (
-            <div className={`review__error ${styles.error}`}>{error}</div>
-          )}
+          {/* タブUI */}
+          <nav className={styles.tabNav + " tab-scrollbar"}>
+            {languagePairs.map((lp) => {
+              const active = selectedPairId === lp.id;
+              return (
+                <button
+                  key={lp.id}
+                  onClick={() => setSelectedPairId(lp.id)}
+                  className={
+                    styles.tabButton + (active ? " " + styles.activeTab : "")
+                  }
+                >
+                  {(lp.from_lang || "").toUpperCase()}
+                  <span className={styles.tabArrow}>›</span>
+                  {(lp.to_lang || "").toUpperCase()}
+                </button>
+              );
+            })}
+          </nav>
+          {/* クイズリスト本体 */}
           <div className={styles.quizList}>
             {(filteredReviews.length === 0 && !loading) || isFinished ? (
               <div>No quizzes to review.</div>
@@ -222,14 +154,25 @@ export default function QuizPage() {
                     </div>
                     {/* 回答エリア */}
                     <form
-                      className={`review__form ${styles.answerForm}`}
+                      className={styles.quizForm}
                       onSubmit={(e) => {
                         e.preventDefault();
                         handleAnswer(review);
                       }}
                     >
+                      <label
+                        className={styles.formLabel}
+                        htmlFor={`answer-${review.id}`}
+                      >
+                        Answer
+                      </label>
                       <input
-                        className="form-control"
+                        id={`answer-${review.id}`}
+                        className={
+                          styles.quizFormControl +
+                          " " +
+                          styles.quizFormInputFlex
+                        }
                         type="text"
                         placeholder="Answer"
                         value={answers[review.id] || ""}
@@ -240,10 +183,9 @@ export default function QuizPage() {
                           }))
                         }
                         disabled={results[review.id] === true}
-                        style={{ flex: 1 }}
                       />
                       <button
-                        className={`btn ${styles.answerBtn}`}
+                        className={styles.quizFormBtn}
                         type="submit"
                         disabled={
                           updating[review.id] || results[review.id] === true
@@ -255,7 +197,7 @@ export default function QuizPage() {
                     {/* ヒントボタンとヒント表示 */}
                     <div className={styles.quizSection}>
                       <button
-                        className={`btn ${styles.hintBtn}`}
+                        className={styles.quizFormBtn}
                         type="button"
                         onClick={() => handleShowHint(review.id, review.quiz)}
                         disabled={
@@ -288,7 +230,7 @@ export default function QuizPage() {
                           {results[review.id] ? "Correct!" : "Incorrect."}
                         </div>
                         <button
-                          className={`btn ${styles.detailsBtn}`}
+                          className={styles.quizFormBtn}
                           type="button"
                           onClick={() =>
                             setShowDetails((prev) => ({
@@ -311,7 +253,7 @@ export default function QuizPage() {
                         />
                         {/* Nextボタン */}
                         <button
-                          className={`btn ${styles.nextBtn}`}
+                          className={styles.quizFormBtn}
                           type="button"
                           onClick={() => {
                             setCurrentIndex((idx) => idx + 1);
