@@ -34,6 +34,12 @@ export default function RootLayout({
       lang="ja"
       className={`${poppins.variable} ${notoSansJP.variable} ${notoSansSC.variable} ${notoSansTC.variable} ${notoSansKR.variable} ${notoSans.variable}`}
     >
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </head>
       <body
         style={{
           background: "#e5e5e5",
