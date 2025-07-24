@@ -1,12 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "./quiz.module.scss";
-import DetailsModal from "@/components/DetailsModal";
+import { useRef, useEffect, useState } from "react";
 
 export default function QuizPage() {
   const session = useSession();
@@ -19,8 +18,16 @@ export default function QuizPage() {
   const [results, setResults] = useState<{ [id: string]: boolean | null }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
   const [hintIndexes, setHintIndexes] = useState<{ [id: string]: number }>({});
-  const [showDetails, setShowDetails] = useState<{ [id: string]: boolean }>({});
+  const [showHintModal, setShowHintModal] = useState<{ [id: string]: boolean }>(
+    {}
+  );
+  const [currentHintIndex, setCurrentHintIndex] = useState<{
+    [id: string]: number;
+  }>({});
+  const hintTimers = useRef<{ [id: string]: NodeJS.Timeout }>({});
+  const [attempts, setAttempts] = useState<{ [id: string]: number }>({});
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [detailsOpen, setDetailsOpen] = useState<{ [id: string]: boolean }>({});
 
   // クイズデータ取得
   useEffect(() => {
@@ -84,6 +91,14 @@ export default function QuizPage() {
     const isCorrect = userAnswer === quiz.answer;
     setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
     setUpdating((prev) => ({ ...prev, [review.id]: true }));
+    if (!isCorrect) {
+      setAttempts((prev) => ({
+        ...prev,
+        [review.id]: (prev[review.id] || 0) + 1,
+      }));
+    } else {
+      setAttempts((prev) => ({ ...prev, [review.id]: 0 }));
+    }
     await fetch("/api/review-update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -110,6 +125,39 @@ export default function QuizPage() {
   const review = filteredReviews[currentIndex];
   const isFinished =
     filteredReviews.length > 0 && currentIndex >= filteredReviews.length;
+
+  // ヒントモーダル外クリックで閉じる
+  useEffect(() => {
+    if (!review || !showHintModal[review.id]) return;
+    function handleClickOutside(e: MouseEvent) {
+      const popup = document.querySelector(`.${styles.hintPopup}`);
+      if (popup && !(e.target instanceof Node && popup.contains(e.target))) {
+        setShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside, true);
+    };
+  }, [review, showHintModal[review?.id]]);
+
+  useEffect(() => {
+    if (!review) return;
+    // 10秒後にヒントアイコンを表示
+    // if (!showHintIcon[review.id]) {
+    //   if (hintTimers.current[review.id])
+    //     clearTimeout(hintTimers.current[review.id]);
+    //   hintTimers.current[review.id] = setTimeout(() => {
+    //     setShowHintIcon((prev) => ({ ...prev, [review.id]: true }));
+    //   }, 10000);
+    // }
+    // クリーンアップ
+    return () => {
+      // if (hintTimers.current[review?.id])
+      //   clearTimeout(hintTimers.current[review.id]);
+    };
+    // eslint-disable-next-line
+  }, [review?.id]);
 
   return (
     <div className={`card ${styles.container}`}>
@@ -145,13 +193,112 @@ export default function QuizPage() {
                 <div
                   className={`card ${styles.quizCard} review__item`}
                   key={review.id}
+                  style={{ position: "relative" }}
                 >
+                  {/* ヒントアイコン＋モーダルラッパー */}
+                  <div className={styles.hintIconWrapper}>
+                    <button
+                      className={styles.hintIconBtn}
+                      onClick={() =>
+                        setShowHintModal((prev) => ({
+                          ...prev,
+                          [review.id]: !prev[review.id],
+                        }))
+                      }
+                      aria-label="Show hint"
+                    >
+                      <svg
+                        width="22"
+                        height="22"
+                        fill="none"
+                        stroke="#222"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M9 18h6" />
+                        <path d="M10 22h4" />
+                        <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3.5 5.5V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.5C19.5 13.5 21 11.5 21 9a7 7 0 0 0-7-7z" />
+                      </svg>
+                    </button>
+                    {/* ヒントポップアップ（シンプルなCSS Transition） */}
+                    <div
+                      className={
+                        styles.hintPopup +
+                        (showHintModal[review.id] ? " " + styles.visible : "")
+                      }
+                    >
+                      {review.quiz.hint_levels &&
+                      review.quiz.hint_levels.length > 0 ? (
+                        <>
+                          <div>
+                            {review.quiz.hint_levels[
+                              (hintIndexes[review.id] || 0) - 1
+                            ] || review.quiz.hint_levels[0]}
+                          </div>
+                          {/* ヒントをさらに表示するボタン（任意） */}
+                          {review.quiz.hint_levels.length >
+                            (hintIndexes[review.id] || 0) && (
+                            <button
+                              className={styles.hintMoreBtn}
+                              onClick={() =>
+                                handleShowHint(review.id, review.quiz)
+                              }
+                            >
+                              さらにヒント
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        <div>ヒントはありません</div>
+                      )}
+                    </div>
+                  </div>
                   {/* Quiz部分 */}
                   <div className={styles.quizSection}>
                     <span className={styles.quizLabel}>Quiz</span>
                     <div className={styles.quizText}>
-                      {review.quiz.question}
+                      {(() => {
+                        const answer = review.quiz.answer;
+                        const attemptsCount = attempts[review.id] || 0;
+                        const isCorrect = results[review.id] === true;
+                        const isShowFullAnswer =
+                          isCorrect ||
+                          (results[review.id] === false && attemptsCount >= 3);
+                        const isShowFirstChar =
+                          results[review.id] === false && attemptsCount === 2;
+                        const colorClass = isCorrect
+                          ? styles.correctAnswer
+                          : styles.incorrectAnswer;
+                        const parts = review.quiz.question.split("____");
+                        if (isShowFullAnswer) {
+                          return (
+                            <>
+                              {parts[0]}
+                              <span className={colorClass}>{answer}</span>
+                              {parts[1]}
+                            </>
+                          );
+                        } else if (isShowFirstChar) {
+                          return (
+                            <>
+                              {parts[0]}
+                              <span className={colorClass}>{answer[0]}</span>
+                              {"_".repeat(Math.max(answer.length - 1, 0))}
+                              {parts[1]}
+                            </>
+                          );
+                        } else {
+                          return review.quiz.question;
+                        }
+                      })()}
                     </div>
+                    {review.quiz.sentence_translation && (
+                      <div className={styles.translationLabel}>
+                        - {review.quiz.sentence_translation}
+                      </div>
+                    )}
                   </div>
                   {/* Answer部分 */}
                   <div className={styles.quizSection}>
@@ -165,10 +312,17 @@ export default function QuizPage() {
                     >
                       <input
                         id={`answer-${review.id}`}
+                        key={attempts[review.id] || 0}
                         className={
                           styles.quizFormControl +
                           " " +
-                          styles.quizFormInputFlex
+                          styles.quizFormInputFlex +
+                          (results[review.id] === true
+                            ? " " + styles.correctInput
+                            : results[review.id] === false &&
+                              (attempts[review.id] || 0) > 0
+                            ? " " + styles.incorrectInput
+                            : "")
                         }
                         type="text"
                         placeholder="Answer"
@@ -179,63 +333,139 @@ export default function QuizPage() {
                             [review.id]: e.target.value,
                           }))
                         }
-                        disabled={results[review.id] === true}
-                      />
-                      <button
-                        className={styles.quizFormBtn}
-                        type="submit"
                         disabled={
-                          updating[review.id] || results[review.id] === true
+                          results[review.id] === true ||
+                          (results[review.id] === false &&
+                            (attempts[review.id] || 0) >= 3)
                         }
-                      >
-                        Answer
-                      </button>
+                      />
+                      {/* ボタン切り替えロジック */}
+                      {results[review.id] === undefined ||
+                      (results[review.id] === false &&
+                        (attempts[review.id] || 0) < 3) ? (
+                        <button
+                          className={styles.quizFormBtn}
+                          type="submit"
+                          disabled={updating[review.id]}
+                        >
+                          Answer
+                        </button>
+                      ) : (
+                        <div className={styles.quizFormBtnRow}>
+                          <button
+                            className={
+                              styles.quizFormBtn + " " + styles.quizFormBtnHalf
+                            }
+                            type="button"
+                            onClick={() => {
+                              setCurrentIndex((idx) => idx + 1);
+                            }}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      )}
+                      {/* + Details 注釈リンクとアコーディオン（Nextボタンと同じ条件で表示） */}
+                      {(results[review.id] === true ||
+                        (results[review.id] === false &&
+                          (attempts[review.id] || 0) >= 3)) && (
+                        <div className={styles.detailsAccordionWrapper}>
+                          <button
+                            className={styles.detailsAccordionToggle}
+                            type="button"
+                            onClick={() =>
+                              setDetailsOpen((prev) => ({
+                                ...prev,
+                                [review.id]: !prev[review.id],
+                              }))
+                            }
+                          >
+                            {detailsOpen[review.id] ? "− Details" : "+ Details"}
+                          </button>
+                          <div
+                            className={
+                              styles.detailsAccordionContent +
+                              (detailsOpen[review.id] ? " " + styles.open : "")
+                            }
+                          >
+                            {/* Main word/訳語 */}
+                            {review.quiz.main_word && (
+                              <div className={styles.detailsMainWordBlock}>
+                                <span className={styles.detailsMainWord}>
+                                  {review.quiz.main_word}
+                                </span>
+                                {Array.isArray(
+                                  review.quiz.main_word_translations
+                                ) &&
+                                  review.quiz.main_word_translations.length >
+                                    0 && (
+                                    <span
+                                      className={
+                                        styles.detailsMainWordTranslation
+                                      }
+                                    >
+                                      [
+                                      {review.quiz.main_word_translations.map(
+                                        (t: string, i: number) => (
+                                          <span key={i}>
+                                            {t}
+                                            {i <
+                                            review.quiz.main_word_translations
+                                              .length -
+                                              1
+                                              ? ", "
+                                              : ""}
+                                          </span>
+                                        )
+                                      )}
+                                      ]
+                                    </span>
+                                  )}
+                              </div>
+                            )}
+                            {/* 例文リスト */}
+                            {Array.isArray(review.quiz.example_sentences) &&
+                              review.quiz.example_sentences.length > 0 && (
+                                <ul className={styles.detailsExampleList}>
+                                  {review.quiz.example_sentences.map(
+                                    (ex: any, i: number) => (
+                                      <li key={i}>
+                                        <span
+                                          className={
+                                            styles.detailsExampleSentence
+                                          }
+                                        >
+                                          {ex.sentence}
+                                        </span>
+                                        <span
+                                          className={
+                                            styles.detailsExampleTranslation
+                                          }
+                                        >
+                                          - {ex.translation}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              )}
+                            {/* Explanation */}
+                            {review.quiz.explanation && (
+                              <div className={styles.detailsExplanationBox}>
+                                <span
+                                  className={styles.detailsExplanationLabel}
+                                >
+                                  Explanation
+                                </span>
+                                <span>{review.quiz.explanation}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </form>
                   </div>
                   {/* 正誤判定と詳細ボタン＋Nextボタン */}
-                  {results[review.id] !== undefined && (
-                    <div className={styles.quizSection}>
-                      <div
-                        className={
-                          results[review.id] ? styles.correct : styles.incorrect
-                        }
-                      >
-                        {results[review.id] ? "Correct!" : "Incorrect."}
-                      </div>
-                      <button
-                        className={styles.quizFormBtn}
-                        type="button"
-                        onClick={() =>
-                          setShowDetails((prev) => ({
-                            ...prev,
-                            [review.id]: true,
-                          }))
-                        }
-                      >
-                        Details
-                      </button>
-                      <DetailsModal
-                        open={!!showDetails[review.id]}
-                        onClose={() =>
-                          setShowDetails((prev) => ({
-                            ...prev,
-                            [review.id]: false,
-                          }))
-                        }
-                        quiz={review.quiz}
-                      />
-                      {/* Nextボタン */}
-                      <button
-                        className={styles.quizFormBtn}
-                        type="button"
-                        onClick={() => {
-                          setCurrentIndex((idx) => idx + 1);
-                        }}
-                      >
-                        Next
-                      </button>
-                    </div>
-                  )}
                 </div>
               )
             )}
