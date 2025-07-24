@@ -7,6 +7,11 @@ All 5 questions must use "{{main_word}}" as the answer and as the main focus. Do
 
 If "{{main_word}}" is a phrase, grammar pattern, or construction (for example, if it contains brackets, ellipses, or is not a single word), treat it as a grammar structure or idiomatic pattern. In that case, every question must use the entire pattern (not just a part or a single word from it) as the answer and as the main focus. Do NOT use any other word, idiom, or part of the pattern as the answer. Do NOT generate questions about words that merely appear in example sentences. Only generate questions about the exact pattern or structure given as "{{main_word}}".
 
+If you cannot generate exactly 5 questions, return as many valid questions as you can (minimum 1), but do NOT include any incorrect, irrelevant, or incomplete questions. Accuracy and correctness are more important than quantity. Never include questions where the main_word or main_word_translations are incorrect or do not match the intended meaning.
+
+For main_word_translations, you MUST always provide at least one accurate and appropriate translation for the main_word in {{fromLang}}. If the user does not provide a translation, you must research and generate a suitable translation yourself. Never leave main_word_translations empty or incomplete.
+If main_word_translations is provided by the user, you MUST use it as-is and do NOT change, ignore, or add to it. Only use the provided translation(s) for main_word_translations in the output.
+
 Each question must include:
 - A sentence in {{toLang}} with one blank ("____")
 - The correct answer to fill the blank

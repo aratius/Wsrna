@@ -6,6 +6,7 @@ import "@/styles/components/_card.scss";
 import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { supabase } from "@/lib/supabaseClient";
+import Loading from "@/components/Loading";
 
 function QuizPreviewModal({
   open,
@@ -103,83 +104,100 @@ function QuizPreviewModal({
                   )}
               </div>
             )}
-            {/* Quiz部分 */}
-            <div style={{ marginBottom: 10 }}>
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: "#5856d6",
-                  marginBottom: 6,
-                  fontSize: 15,
-                }}
-              >
-                Quiz
-              </span>
-              <div
-                style={{ color: "#222", fontSize: 16, whiteSpace: "pre-line" }}
-              >
-                {q.question}
+            {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
+            <div
+              className="card"
+              style={{
+                marginBottom: 10,
+                padding: 14,
+                borderRadius: 8,
+                background: "#f9f9fb",
+                border: "1px solid #ececec",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+              }}
+            >
+              {/* Quiz部分 */}
+              <div style={{ marginBottom: 10 }}>
+                <span
+                  style={{
+                    fontWeight: 600,
+                    color: "#5856d6",
+                    marginBottom: 6,
+                    fontSize: 15,
+                  }}
+                >
+                  Quiz
+                </span>
+                <div
+                  style={{
+                    color: "#222",
+                    fontSize: 16,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {q.question}
+                </div>
               </div>
+              {/* Answer部分 */}
+              <div style={{ marginBottom: 10 }}>
+                <span
+                  style={{
+                    fontWeight: 600,
+                    color: "#34c759",
+                    fontSize: 15,
+                    display: "block",
+                  }}
+                >
+                  Answer
+                </span>
+                <div
+                  style={{
+                    color: "#222",
+                    fontSize: 16,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {q.answer}
+                </div>
+              </div>
+              {/* Translation部分 */}
+              <div style={{ marginBottom: 10 }}>
+                <span
+                  style={{
+                    fontWeight: 600,
+                    color: "#ff9500",
+                    fontSize: 15,
+                    display: "block",
+                  }}
+                >
+                  Translation
+                </span>
+                <div
+                  style={{
+                    color: "#222",
+                    fontSize: 16,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {q.sentence_translation}
+                </div>
+              </div>
+              {/* Explanation部分 */}
+              {q.explanation && (
+                <div
+                  style={{
+                    color: "#888",
+                    fontSize: 13,
+                    background: "#f8f8f8",
+                    borderRadius: 6,
+                    padding: "8px 12px",
+                    marginTop: 4,
+                  }}
+                >
+                  {q.explanation}
+                </div>
+              )}
             </div>
-            {/* Answer部分 */}
-            <div style={{ marginBottom: 10 }}>
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: "#34c759",
-                  fontSize: 15,
-                  display: "block",
-                }}
-              >
-                Answer
-              </span>
-              <div
-                style={{
-                  color: "#222",
-                  fontSize: 16,
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {q.answer}
-              </div>
-            </div>
-            {/* Translation部分 */}
-            <div style={{ marginBottom: 10 }}>
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: "#ff9500",
-                  fontSize: 15,
-                  display: "block",
-                }}
-              >
-                Translation
-              </span>
-              <div
-                style={{
-                  color: "#222",
-                  fontSize: 16,
-                  whiteSpace: "pre-line",
-                }}
-              >
-                {q.sentence_translation}
-              </div>
-            </div>
-            {/* Explanation部分 */}
-            {q.explanation && (
-              <div
-                style={{
-                  color: "#888",
-                  fontSize: 13,
-                  background: "#f8f8f8",
-                  borderRadius: 6,
-                  padding: "8px 12px",
-                  marginTop: 4,
-                }}
-              >
-                {q.explanation}
-              </div>
-            )}
           </div>
         ))}
         <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
@@ -206,7 +224,8 @@ function QuizPreviewModal({
 
 export default function CreatePage() {
   const session = useSession();
-  const [topic, setTopic] = useState("");
+  const [fromTranslation, setFromTranslation] = useState("");
+  const [toText, setToText] = useState("");
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
   const [pairLoading, setPairLoading] = useState(false);
   const [pairError, setPairError] = useState("");
@@ -256,6 +275,10 @@ export default function CreatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPairId) return;
+    if (!toText.trim()) {
+      setError("To（出題言語）は必須です。");
+      return;
+    }
     setLoading(true);
     setError("");
     setQuizzes([]);
@@ -274,8 +297,11 @@ export default function CreatePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          main_word: topic, // ここはユーザー入力や選択したidiomに合わせて修正
-          main_word_translations: [], // 必要なら渡す
+          main_word: toText.trim(),
+          main_word_translations: fromTranslation.trim()
+            ? [fromTranslation.trim()]
+            : [],
+          toText: toText.trim(),
           fromLang: String(fromLang),
           toLang: String(toLang),
         }),
@@ -373,7 +399,7 @@ export default function CreatePage() {
           main_word_translations: q.main_word_translations,
           sentence_translation: q.sentence_translation,
           explanation: q.explanation,
-          topic: q.topic || topic,
+          // topic: q.topic || topic, // topic消す
           created_at: new Date().toISOString(),
           language_pair_id: selectedPairId,
         });
@@ -417,8 +443,17 @@ export default function CreatePage() {
 
   if (!session) return null;
 
+  // スマホ判定
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
   return (
-    <div style={{ padding: "24px 0" }}>
+    <>
+      {loading && (
+        <Loading
+          message="クイズを生成中です"
+          subMessage="最大30秒ほどかかる場合があります"
+          fullscreen
+        />
+      )}
       <QuizPreviewModal
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -426,71 +461,116 @@ export default function CreatePage() {
         onSubmit={handleSubmitQuizzes}
         submitting={submitting}
       />
-      <div className="card" style={{ marginBottom: 24 }}>
-        <div className="card-header" style={{ marginBottom: 12 }}>
-          English Cloze Quiz Creation
-        </div>
-        <div className="card-body">
-          {pairLoading && <div>Loading language pairs...</div>}
-          {pairError && (
-            <div style={{ color: "#d50000", marginBottom: 8 }}>{pairError}</div>
-          )}
-          {languagePairs.length === 0 && !pairLoading ? (
-            <div style={{ color: "#d50000", marginBottom: 8 }}>
-              No language pairs found. Please register a pair in My Page first.
-            </div>
-          ) : (
-            <form
-              className="quiz__form"
-              onSubmit={handleSubmit}
-              style={{ display: "flex", gap: 12, flexDirection: "column" }}
-            >
-              <select
-                className="form-control"
-                value={selectedPairId}
-                onChange={(e) => setSelectedPairId(e.target.value)}
-                required
-              >
-                <option value="">Select language pair (From → To)</option>
-                {languagePairs.map((lp) => (
-                  <option key={lp.id} value={lp.id}>
-                    {supportedLanguages.find((l) => l.code === lp.from_lang)
-                      ?.label || lp.from_lang}
-                    {" → "}
-                    {supportedLanguages.find((l) => l.code === lp.to_lang)
-                      ?.label || lp.to_lang}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Topic (e.g. past tense, travel, etc)"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                required
-              />
-              <button
-                className="btn"
-                type="submit"
-                disabled={loading || !selectedPairId}
-              >
-                {loading ? "Creating..." : "Create"}
-              </button>
-            </form>
-          )}
-          {error && (
+      <div
+        style={{
+          width: "100vw",
+          minHeight: "100vh",
+          margin: 0,
+          padding: isMobile ? 16 : 24,
+          background: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+        }}
+      >
+        <div className="card" style={{ marginBottom: 24 }}>
+          <div className="card-header" style={{ marginBottom: 12 }}>
+            Create Quiz !!
+          </div>
+          <div className="card-body" style={{ padding: 0 }}>
             <div
-              className="quiz__error"
-              style={{ color: "#d50000", marginTop: 8 }}
+              className="quiz-form-wrapper"
+              style={{ maxWidth: 420, margin: "0 auto", padding: 0 }}
             >
-              {error}
+              {pairLoading && (
+                <div className="quiz-form-status">
+                  Loading language pairs...
+                </div>
+              )}
+              {pairError && <div className="quiz-form-error">{pairError}</div>}
+              {languagePairs.length === 0 && !pairLoading ? (
+                <div className="quiz-form-error">
+                  No language pairs found. Please register a pair in My Page
+                  first.
+                </div>
+              ) : (
+                <form className="quiz-form" onSubmit={handleSubmit}>
+                  <select
+                    className="quiz-form-control"
+                    value={selectedPairId}
+                    onChange={(e) => setSelectedPairId(e.target.value)}
+                    required
+                  >
+                    <option value="">Select language pair (From → To)</option>
+                    {languagePairs.map((lp) => (
+                      <option key={lp.id} value={lp.id}>
+                        {supportedLanguages.find((l) => l.code === lp.from_lang)
+                          ?.label || lp.from_lang}
+                        {" → "}
+                        {supportedLanguages.find((l) => l.code === lp.to_lang)
+                          ?.label || lp.to_lang}
+                      </option>
+                    ))}
+                  </select>
+                  <label
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      marginTop: 4,
+                      marginBottom: 6,
+                      color: "#888",
+                    }}
+                    htmlFor="from-translation"
+                  >
+                    From
+                  </label>
+                  <input
+                    id="from-translation"
+                    className="quiz-form-control"
+                    type="text"
+                    placeholder="例: 役に立たない"
+                    value={fromTranslation}
+                    onChange={(e) => setFromTranslation(e.target.value)}
+                    style={{ fontSize: 15 }}
+                  />
+                  <label
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      marginTop: 8,
+                      marginBottom: 6,
+                      color: "#888",
+                    }}
+                    htmlFor="to-text"
+                  >
+                    To
+                    <span style={{ color: "#ff3b30", marginLeft: 2 }}>*</span>
+                  </label>
+                  <input
+                    id="to-text"
+                    className="quiz-form-control"
+                    type="text"
+                    placeholder="例: useless"
+                    value={toText}
+                    onChange={(e) => setToText(e.target.value)}
+                    required
+                    style={{ fontSize: 15 }}
+                  />
+                  <button
+                    className="quiz-form-btn"
+                    type="submit"
+                    disabled={loading || !selectedPairId}
+                  >
+                    {loading ? "Creating..." : "Create"}
+                  </button>
+                </form>
+              )}
+              {error && <div className="quiz-form-error">{error}</div>}
             </div>
-          )}
-          {quizzes.length > 0 && null}
+          </div>
         </div>
       </div>
       {/* Remove non-modal quiz preview. Only keep modal-based preview. */}
-    </div>
+    </>
   );
 }

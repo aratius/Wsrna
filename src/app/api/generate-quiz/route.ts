@@ -25,6 +25,10 @@ export async function POST(req: NextRequest) {
   if (/\[.*\]|\.\.\.|ing\b|\bto\b|\bof\b|\bis\b|\bare\b|\bam\b|\bbe\b|\bwas\b|\bwere\b|\bhas\b|\bhave\b|\bhad\b|\bwill\b|\bwould\b|\bcan\b|\bcould\b|\bshould\b|\bmay\b|\bmight\b|\bmust\b|\bshall\b|\bdo\b|\bdid\b|\bdoes\b/.test(main_word)) {
     prompt += '\n\nNote: The main_word provided is a grammar pattern or construction. All questions must use the entire pattern as the answer and focus, not just a single word. Do not use any other word or idiom as the answer.';
   }
+  // main_word_translationsが空の場合は訳語生成を強調
+  if (!main_word_translations || (Array.isArray(main_word_translations) && main_word_translations.length === 0)) {
+    prompt += `\n\nNote: You must always provide at least one accurate and appropriate translation for the main_word (\"${main_word}\") in ${fromLang}. If not provided, you must research and generate a suitable translation yourself. Never leave main_word_translations empty.`;
+  }
 
   try {
     const completion = await openai.chat.completions.create({
@@ -34,7 +38,7 @@ export async function POST(req: NextRequest) {
         { role: 'user', content: prompt },
       ],
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 2048 * 2,
       response_format: { type: 'json_object' }, // JSONモードを有効化
     });
     const text = completion.choices[0].message.content?.trim() || '';

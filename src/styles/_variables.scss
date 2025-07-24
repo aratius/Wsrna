@@ -1,16 +1,25 @@
-// Color variables
-$color-primary: #007aff;
-$color-secondary: #5856d6; // iOS purple
+// === Brand Core ===
+$color-primary: #3d7fff; // 智性ある落ち着いたブルー（元の007affより少し柔らかい）
+$color-secondary: #9060e3; // ミステリアスな知的パープル（知性と遊びの中間）
+$color-accent: #ff9e3d; // あたたかい橙（発見・活力・楽しさ）✨NEW
+
+// === Status Colors (iOSベース維持) ===
 $color-success: #34c759; // iOS green
 $color-error: #ff3b30; // iOS red
-$color-bg: #f2f2f7; // iOS grouped background
-$color-background: #ffffff;
-$color-secondary-bg: #f2f2f7;
-$color-text-primary: #000000;
-$color-text-secondary: rgba(60, 60, 67, 0.6);
-$color-text-tertiary: rgba(60, 60, 67, 0.3);
-$color-accent: #34c759; // iOS green accent for hover
+
+// === Backgrounds ===
+$color-background: #ffffff; // base (white)
+$color-bg: #f9f9fb; // 少し明るくクリーンな背景（iOS感のまま柔らかく）
+$color-secondary-bg: #f1f3f5; // コンテンツ枠やカードに最適なオフホワイトグレー
+
+// === Text Colors ===
+$color-text-primary: #1c1c1e; // 濃いめでコントラスト強め（黒ではなく深いグレー）
+$color-text-secondary: rgba(28, 28, 30, 0.6); // やや柔らかいセカンダリ
+$color-text-tertiary: rgba(28, 28, 30, 0.3); // プレースホルダー・補助など
 $color-text: #222; // legacy fallback
+
+// === Extras ===
+$color-info: #5ac8fa; // iOS水色系（辞書・ツールチップ系で使用可能）
 
 // Font variables
 $font-family-base: var(--font-poppins), var(--font-noto-sans-jp),
