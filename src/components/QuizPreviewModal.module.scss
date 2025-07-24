@@ -78,6 +78,17 @@
   word-break: break-word;
 }
 
+.gradientText {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
 .translations {
   display: block;
   margin-top: 2px;
@@ -85,6 +96,7 @@
   font-weight: 500;
   font-size: 15px;
   word-break: break-word;
+  margin-bottom: 6px;
 }
 
 .quizInnerCard {

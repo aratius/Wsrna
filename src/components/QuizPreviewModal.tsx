@@ -20,7 +20,9 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalCard}>
-        <h2 className={styles.modalTitle}>Quiz Preview</h2>
+        <h2 className={styles.modalTitle + " " + styles.gradientText}>
+          Quiz Preview
+        </h2>
         {quizzes.map((q: any, idx: number) => (
           <div key={idx} className={styles.quizCard}>
             {q.main_word && (
