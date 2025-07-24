@@ -161,7 +161,7 @@ export default function QuizPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.gradientText}>Today's Quiz List</div>
+      <div className={styles.gradientText}>Today's Quiz !!</div>
       <div className={`card-header ${styles.cardHeaderMargin}`}></div>
       <div className="card-body">
         {/* タブUI */}
