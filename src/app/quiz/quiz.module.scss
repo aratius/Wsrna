@@ -276,18 +276,6 @@ select.quizFormControl {
   }
 }
 
-.detailsModalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: calc(var(--vh, 1vh) * 90);
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .detailsModalCard {
   background: #fff;
   border-radius: 16px;
@@ -455,18 +443,6 @@ select.quizFormControl {
 }
 .hintIconBtn:hover {
   background: #f2f2f7;
-}
-.hintModalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: calc(var(--vh, 1vh) * 90);
-  z-index: 1001;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  background: none;
 }
 .hintIconWrapper {
   position: absolute;

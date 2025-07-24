@@ -234,6 +234,25 @@ export default function CreatePage() {
 
   // スマホ判定
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
+  // 選択中の言語ペアのラベル取得
+  const selectedPair = languagePairs.find((lp) => lp.id === selectedPairId);
+  const fromLangLabel = selectedPair
+    ? supportedLanguages.find((l) => l.code === selectedPair.from_lang)
+        ?.label || selectedPair.from_lang
+    : "From";
+  const toLangLabel = selectedPair
+    ? supportedLanguages.find((l) => l.code === selectedPair.to_lang)?.label ||
+      selectedPair.to_lang
+    : "To";
+  const fromLangGreeting = selectedPair
+    ? supportedLanguages.find((l) => l.code === selectedPair.from_lang)
+        ?.greeting || fromLangLabel
+    : fromLangLabel;
+  const toLangGreeting = selectedPair
+    ? supportedLanguages.find((l) => l.code === selectedPair.to_lang)
+        ?.greeting || toLangLabel
+    : toLangLabel;
+
   return (
     <>
       {loading && (
@@ -303,7 +322,7 @@ export default function CreatePage() {
                   id="from-translation"
                   className={styles.quizFormControl + " " + styles.formInput}
                   type="text"
-                  placeholder="ex: a little"
+                  placeholder={`ex: ${fromLangGreeting}`}
                   value={fromTranslation}
                   onChange={(e) => setFromTranslation(e.target.value)}
                 />
@@ -315,7 +334,7 @@ export default function CreatePage() {
                   id="to-text"
                   className={styles.quizFormControl + " " + styles.formInput}
                   type="text"
-                  placeholder="ex: un poco"
+                  placeholder={`ex: ${toLangGreeting}`}
                   value={toText}
                   onChange={(e) => setToText(e.target.value)}
                   required
