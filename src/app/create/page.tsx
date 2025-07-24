@@ -236,21 +236,33 @@ export default function CreatePage() {
     const fromLang = pair.from_lang;
     const toLang = pair.to_lang;
     try {
+      // main_word, main_word_translationsはユーザー入力や選択から取得する場合はここで指定
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic: String(topic),
+          main_word: topic, // ここはユーザー入力や選択したidiomに合わせて修正
+          main_word_translations: [], // 必要なら渡す
           fromLang: String(fromLang),
           toLang: String(toLang),
         }),
       });
       const data = await res.json();
       if (data.error) setError(data.error);
-      else if (Array.isArray(data)) setQuizzes(data);
-      else if (Array.isArray(data.questions)) setQuizzes(data.questions);
-      else if (typeof data === "object") setQuizzes([data]);
-      else setError("API response is invalid: " + JSON.stringify(data));
+      else if (Array.isArray(data.questions)) {
+        // main_wordの最頻値でフィルタ
+        const freq: Record<string, number> = {};
+        data.questions.forEach((q: any) => {
+          if (q.main_word) freq[q.main_word] = (freq[q.main_word] || 0) + 1;
+        });
+        const mostFreq = Object.entries(freq).sort(
+          (a, b) => b[1] - a[1]
+        )[0]?.[0];
+        const filtered = data.questions.filter(
+          (q: any) => q.main_word === mostFreq
+        );
+        setQuizzes(filtered);
+      } else setError("API response is invalid: " + JSON.stringify(data));
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -302,6 +314,7 @@ export default function CreatePage() {
             main_word: q.main_word,
             main_word_translations: q.main_word_translations,
             explanation: q.explanation,
+            language_pair_id: selectedPairId,
           }),
         });
         const idiom = await idiomRes.json();
@@ -321,6 +334,7 @@ export default function CreatePage() {
           explanation: q.explanation,
           topic: q.topic || topic,
           created_at: new Date().toISOString(),
+          language_pair_id: selectedPairId,
         });
       }
       const { error } = await supabase.from("quizzes").insert(quizPayload);

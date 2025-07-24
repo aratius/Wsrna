@@ -83,3 +83,22 @@ img {
     color-scheme: dark;
   }
 }
+
+.tab-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.tab-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.tab-scrollbar::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+.tab-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #007aff;
+}
+.tab-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -7,10 +7,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
   }
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  // quiz_reviewsとquizzesをJOINして取得
+  // quiz_reviewsとquizzesをJOINして取得（エイリアスquizで取得）
   const { data, error } = await supabase
     .from('quiz_reviews')
-    .select('*, quizzes(*)')
+    .select('*, quiz:quizzes(*)')
     .eq('user_id', user_id)
     .lte('next_review_at', today)
     .order('next_review_at', { ascending: true })

@@ -10,16 +10,16 @@ function fillTemplate(template: string, vars: Record<string, string>) {
 }
 
 export async function POST(req: NextRequest) {
-  const { topic, fromLang, toLang } = await req.json();
-
-  if (!topic || !fromLang || !toLang) {
-    return NextResponse.json({ error: 'topic, fromLang, toLang are required' }, { status: 400 });
+  const { main_word, fromLang, toLang, main_word_translations } = await req.json();
+  if (!main_word || !fromLang || !toLang) {
+    return NextResponse.json({ error: 'main_word, fromLang, toLang are required' }, { status: 400 });
   }
 
   // プロンプトテンプレートを外部ファイルから読み込み
   const promptPath = path.join(process.cwd(), 'src/prompts/generate-quiz.txt');
   const template = fs.readFileSync(promptPath, 'utf8');
-  const prompt = fillTemplate(template, { topic, fromLang, toLang });
+  // main_word もテンプレートに渡す必要がある
+  const prompt = fillTemplate(template, { main_word, main_word_translations: main_word_translations || '', fromLang, toLang });
 
   try {
     const completion = await openai.chat.completions.create({
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     try {
       data = JSON.parse(text);
     } catch {
-      data = { raw: text };
+      return NextResponse.json({ error: 'Failed to parse JSON from LLM', raw: text }, { status: 500 });
     }
     return NextResponse.json(data);
   } catch (e: any) {
