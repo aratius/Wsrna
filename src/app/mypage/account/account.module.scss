@@ -1,7 +1,6 @@
 .container {
   background: #f2f2f7;
-  min-height: 100vh;
-  padding: 32px 0;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,21 +8,20 @@
 
 .card {
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 420px;
-  margin: 0 auto 32px auto;
+  height: 100%;
+  flex: 1;
+  margin: 0;
   padding: 32px 24px 24px 24px;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: start;
 }
 
 .title {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  text-align: center;
+  text-align: left;
   margin: 0 0 18px 0;
   background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
   background-size: 200% 100%;
@@ -62,13 +60,80 @@
   background: #ececec;
 }
 
+.accountInfoBox {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 8px;
+  background: #f2f2f7;
+  text-align: left;
+  width: 100%;
+}
+.accountInfoText {
+  flex: 1;
+  text-align: left;
+}
+
+.infoBox {
+  margin-top: 18px;
+  padding: 12px 0;
+}
+.infoRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.infoLabel {
+  min-width: 100px;
+  color: #888;
+  font-size: 15px;
+  font-weight: 600;
+  margin-right: 12px;
+}
+.infoValue {
+  color: #222;
+  font-size: 15px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #ccc;
+  background: #fafbfc;
+}
+.userName {
+  font-size: 17px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 2px;
+}
+.userEmail {
+  font-size: 14px;
+  color: #888;
+  word-break: break-all;
+}
+.logoutBtn {
+  background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  margin-top: 8px;
+}
+.logoutBtn:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 600px) {
-  .container {
-    padding: 16px 0;
-  }
-  .card {
-    padding: 20px 8px 16px 8px;
-  }
   .title {
     font-size: 1.1rem;
   }
