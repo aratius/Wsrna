@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-3.5-turbo-1106',
       messages: [
         { role: 'system', content: 'You are a helpful multilingual language teacher AI.' },
         { role: 'user', content: prompt },

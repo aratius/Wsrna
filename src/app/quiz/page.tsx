@@ -6,6 +6,103 @@ import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
 import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
+import { supabase } from "@/lib/supabaseClient";
+
+function QuizPreviewModal({
+  open,
+  onClose,
+  quizzes,
+  onSubmit,
+  submitting,
+}: any) {
+  if (!open) return null;
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.3)",
+        zIndex: 1000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 12,
+          maxWidth: 400,
+          width: "90vw",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          padding: 24,
+          boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+        }}
+      >
+        <h2 style={{ marginBottom: 16 }}>Quiz Preview</h2>
+        {quizzes.map((q: any, idx: number) => (
+          <div
+            key={idx}
+            style={{
+              marginBottom: 20,
+              borderBottom: "1px solid #eee",
+              paddingBottom: 12,
+            }}
+          >
+            {q.main_word && (
+              <div style={{ marginBottom: 8 }}>
+                <b>Main word:</b> {q.main_word}
+                {Array.isArray(q.main_word_translations) &&
+                  q.main_word_translations.length > 0 && (
+                    <span style={{ marginLeft: 8, color: "#007AFF" }}>
+                      [
+                      {q.main_word_translations.map((t: string, i: number) => (
+                        <span key={i}>
+                          {t}
+                          {i < q.main_word_translations.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                      ]
+                    </span>
+                  )}
+              </div>
+            )}
+            <div style={{ marginBottom: 8 }}>
+              <b>Quiz:</b> {q.question}
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <b>Answer:</b> {q.answer}
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <b>Translation:</b> {q.sentence_translation}
+            </div>
+          </div>
+        ))}
+        <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
+          <button
+            className="btn"
+            onClick={onClose}
+            style={{ flex: 1, background: "#ccc", color: "#222" }}
+          >
+            Close
+          </button>
+          <button
+            className="btn"
+            onClick={onSubmit}
+            style={{ flex: 2 }}
+            disabled={submitting}
+          >
+            {submitting ? "Submitting..." : "Submit"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function QuizPage() {
   const session = useSession();
@@ -18,6 +115,8 @@ export default function QuizPage() {
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [hintLevels, setHintLevels] = useState<{ [key: number]: number }>({});
+  const [showModal, setShowModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Fetch language pairs for the user
   useEffect(() => {
@@ -41,6 +140,19 @@ export default function QuizPage() {
     fetchPairs();
   }, [session]);
 
+  // Restore last selected language pair from localStorage
+  useEffect(() => {
+    const lastPairId = localStorage.getItem("lastSelectedPairId");
+    if (lastPairId) setSelectedPairId(lastPairId);
+  }, []);
+
+  // Save selected language pair to localStorage
+  useEffect(() => {
+    if (selectedPairId) {
+      localStorage.setItem("lastSelectedPairId", selectedPairId);
+    }
+  }, [selectedPairId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPairId) return;
@@ -60,11 +172,16 @@ export default function QuizPage() {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, fromLang, toLang }),
+        body: JSON.stringify({
+          topic: String(topic),
+          fromLang: String(fromLang),
+          toLang: String(toLang),
+        }),
       });
       const data = await res.json();
       if (data.error) setError(data.error);
       else if (Array.isArray(data)) setQuizzes(data);
+      else if (Array.isArray(data.questions)) setQuizzes(data.questions);
       else if (typeof data === "object") setQuizzes([data]);
       else setError("API response is invalid: " + JSON.stringify(data));
     } catch (e: any) {
@@ -81,10 +198,64 @@ export default function QuizPage() {
     }));
   };
 
+  // Submit quizzes to Supabase
+  const handleSubmitQuizzes = async () => {
+    if (!session?.user?.id || quizzes.length === 0) return;
+    setSubmitting(true);
+    try {
+      // 既存main_word一覧を取得
+      const { data: existing, error: fetchError } = await supabase
+        .from("quizzes")
+        .select("main_word")
+        .eq("user_id", session.user.id);
+      if (fetchError) {
+        alert("Failed to check existing quizzes: " + fetchError.message);
+        setSubmitting(false);
+        return;
+      }
+      const existingWords = (existing || []).map((q: any) => q.main_word);
+      // 重複しないクイズだけをinsert
+      const newQuizzes = quizzes.filter(
+        (q: any) => q.main_word && !existingWords.includes(q.main_word)
+      );
+      if (newQuizzes.length === 0) {
+        alert("All main words are already registered.");
+        setSubmitting(false);
+        return;
+      }
+      const payload = newQuizzes.map((q: any) => ({
+        user_id: session.user.id,
+        question: q.question,
+        answer: q.answer,
+        main_word: q.main_word,
+        main_word_translations: q.main_word_translations,
+        sentence_translation: q.sentence_translation,
+        explanation: q.explanation,
+        topic: q.topic || topic,
+        created_at: new Date().toISOString(),
+      }));
+      const { error } = await supabase.from("quizzes").insert(payload);
+      if (error) alert("Failed to save quizzes: " + error.message);
+      else {
+        alert("Quizzes saved!");
+        setShowModal(false);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (!session) return null;
 
   return (
     <div style={{ padding: "24px 0" }}>
+      <QuizPreviewModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        quizzes={quizzes}
+        onSubmit={handleSubmitQuizzes}
+        submitting={submitting}
+      />
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-header" style={{ marginBottom: 12 }}>
           English Cloze Quiz Generator
@@ -146,67 +317,18 @@ export default function QuizPage() {
               {error}
             </div>
           )}
+          {quizzes.length > 0 && (
+            <button
+              className="btn"
+              style={{ marginTop: 16 }}
+              onClick={() => setShowModal(true)}
+            >
+              Preview Quizzes
+            </button>
+          )}
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        {quizzes.map((q, idx) => (
-          <div className="card quiz__result" key={idx}>
-            <div className="card-header" style={{ marginBottom: 8 }}>
-              Quiz
-            </div>
-            <div className="card-body">
-              <div className="quiz__question" style={{ marginBottom: 8 }}>
-                {q.question}
-              </div>
-              <div className="quiz__answer" style={{ marginBottom: 8 }}>
-                <b>Answer:</b> {q.answer}
-              </div>
-              <div
-                className="quiz__sentence-translation"
-                style={{ marginBottom: 8 }}
-              >
-                <b>Translation:</b> {q.sentence_translation}
-              </div>
-              <div className="quiz__dictionary" style={{ marginBottom: 8 }}>
-                <b>Dictionary:</b>
-                <ul style={{ margin: 0, paddingLeft: 16 }}>
-                  {q.dictionary &&
-                    Object.entries(q.dictionary).map(([word, meaning]) => (
-                      <li key={word}>
-                        <b>{word}</b>:{" "}
-                        {Array.isArray(meaning)
-                          ? meaning.join(", ")
-                          : String(meaning)}
-                      </li>
-                    ))}
-                </ul>
-              </div>
-              <div className="quiz__hints">
-                <b>Hints:</b>
-                <ul style={{ margin: 0, paddingLeft: 16 }}>
-                  {q.hint_levels &&
-                    q.hint_levels
-                      .slice(0, hintLevels[idx] || 1)
-                      .map((hint: string, i: number) => (
-                        <li key={i}>{hint}</li>
-                      ))}
-                </ul>
-                {q.hint_levels &&
-                  (hintLevels[idx] || 1) < q.hint_levels.length && (
-                    <button
-                      className="btn btn--secondary"
-                      type="button"
-                      onClick={() => showNextHint(idx)}
-                      style={{ marginTop: 8 }}
-                    >
-                      Show next hint
-                    </button>
-                  )}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Remove non-modal quiz preview. Only keep modal-based preview. */}
     </div>
   );
 }
