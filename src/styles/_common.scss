@@ -1,5 +1,6 @@
-@import "./variables";
-@import "./mixins";
+@use "./variables" as *;
+@use "./mixins" as *;
+@use "sass:color";
 
 // ボタン
 .btn {
@@ -112,7 +113,7 @@
     outline: none;
     &:focus {
       border-color: $color-primary;
-      background: lighten($color-secondary, 35%);
+      background: color.adjust($color-secondary, $lightness: 35%);
     }
   }
   &__error {
@@ -150,7 +151,7 @@
   &__explanation {
     font-size: $font-size-sm;
     color: $color-text;
-    background: lighten($color-accent, 35%);
+    background: color.adjust($color-accent, $lightness: 35%);
     border-radius: 6px;
     padding: $spacing-xs $spacing-s;
     margin-top: $spacing-xs;
@@ -210,7 +211,7 @@
   &__explanation {
     font-size: $font-size-sm;
     color: $color-text;
-    background: lighten($color-accent, 35%);
+    background: color.adjust($color-accent, $lightness: 35%);
     border-radius: 6px;
     padding: $spacing-xs $spacing-s;
     margin-top: $spacing-xs;

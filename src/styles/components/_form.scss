@@ -1,4 +1,4 @@
-@import "../variables";
+@use "../variables" as *;
 
 .form-control {
   background-color: $color-secondary-bg;
