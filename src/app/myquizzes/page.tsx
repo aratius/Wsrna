@@ -39,7 +39,7 @@ export default function SavedIdiomPage() {
         if (data.error) setLpError(data.error);
         else {
           const newPairs = Array.isArray(data) ? data : [data];
-          setLanguagePairs((prev) => [...prev, ...newPairs]);
+          setLanguagePairs(newPairs); // prevを使わず上書き
           setFromLang("");
           setToLang("");
         }
@@ -56,6 +56,17 @@ export default function SavedIdiomPage() {
   const handleAddPair = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session || !fromLang || !toLang || fromLang === toLang) return;
+    // 既存ペアの重複チェック
+    const exists = languagePairs.some(
+      (lp) =>
+        lp.from_lang === fromLang &&
+        lp.to_lang === toLang &&
+        lp.user_id === session.user.id
+    );
+    if (exists) {
+      setLpError("This language pair already exists.");
+      return;
+    }
     setLpAdding(true);
     setLpError("");
     try {
@@ -72,7 +83,19 @@ export default function SavedIdiomPage() {
       if (data.error) setLpError(data.error);
       else {
         const newPairs = Array.isArray(data) ? data : [data];
-        setLanguagePairs((prev) => [...prev, ...newPairs]);
+        setLanguagePairs((prev) => {
+          const merged = [...prev, ...newPairs];
+          // from_lang, to_lang, user_idでユニーク化
+          return merged.filter(
+            (pair, idx, arr) =>
+              arr.findIndex(
+                (p) =>
+                  p.from_lang === pair.from_lang &&
+                  p.to_lang === pair.to_lang &&
+                  p.user_id === pair.user_id
+              ) === idx
+          );
+        });
         setFromLang("");
         setToLang("");
       }
