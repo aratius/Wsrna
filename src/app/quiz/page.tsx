@@ -104,7 +104,7 @@ function QuizPreviewModal({
   );
 }
 
-export default function QuizPage() {
+export default function CreatePage() {
   const session = useSession();
   const [topic, setTopic] = useState("");
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
@@ -237,6 +237,25 @@ export default function QuizPage() {
       const { error } = await supabase.from("quizzes").insert(payload);
       if (error) alert("Failed to save quizzes: " + error.message);
       else {
+        // 新規クイズ保存後、quiz_reviewsもinsert
+        const { data: inserted } = await supabase
+          .from("quizzes")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(payload.length);
+        if (inserted && inserted.length > 0) {
+          const reviewPayload = inserted.map((q: any) => ({
+            user_id: session.user.id,
+            quiz_id: q.id,
+            last_reviewed_at: new Date().toISOString(),
+            next_review_at: new Date().toISOString().slice(0, 10),
+            interval_days: 1,
+            correct_streak: 0,
+            created_at: new Date().toISOString(),
+          }));
+          await supabase.from("quiz_reviews").insert(reviewPayload);
+        }
         alert("Quizzes saved!");
         setShowModal(false);
       }
@@ -258,7 +277,7 @@ export default function QuizPage() {
       />
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-header" style={{ marginBottom: 12 }}>
-          English Cloze Quiz Generator
+          English Cloze Quiz Creation
         </div>
         <div className="card-body">
           {pairLoading && <div>Loading language pairs...</div>}
@@ -305,7 +324,7 @@ export default function QuizPage() {
                 type="submit"
                 disabled={loading || !selectedPairId}
               >
-                {loading ? "Generating..." : "Generate Quiz"}
+                {loading ? "Creating..." : "Create"}
               </button>
             </form>
           )}
@@ -323,7 +342,7 @@ export default function QuizPage() {
               style={{ marginTop: 16 }}
               onClick={() => setShowModal(true)}
             >
-              Preview Quizzes
+              Preview
             </button>
           )}
         </div>

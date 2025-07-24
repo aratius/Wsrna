@@ -6,7 +6,7 @@ import "@/styles/_base.scss";
 import "@/styles/components/_card.scss";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 
-export default function MyQuizzesPage() {
+export default function SavedIdiomPage() {
   const session = useSession();
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -19,6 +19,11 @@ export default function MyQuizzesPage() {
   const [fromLang, setFromLang] = useState("");
   const [toLang, setToLang] = useState("");
   const [lpAdding, setLpAdding] = useState(false);
+
+  // Toggle explanation state
+  const [explanationOpen, setExplanationOpen] = useState<{
+    [id: string]: boolean;
+  }>({});
 
   // Fetch language pairs
   useEffect(() => {
@@ -50,7 +55,7 @@ export default function MyQuizzesPage() {
   // Add language pair
   const handleAddPair = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fromLang || !toLang || fromLang === toLang) return;
+    if (!session || !fromLang || !toLang || fromLang === toLang) return;
     setLpAdding(true);
     setLpError("");
     try {
@@ -117,6 +122,14 @@ export default function MyQuizzesPage() {
     };
     fetchQuizzes();
   }, [session]);
+
+  // quizzes配列からmain_wordでユニーク化
+  const uniqueIdioms = quizzes.reduce((acc: any[], quiz: any) => {
+    if (!acc.find((q) => q.main_word === quiz.main_word)) {
+      acc.push(quiz);
+    }
+    return acc;
+  }, []);
 
   if (!session) return null;
 
@@ -212,65 +225,61 @@ export default function MyQuizzesPage() {
       {/* Existing Quizzes Section */}
       <div className="card" style={{ marginBottom: 24 }}>
         <div className="card-header" style={{ marginBottom: 12 }}>
-          Saved Quizzes
+          Saved Idioms
         </div>
         <div className="card-body">
           {loading && <div>Loading...</div>}
           {error && (
-            <div
-              className="myquizzes__error"
-              style={{ color: "#d50000", marginTop: 8 }}
-            >
-              {error}
-            </div>
+            <div style={{ color: "#d50000", marginBottom: 8 }}>{error}</div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {quizzes.length === 0 && !loading && <div>No quizzes found.</div>}
-            {quizzes.map((quiz) => (
-              <div className="card myquizzes__item" key={quiz.id}>
-                <div className="card-header" style={{ marginBottom: 8 }}>
-                  {quiz.question}
-                </div>
-                <div className="card-body">
-                  <ul
-                    className="myquizzes__choices"
-                    style={{ marginBottom: 8 }}
-                  >
-                    {quiz.choices.map((c: string, i: number) => (
-                      <li
-                        key={i}
-                        className={
-                          i === quiz.answer
-                            ? "myquizzes__choice myquizzes__choice--answer"
-                            : "myquizzes__choice"
-                        }
-                        style={{
-                          fontWeight: i === quiz.answer ? 600 : 400,
-                          color: i === quiz.answer ? "#007AFF" : undefined,
-                        }}
+          {uniqueIdioms.length === 0 && !loading ? (
+            <div>No idioms saved.</div>
+          ) : (
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {uniqueIdioms.map((quiz) => (
+                <li key={quiz.id} style={{ marginBottom: 16 }}>
+                  <div className="card" style={{ padding: 16 }}>
+                    <div
+                      style={{ fontWeight: 600, fontSize: 18, marginBottom: 4 }}
+                    >
+                      {quiz.main_word}
+                    </div>
+                    <div style={{ color: "#888", marginBottom: 8 }}>
+                      {Array.isArray(quiz.main_word_translations)
+                        ? quiz.main_word_translations.join(", ")
+                        : quiz.main_word_translations}
+                    </div>
+                    <button
+                      className="btn"
+                      type="button"
+                      style={{
+                        fontSize: 15,
+                        padding: "4px 12px",
+                        marginBottom: 4,
+                      }}
+                      onClick={() =>
+                        setExplanationOpen((prev) => ({
+                          ...prev,
+                          [quiz.id]: !prev[quiz.id],
+                        }))
+                      }
+                    >
+                      {explanationOpen[quiz.id]
+                        ? "Hide Explanation"
+                        : "Show Explanation"}
+                    </button>
+                    {explanationOpen[quiz.id] && (
+                      <div
+                        style={{ marginTop: 8, color: "#333", fontSize: 15 }}
                       >
-                        {c}
-                      </li>
-                    ))}
-                  </ul>
-                  <div
-                    className="myquizzes__explanation"
-                    style={{ marginBottom: 8 }}
-                  >
-                    {quiz.explanation}
+                        {quiz.explanation}
+                      </div>
+                    )}
                   </div>
-                  <div
-                    className="myquizzes__meta"
-                    style={{ fontSize: 13, color: "#888" }}
-                  >
-                    <span>Topic: {quiz.topic}</span> /{" "}
-                    <span>Level: {quiz.level || "Standard"}</span> /{" "}
-                    <span>{new Date(quiz.created_at).toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

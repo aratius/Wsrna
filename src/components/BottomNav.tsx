@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   },
   {
     href: "/quiz",
-    label: "Quiz",
+    label: "Create",
     icon: (
       <svg
         width="24"
@@ -42,7 +42,7 @@ const NAV_ITEMS = [
   },
   {
     href: "/review",
-    label: "Review",
+    label: "Quiz",
     icon: (
       <svg
         width="24"
