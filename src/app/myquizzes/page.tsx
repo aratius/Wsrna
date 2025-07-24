@@ -101,18 +101,16 @@ export default function SavedIdiomPage() {
     }
   };
 
+  // quizzesの代わりにidiomsをfetch
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchIdioms = async () => {
       if (!session?.user?.id) return;
       setLoading(true);
       setError("");
       try {
-        const { data, error } = await supabase
-          .from("quizzes")
-          .select("*")
-          .eq("user_id", session.user.id)
-          .order("created_at", { ascending: false });
-        if (error) setError(error.message);
+        const res = await fetch(`/api/idioms?user_id=${session.user.id}`);
+        const data = await res.json();
+        if (data.error) setError(data.error);
         else setQuizzes(data || []);
       } catch (e: any) {
         setError(e.message);
@@ -120,16 +118,10 @@ export default function SavedIdiomPage() {
         setLoading(false);
       }
     };
-    fetchQuizzes();
+    fetchIdioms();
   }, [session]);
 
-  // quizzes配列からmain_wordでユニーク化
-  const uniqueIdioms = quizzes.reduce((acc: any[], quiz: any) => {
-    if (!acc.find((q) => q.main_word === quiz.main_word)) {
-      acc.push(quiz);
-    }
-    return acc;
-  }, []);
+  // quizzes配列からmain_wordでユニーク化は不要（idiomsはユニーク）
 
   if (!session) return null;
 
@@ -232,22 +224,22 @@ export default function SavedIdiomPage() {
           {error && (
             <div style={{ color: "#d50000", marginBottom: 8 }}>{error}</div>
           )}
-          {uniqueIdioms.length === 0 && !loading ? (
+          {quizzes.length === 0 && !loading ? (
             <div>No idioms saved.</div>
           ) : (
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {uniqueIdioms.map((quiz) => (
-                <li key={quiz.id} style={{ marginBottom: 16 }}>
+              {quizzes.map((idiom) => (
+                <li key={idiom.id} style={{ marginBottom: 16 }}>
                   <div className="card" style={{ padding: 16 }}>
                     <div
                       style={{ fontWeight: 600, fontSize: 18, marginBottom: 4 }}
                     >
-                      {quiz.main_word}
+                      {idiom.main_word}
                     </div>
                     <div style={{ color: "#888", marginBottom: 8 }}>
-                      {Array.isArray(quiz.main_word_translations)
-                        ? quiz.main_word_translations.join(", ")
-                        : quiz.main_word_translations}
+                      {Array.isArray(idiom.main_word_translations)
+                        ? idiom.main_word_translations.join(", ")
+                        : idiom.main_word_translations}
                     </div>
                     <button
                       className="btn"
@@ -260,19 +252,19 @@ export default function SavedIdiomPage() {
                       onClick={() =>
                         setExplanationOpen((prev) => ({
                           ...prev,
-                          [quiz.id]: !prev[quiz.id],
+                          [idiom.id]: !prev[idiom.id],
                         }))
                       }
                     >
-                      {explanationOpen[quiz.id]
+                      {explanationOpen[idiom.id]
                         ? "Hide Explanation"
                         : "Show Explanation"}
                     </button>
-                    {explanationOpen[quiz.id] && (
+                    {explanationOpen[idiom.id] && (
                       <div
                         style={{ marginTop: 8, color: "#333", fontSize: 15 }}
                       >
-                        {quiz.explanation}
+                        {idiom.explanation}
                       </div>
                     )}
                   </div>

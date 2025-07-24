@@ -223,18 +223,40 @@ export default function CreatePage() {
         setSubmitting(false);
         return;
       }
-      const payload = newQuizzes.map((q: any) => ({
-        user_id: session.user.id,
-        question: q.question,
-        answer: q.answer,
-        main_word: q.main_word,
-        main_word_translations: q.main_word_translations,
-        sentence_translation: q.sentence_translation,
-        explanation: q.explanation,
-        topic: q.topic || topic,
-        created_at: new Date().toISOString(),
-      }));
-      const { error } = await supabase.from("quizzes").insert(payload);
+      // idiomsテーブルにinsert（未登録なら）し、idiom_idを取得
+      const quizPayload = [];
+      for (const q of newQuizzes) {
+        // idioms APIにPOST
+        const idiomRes = await fetch("/api/idioms", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: session.user.id,
+            main_word: q.main_word,
+            main_word_translations: q.main_word_translations,
+            explanation: q.explanation,
+          }),
+        });
+        const idiom = await idiomRes.json();
+        if (idiom.error || !idiom.id) {
+          alert("Failed to save idiom: " + (idiom.error || "No idiom id"));
+          setSubmitting(false);
+          return;
+        }
+        quizPayload.push({
+          user_id: session.user.id,
+          idiom_id: idiom.id,
+          question: q.question,
+          answer: q.answer,
+          main_word: q.main_word,
+          main_word_translations: q.main_word_translations,
+          sentence_translation: q.sentence_translation,
+          explanation: q.explanation,
+          topic: q.topic || topic,
+          created_at: new Date().toISOString(),
+        });
+      }
+      const { error } = await supabase.from("quizzes").insert(quizPayload);
       if (error) alert("Failed to save quizzes: " + error.message);
       else {
         // 新規クイズ保存後、quiz_reviewsもinsert
@@ -243,7 +265,7 @@ export default function CreatePage() {
           .select("id")
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false })
-          .limit(payload.length);
+          .limit(quizPayload.length);
         if (inserted && inserted.length > 0) {
           const reviewPayload = inserted.map((q: any) => ({
             user_id: session.user.id,

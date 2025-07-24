@@ -57,8 +57,10 @@ export default function RootLayout({
             position: "relative",
           }}
         >
-          <SupabaseProvider>{children}</SupabaseProvider>
-          <BottomNav />
+          <SupabaseProvider>
+            {children}
+            <BottomNav />
+          </SupabaseProvider>
         </div>
       </body>
     </html>
