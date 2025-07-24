@@ -1,12 +1,55 @@
+.bottomNav {
+  width: 100%;
+  max-width: 390px;
+  margin: 0 auto;
+  height: 56px;
+  background: #fff;
+  border-top: 1px solid #ececec;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.bottomNavItem {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 4px 0 0 0;
+  transition: color 0.2s;
+
+  &.isActive {
+    color: #5856d6;
+    font-weight: 500;
+  }
+}
+
+.bottomNavIcon {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.bottomNavLabel {
+  font-size: 12px;
+  line-height: 1;
+}
+
 .avatar {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid #ccc;
-  background: #fff;
-
-  &.avatarActive {
-    border: 2px solid #4285f4;
-  }
+}
+.avatarActive {
+  border: 2px solid #5856d6;
 }

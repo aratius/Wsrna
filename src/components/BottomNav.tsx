@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import "@/styles/components/_bottomnav.scss";
 import styles from "./BottomNav.module.scss";
 import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
 
@@ -83,7 +82,7 @@ export default function BottomNav() {
     console.log("user_metadata:", session.user.user_metadata);
   }
   return (
-    <nav className="bottom-nav">
+    <nav className={styles.bottomNav}>
       {NAV_ITEMS.map((item) => {
         const active = pathname === item.href;
         // My Pageアイコンだけ動的に差し替え
@@ -92,9 +91,11 @@ export default function BottomNav() {
             <Link
               href={item.href}
               key={item.href}
-              className={"bottom-nav__item" + (active ? " is-active" : "")}
+              className={
+                styles.bottomNavItem + (active ? " " + styles.isActive : "")
+              }
             >
-              <span className="bottom-nav__icon">
+              <span className={styles.bottomNavIcon}>
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -107,7 +108,7 @@ export default function BottomNav() {
                   item.icon
                 )}
               </span>
-              <span className="bottom-nav__label">{item.label}</span>
+              <span className={styles.bottomNavLabel}>{item.label}</span>
             </Link>
           );
         }
@@ -115,10 +116,12 @@ export default function BottomNav() {
           <Link
             href={item.href}
             key={item.href}
-            className={"bottom-nav__item" + (active ? " is-active" : "")}
+            className={
+              styles.bottomNavItem + (active ? " " + styles.isActive : "")
+            }
           >
-            <span className="bottom-nav__icon">{item.icon}</span>
-            <span className="bottom-nav__label">{item.label}</span>
+            <span className={styles.bottomNavIcon}>{item.icon}</span>
+            <span className={styles.bottomNavLabel}>{item.label}</span>
           </Link>
         );
       })}
