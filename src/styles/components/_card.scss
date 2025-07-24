@@ -1,0 +1,18 @@
+@import "../variables";
+
+.card {
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: $shadow-lg;
+  padding: $spacing-m;
+}
+
+.card-header {
+  font-size: $font-size-small;
+  font-weight: $font-weight-medium;
+}
+
+.card-body {
+  font-size: $font-size-base;
+  color: $color-text-primary;
+}

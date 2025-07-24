@@ -4,7 +4,7 @@
 // ボタン
 .btn {
   display: inline-block;
-  padding: $space-sm $space-md;
+  padding: $spacing-s $spacing-m;
   border-radius: 6px;
   background: $color-primary;
   color: #fff;
@@ -32,55 +32,55 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-  padding: $space-lg;
-  margin-bottom: $space-md;
+  padding: $spacing-l;
+  margin-bottom: $spacing-m;
 }
 
 // マージン・パディングユーティリティ
 .m-xs {
-  margin: $space-xs !important;
+  margin: $spacing-xs !important;
 }
 .m-sm {
-  margin: $space-sm !important;
+  margin: $spacing-s !important;
 }
 .m-md {
-  margin: $space-md !important;
+  margin: $spacing-m !important;
 }
 .m-lg {
-  margin: $space-lg !important;
+  margin: $spacing-l !important;
 }
 .m-xl {
-  margin: $space-xl !important;
+  margin: $spacing-xl !important;
 }
 
 .p-xs {
-  padding: $space-xs !important;
+  padding: $spacing-xs !important;
 }
 .p-sm {
-  padding: $space-sm !important;
+  padding: $spacing-s !important;
 }
 .p-md {
-  padding: $space-md !important;
+  padding: $spacing-m !important;
 }
 .p-lg {
-  padding: $space-lg !important;
+  padding: $spacing-l !important;
 }
 .p-xl {
-  padding: $space-xl !important;
+  padding: $spacing-xl !important;
 }
 
 // Authページ
 .auth {
   max-width: 360px;
   margin: 80px auto;
-  padding: $space-lg;
+  padding: $spacing-l;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   text-align: center;
   &__title {
     font-size: 1.5rem;
-    margin-bottom: $space-md;
+    margin-bottom: $spacing-m;
     color: $color-primary;
   }
 }
@@ -89,23 +89,23 @@
 .quiz {
   max-width: 480px;
   margin: 48px auto;
-  padding: $space-lg;
+  padding: $spacing-l;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
   &__title {
     font-size: 1.4rem;
     color: $color-secondary;
-    margin-bottom: $space-md;
+    margin-bottom: $spacing-m;
   }
   &__form {
     display: flex;
     flex-direction: column;
-    gap: $space-sm;
-    margin-bottom: $space-lg;
+    gap: $spacing-s;
+    margin-bottom: $spacing-l;
   }
   &__input {
-    padding: $space-sm;
+    padding: $spacing-s;
     border: 1.5px solid $color-secondary;
     border-radius: 8px;
     font-size: 1rem;
@@ -117,30 +117,30 @@
   }
   &__error {
     color: $color-error;
-    margin-bottom: $space-md;
+    margin-bottom: $spacing-m;
   }
   &__result {
-    margin-top: $space-md;
+    margin-top: $spacing-m;
     background: $color-bg;
     border-left: 6px solid $color-primary;
   }
   &__question {
     font-weight: bold;
-    margin-bottom: $space-sm;
+    margin-bottom: $spacing-s;
     color: $color-primary;
   }
   &__choices {
     display: flex;
     flex-direction: column;
-    gap: $space-xs;
-    margin-bottom: $space-sm;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-s;
     padding-left: 0;
   }
   &__choice {
     background: $color-secondary;
     color: #fff;
     border-radius: 6px;
-    padding: $space-xs $space-sm;
+    padding: $spacing-xs $spacing-s;
     &--answer {
       background: $color-success;
       color: #222;
@@ -152,8 +152,8 @@
     color: $color-text;
     background: lighten($color-accent, 35%);
     border-radius: 6px;
-    padding: $space-xs $space-sm;
-    margin-top: $space-xs;
+    padding: $spacing-xs $spacing-s;
+    margin-top: $spacing-xs;
   }
 }
 
@@ -161,23 +161,23 @@
 .myquizzes {
   max-width: 600px;
   margin: 48px auto;
-  padding: $space-lg;
+  padding: $spacing-l;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
   &__title {
     font-size: 1.4rem;
     color: $color-primary;
-    margin-bottom: $space-md;
+    margin-bottom: $spacing-m;
   }
   &__error {
     color: $color-error;
-    margin-bottom: $space-md;
+    margin-bottom: $spacing-m;
   }
   &__list {
     display: flex;
     flex-direction: column;
-    gap: $space-md;
+    gap: $spacing-m;
   }
   &__item {
     background: $color-bg;
@@ -186,21 +186,21 @@
   }
   &__question {
     font-weight: bold;
-    margin-bottom: $space-xs;
+    margin-bottom: $spacing-xs;
     color: $color-secondary;
   }
   &__choices {
     display: flex;
     flex-direction: column;
-    gap: $space-xs;
-    margin-bottom: $space-xs;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-xs;
     padding-left: 0;
   }
   &__choice {
     background: $color-primary;
     color: #fff;
     border-radius: 6px;
-    padding: $space-xs $space-sm;
+    padding: $spacing-xs $spacing-s;
     &--answer {
       background: $color-success;
       color: #222;
@@ -212,13 +212,13 @@
     color: $color-text;
     background: lighten($color-accent, 35%);
     border-radius: 6px;
-    padding: $space-xs $space-sm;
-    margin-top: $space-xs;
+    padding: $spacing-xs $spacing-s;
+    margin-top: $spacing-xs;
   }
   &__meta {
     font-size: $font-size-sm;
     color: $color-text;
-    margin-top: $space-xs;
+    margin-top: $spacing-xs;
     opacity: 0.7;
   }
 }

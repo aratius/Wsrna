@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
+import "@/styles/_base.scss";
+import "@/styles/components/_button.scss";
+import "@/styles/components/_form.scss";
+import "@/styles/components/_card.scss";
 
 export default function ReviewPage() {
   const session = useSession();
@@ -55,76 +59,89 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="review">
-      <h1 className="review__title">今日の復習リスト</h1>
-      {loading && <div>読み込み中...</div>}
-      {error && <div className="review__error">{error}</div>}
-      <div className="review__list">
-        {reviews.length === 0 && !loading && (
-          <div>復習すべきクイズはありません。</div>
-        )}
-        {reviews.map((review) => {
-          const quiz = review.quizzes;
-          return (
-            <div className="card review__item" key={review.id}>
-              <div className="review__question">{quiz.question}</div>
-              <form
-                className="review__form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleAnswer(review);
-                }}
-              >
-                <input
-                  className="review__input"
-                  type="text"
-                  placeholder="空欄に入る語を入力"
-                  value={answers[review.id] || ""}
-                  onChange={(e) =>
-                    setAnswers((a) => ({ ...a, [review.id]: e.target.value }))
-                  }
-                  disabled={results[review.id] !== undefined}
-                />
-                <button
-                  className="btn"
-                  type="submit"
-                  disabled={
-                    updating[review.id] || results[review.id] !== undefined
-                  }
-                >
-                  回答
-                </button>
-              </form>
-              {results[review.id] !== undefined && (
-                <div
-                  className={
-                    results[review.id]
-                      ? "review__result review__result--correct"
-                      : "review__result review__result--wrong"
-                  }
-                >
-                  {results[review.id]
-                    ? "正解！"
-                    : `不正解。正解: ${quiz.answer}`}
-                </div>
-              )}
-              <div className="review__sentence-translation">
-                訳: {quiz.sentence_translation}
-              </div>
-              <div className="review__dictionary">
-                <b>辞書:</b>
-                <ul>
-                  {quiz.dictionary &&
-                    Object.entries(quiz.dictionary).map(([word, meaning]) => (
-                      <li key={word}>
-                        <b>{word}</b>: {String(meaning)}
-                      </li>
-                    ))}
-                </ul>
-              </div>
+    <div style={{ padding: "24px 0" }}>
+      <div className="card" style={{ marginBottom: 24 }}>
+        <div className="card-header" style={{ marginBottom: 12 }}>
+          Today's Review List
+        </div>
+        <div className="card-body">
+          {loading && <div>Loading...</div>}
+          {error && (
+            <div
+              className="review__error"
+              style={{ color: "#d50000", marginTop: 8 }}
+            >
+              {error}
             </div>
-          );
-        })}
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {reviews.length === 0 && !loading && (
+              <div>No quizzes to review.</div>
+            )}
+            {reviews.map((review) => {
+              const quiz = review.quizzes;
+              return (
+                <div className="card review__item" key={review.id}>
+                  <div className="card-header" style={{ marginBottom: 8 }}>
+                    {quiz.question}
+                  </div>
+                  <div className="card-body">
+                    <form
+                      className="review__form"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAnswer(review);
+                      }}
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        alignItems: "center",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter the answer"
+                        value={answers[review.id] || ""}
+                        onChange={(e) =>
+                          setAnswers((a) => ({
+                            ...a,
+                            [review.id]: e.target.value,
+                          }))
+                        }
+                        disabled={results[review.id] !== undefined}
+                        style={{ flex: 1 }}
+                      />
+                      <button
+                        className="btn"
+                        type="submit"
+                        disabled={
+                          updating[review.id] ||
+                          results[review.id] !== undefined
+                        }
+                        style={{ minWidth: 80 }}
+                      >
+                        Submit
+                      </button>
+                    </form>
+                    {results[review.id] !== undefined && (
+                      <div
+                        className={
+                          results[review.id]
+                            ? "review__result--correct"
+                            : "review__result--incorrect"
+                        }
+                      >
+                        {results[review.id] ? "Correct!" : "Incorrect."}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,21 +1,22 @@
 You are a helpful multilingual language teacher AI.
 
 A student wants to practice the topic: "{{topic}}", translating from "{{fromLang}}" to "{{toLang}}".
-Generate at least 5 fill-in-the-blank (cloze) questions to help the student understand and apply this topic in real-life contexts.
+Generate exactly 5 fill-in-the-blank (cloze) questions to help the student understand and apply this topic in real-life contexts.
 
 Each question must include:
 - A sentence in {{toLang}} with one blank ("____")
 - The correct answer to fill the blank
 - A sentence-level translation into {{fromLang}} for comprehension
-- A dictionary object with every word in the sentence and its meaning in {{fromLang}}
+- A dictionary object with every word in the sentence and ideally 2 to 6 possible meanings (as an array) in {{fromLang}}. If a word has only one common meaning, return it as a single-element array.
 - 4-step progressive hints:
   1. Sentence meaning in {{fromLang}}
   2. Grammatical clue (tense, part of speech, etc.)
   3. Explanation of the answer word
   4. Partial word clue (e.g. first few letters)
 
-Return ONLY strict JSON in the following format:
+Return ONLY a strict JSON array of 5 objects, no more, no less. Do not return a single object. Do not return any text outside the JSON array. Do not include markdown or code block formatting.
 
+Example format:
 [
   {
     "question": "Él ____ todos los días.",
@@ -25,9 +26,9 @@ Return ONLY strict JSON in the following format:
     "toLang": "es",
     "topic": "hablar",
     "dictionary": {
-      "él": "彼",
-      "todos los días": "毎日",
-      "habla": "話す"
+      "él": ["彼"],
+      "todos los días": ["毎日"],
+      "habla": ["話す", "しゃべる"]
     },
     "hint_levels": [
       "彼は毎日〇〇します。",

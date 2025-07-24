@@ -16,6 +16,9 @@ export async function POST(req: NextRequest) {
     .order('next_review_at', { ascending: true })
     .limit(10);
   if (error) {
+    if (error.message && error.message.includes('relation') && error.message.includes('does not exist')) {
+      return NextResponse.json({ error: 'Quiz table does not exist. Please contact the administrator.' }, { status: 500 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json(data);

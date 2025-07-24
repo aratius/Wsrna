@@ -1,0 +1,23 @@
+@import "../variables";
+
+.form-control {
+  background-color: $color-secondary-bg;
+  border-radius: $border-radius;
+  padding: $spacing-xs $spacing-s;
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  border: 1px solid transparent;
+  min-height: 44px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &::placeholder {
+    color: $color-text-tertiary;
+    opacity: 1;
+  }
+
+  &:focus {
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+  }
+}

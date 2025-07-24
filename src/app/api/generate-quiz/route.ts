@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       ],
       temperature: 0.7,
       max_tokens: 2048,
+      response_format: { type: 'json_object' }, // JSONモードを有効化
     });
     const text = completion.choices[0].message.content?.trim() || '';
     let data;

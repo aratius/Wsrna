@@ -1,18 +1,20 @@
 @import "./variables";
 
-* {
-  box-sizing: border-box;
+html,
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  color: $color-text-primary;
+  background: $color-background;
   margin: 0;
   padding: 0;
 }
 
-html,
-body {
-  font-family: $font-main;
-  font-size: $font-size-base;
-  background: $color-bg;
-  color: $color-text;
-  min-height: 100vh;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 a {

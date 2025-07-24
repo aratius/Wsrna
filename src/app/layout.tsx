@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "../styles/index.scss";
 import SupabaseProvider from "@/components/SupabaseProvider";
+import BottomNav from "@/components/BottomNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,18 +44,21 @@ export default function RootLayout({
       >
         <div
           style={{
-            width: 375,
-            height: 667,
-            background: "#fff",
-            borderRadius: 24,
-            boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+            maxWidth: 390,
+            margin: "0 auto",
+            borderRadius: 16,
             overflow: "hidden",
+            boxShadow: "0 0 20px rgba(0, 0, 0, 0.05)",
+            background: "#fff", // $color-background
+            width: "100%",
+            minHeight: 667,
             display: "flex",
             flexDirection: "column",
             position: "relative",
           }}
         >
           <SupabaseProvider>{children}</SupabaseProvider>
+          <BottomNav />
         </div>
       </body>
     </html>
