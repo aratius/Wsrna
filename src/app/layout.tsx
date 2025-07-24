@@ -12,6 +12,7 @@ import {
   notoSans,
 } from "@/styles/fonts";
 import AppHeightSetter from "@/components/AppHeightSetter";
+import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 
 export const metadata: Metadata = {
   title: "wsrna",
@@ -61,6 +62,7 @@ export default function RootLayout({
           }}
         >
           <SupabaseProvider>
+            <PwaInstallPrompt />
             <div
               className="mainContent"
               style={{
