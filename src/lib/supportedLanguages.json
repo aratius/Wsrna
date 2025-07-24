@@ -14,8 +14,8 @@
     "abbr": "РУС"
   },
   { "code": "zh", "label": "中文", "greeting": "你好", "abbr": "中" },
-  { "code": "yue", "label": "粵語", "greeting": "你好", "abbr": "粵" },
-  { "code": "nan", "label": "臺語", "greeting": "", "abbr": "台" },
+  { "code": "yue", "label": "粤語", "greeting": "你好", "abbr": "粵" },
+  { "code": "nan", "label": "臺語", "greeting": "你好", "abbr": "台" },
   { "code": "th", "label": "ไทย", "greeting": "สวัสดี", "abbr": "TH" },
   { "code": "hi", "label": "हिन्दी", "greeting": "नमस्ते", "abbr": "HI" },
   { "code": "ko", "label": "한국어", "greeting": "안녕하세요", "abbr": "한" },
