@@ -64,76 +64,70 @@ export default function SavedIdiomsPage() {
 
   return (
     <div className={styles.container}>
-      <button
-        onClick={() => router.back()}
-        className={`btn ${styles.backButton}`}
-      >
-        &lt; 戻る
-      </button>
-      <h2 className={styles.title}>Saved Idioms</h2>
-      {/* タブUI */}
-      <nav className={styles.tabNav + " tab-scrollbar"}>
-        {languagePairs.map((lp) => {
-          const active = selectedPairId === lp.id;
-          return (
-            <button
-              key={lp.id}
-              onClick={() => setSelectedPairId(lp.id)}
-              className={
-                styles.tabButton + (active ? " " + styles.activeTab : "")
-              }
-            >
-              {(lp.from_lang || "").toUpperCase()}
-              <span className={styles.tabArrow}>›</span>
-              {(lp.to_lang || "").toUpperCase()}
-            </button>
-          );
-        })}
-      </nav>
-      {loading && <div>Loading...</div>}
-      {error && <div className={styles.error}>{error}</div>}
-      {filteredIdioms.length === 0 && !loading ? (
-        <div>No idioms saved for this language pair.</div>
-      ) : (
-        <ul className={styles.idiomList}>
-          {filteredIdioms.map((idiom, idx) => (
-            <li
-              key={idiom.id}
-              className={styles.idiomItem}
-              style={{
-                borderBottom:
-                  idx !== filteredIdioms.length - 1
-                    ? "1px solid #e0e0e0"
-                    : "none",
-              }}
-            >
-              <div className={styles.mainWord}>{idiom.main_word}</div>
-              <div className={styles.translations}>
-                {Array.isArray(idiom.main_word_translations)
-                  ? idiom.main_word_translations.join(", ")
-                  : idiom.main_word_translations}
-              </div>
+      <div className={styles.card + " card"}>
+        <button onClick={() => router.back()} className={styles.backButton}>
+          &lt; 戻る
+        </button>
+        <h2 className={styles.title}>Saved Idioms</h2>
+        {/* タブUI */}
+        <nav className={styles.tabNav + " tab-scrollbar"}>
+          {languagePairs.map((lp) => {
+            const active = selectedPairId === lp.id;
+            return (
               <button
-                type="button"
-                className={`btn btn--secondary ${styles.explanationBtn}`}
-                onClick={() =>
-                  setExplanationOpen((prev) => ({
-                    ...prev,
-                    [idiom.id]: !prev[idiom.id],
-                  }))
+                key={lp.id}
+                onClick={() => setSelectedPairId(lp.id)}
+                className={
+                  styles.tabButton + (active ? " " + styles.activeTab : "")
                 }
               >
-                {explanationOpen[idiom.id]
-                  ? "Hide Explanation"
-                  : "Show Explanation"}
+                {(lp.from_lang || "").toUpperCase()}
+                <span className={styles.tabArrow}>›</span>
+                {(lp.to_lang || "").toUpperCase()}
               </button>
-              {explanationOpen[idiom.id] && (
-                <div className={styles.explanationBox}>{idiom.explanation}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+            );
+          })}
+        </nav>
+        {loading && <div className={styles.status}>Loading...</div>}
+        {error && <div className={styles.error}>{error}</div>}
+        {filteredIdioms.length === 0 && !loading ? (
+          <div className={styles.error}>
+            No idioms saved for this language pair.
+          </div>
+        ) : (
+          <ul className={styles.idiomList}>
+            {filteredIdioms.map((idiom, idx) => (
+              <li key={idiom.id} className={styles.idiomItem}>
+                <div className={styles.mainWord}>{idiom.main_word}</div>
+                <div className={styles.translations}>
+                  {Array.isArray(idiom.main_word_translations)
+                    ? idiom.main_word_translations.join(", ")
+                    : idiom.main_word_translations}
+                </div>
+                <button
+                  type="button"
+                  className={styles.explanationBtn}
+                  onClick={() =>
+                    setExplanationOpen((prev) => ({
+                      ...prev,
+                      [idiom.id]: !prev[idiom.id],
+                    }))
+                  }
+                >
+                  {explanationOpen[idiom.id]
+                    ? "Hide Explanation"
+                    : "Show Explanation"}
+                </button>
+                {explanationOpen[idiom.id] && (
+                  <div className={styles.explanationBox}>
+                    {idiom.explanation}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

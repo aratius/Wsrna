@@ -6,11 +6,13 @@ export default function AccountInfoPage() {
   const router = useRouter();
   return (
     <div className={styles.container}>
-      <button onClick={() => router.back()} className={styles.backButton}>
-        &lt; 戻る
-      </button>
-      <h2>Account Info</h2>
-      <p>ここにアカウント情報が表示されます（ダミー）。</p>
+      <div className={styles.card + " card"}>
+        <button onClick={() => router.back()} className={styles.backButton}>
+          &lt; 戻る
+        </button>
+        <h2 className={styles.title}>Account Info</h2>
+        <p>ここにアカウント情報が表示されます（ダミー）。</p>
+      </div>
     </div>
   );
 }

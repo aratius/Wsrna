@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { useRouter } from "next/navigation";
+import styles from "./language-pairs.module.scss";
 
 export default function LanguagePairsPage() {
   const router = useRouter();
@@ -111,124 +112,76 @@ export default function LanguagePairsPage() {
   if (!session) return null;
 
   return (
-    <div
-      style={{
-        background: "#f2f2f7",
-        minHeight: "100vh",
-        padding: "24px 20px",
-      }}
-    >
-      <button
-        onClick={() => router.back()}
-        className="btn"
-        style={{ marginBottom: 16 }}
-      >
-        &lt; 戻る
-      </button>
-      <h2
-        style={{
-          fontSize: 20,
-          fontWeight: 700,
-          margin: "0 0 20px 0",
-          textAlign: "center",
-        }}
-      >
-        Language Pairs
-      </h2>
-      {lpLoading && <div>Loading...</div>}
-      {lpError && (
-        <div style={{ color: "#d50000", marginBottom: 12 }}>{lpError}</div>
-      )}
-      <form
-        onSubmit={handleAddPair}
-        style={{ display: "flex", gap: 8, marginBottom: 16 }}
-      >
-        <select
-          className="form-control"
-          value={fromLang}
-          onChange={(e) => setFromLang(e.target.value)}
-          required
-          style={{
-            minWidth: 120,
-            background: "#fff",
-            borderRadius: 8,
-            border: "1px solid #e0e0e0",
-          }}
-        >
-          <option value="">From</option>
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.label}
-            </option>
-          ))}
-        </select>
-        <span style={{ alignSelf: "center" }}>→</span>
-        <select
-          className="form-control"
-          value={toLang}
-          onChange={(e) => setToLang(e.target.value)}
-          required
-          style={{
-            minWidth: 120,
-            background: "#fff",
-            borderRadius: 8,
-            border: "1px solid #e0e0e0",
-          }}
-        >
-          <option value="">To</option>
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.label}
-            </option>
-          ))}
-        </select>
-        <button
-          className="btn"
-          type="submit"
-          disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
-        >
-          Add
+    <div className={styles.container}>
+      <div className={styles.card + " card"}>
+        <button onClick={() => router.back()} className={styles.backButton}>
+          &lt; 戻る
         </button>
-      </form>
-      <ul style={{ padding: 0, margin: 0 }}>
-        {languagePairs.map((lp, idx) => (
-          <li
-            key={lp.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              marginBottom: 6,
-              borderBottom:
-                idx !== languagePairs.length - 1 ? "1px solid #e0e0e0" : "none",
-              padding: "12px 0",
-              position: "relative",
-            }}
+        <h2 className={styles.title}>Language Pairs</h2>
+        {lpLoading && <div className={styles.status}>Loading...</div>}
+        {lpError && <div className={styles.error}>{lpError}</div>}
+        <form onSubmit={handleAddPair} className={styles.formRow}>
+          <select
+            className={styles.select}
+            value={fromLang}
+            onChange={(e) => setFromLang(e.target.value)}
+            required
           >
-            <span style={{ minWidth: 90 }}>
-              {supportedLanguages.find((l) => l.code === lp.from_lang)?.label ||
-                lp.from_lang}
-            </span>
-            <span style={{ fontSize: 18 }}>→</span>
-            <span style={{ minWidth: 90 }}>
-              {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
-                lp.to_lang}
-            </span>
-            <div style={{ flex: 1 }} />
-            <button
-              className="btn btn--error"
-              style={{ marginLeft: "auto", display: "block" }}
-              type="button"
-              onClick={() => handleDeletePair(lp.id)}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-        {languagePairs.length === 0 && !lpLoading && (
-          <li key="empty">No language pairs found.</li>
-        )}
-      </ul>
+            <option value="">From</option>
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <span className={styles.arrow}>&rarr;</span>
+          <select
+            className={styles.select}
+            value={toLang}
+            onChange={(e) => setToLang(e.target.value)}
+            required
+          >
+            <option value="">To</option>
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <button
+            className={styles.addBtn}
+            type="submit"
+            disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
+          >
+            Add
+          </button>
+        </form>
+        <ul className={styles.list}>
+          {languagePairs.map((lp, idx) => (
+            <li key={lp.id} className={styles.listItem}>
+              <span className={styles.langLabel}>
+                {supportedLanguages.find((l) => l.code === lp.from_lang)
+                  ?.label || lp.from_lang}
+              </span>
+              <span className={styles.arrow}>&rarr;</span>
+              <span className={styles.langLabel}>
+                {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
+                  lp.to_lang}
+              </span>
+              <button
+                className={styles.deleteBtn}
+                type="button"
+                onClick={() => handleDeletePair(lp.id)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+          {languagePairs.length === 0 && !lpLoading && (
+            <li className={styles.empty}>No language pairs found.</li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
