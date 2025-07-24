@@ -45,22 +45,45 @@ export default function RootLayout({
         <AppHeightSetter />
         <div
           style={{
+            position: "fixed",
+            height: "100vh",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
             maxWidth: 390,
             margin: "0 auto",
             borderRadius: 16,
             overflow: "hidden",
             boxShadow: "0 0 20px rgba(0, 0, 0, 0.05)",
-            background: "#fff", // $color-background
+            background: "#fff",
             width: "100%",
             minHeight: 667,
-            display: "flex",
-            flexDirection: "column",
-            position: "relative",
           }}
         >
           <SupabaseProvider>
-            {children}
-            <BottomNav />
+            <div
+              className="mainContent"
+              style={{
+                flex: "1 1 auto",
+                overflowY: "auto",
+                overflowX: "hidden",
+                position: "relative",
+                marginBottom: 56, // BottomNavの高さ分
+              }}
+            >
+              {children}
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                width: "100%",
+              }}
+            >
+              <BottomNav />
+            </div>
           </SupabaseProvider>
         </div>
       </body>
