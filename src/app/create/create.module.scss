@@ -1,15 +1,10 @@
 .container {
-  width: 100vw;
-  margin: 0;
-  padding: 24px;
+  width: 100%;
+  padding: 24px 16px;
   background: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
-
-  &.containerMobile {
-    padding: 16px;
-  }
 
   .cardMargin {
     margin-bottom: 24px;

@@ -1,14 +1,11 @@
 .container {
   width: 100vw;
   margin: 0;
+  padding: 24px 16px;
   background: #fff;
   display: flex;
   flex-direction: column;
   position: relative;
-
-  &.containerMobile {
-    padding: 16px;
-  }
 }
 
 .title {
@@ -65,7 +62,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 18px;
+  padding: 16px 12px;
   text-decoration: none;
   color: #222;
   font-size: 17px;
@@ -80,17 +77,4 @@
 .arrow {
   color: #bbb;
   font-size: 22px;
-}
-
-@media (max-width: 600px) {
-  .container {
-    padding: 16px 0;
-  }
-  .card {
-    padding: 20px 8px 16px 8px;
-  }
-  .menuLink {
-    padding: 16px 10px;
-    font-size: 16px;
-  }
 }
