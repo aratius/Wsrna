@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "@/styles/components/_bottomnav.scss";
+import styles from "./BottomNav.module.scss";
 import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
 
 const NAV_ITEMS = [
@@ -98,14 +99,9 @@ export default function BottomNav() {
                   <img
                     src={avatarUrl}
                     alt="Profile"
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: active ? "2px solid #4285F4" : "1px solid #ccc",
-                      background: "#fff",
-                    }}
+                    className={
+                      styles.avatar + (active ? " " + styles.avatarActive : "")
+                    }
                   />
                 ) : (
                   item.icon

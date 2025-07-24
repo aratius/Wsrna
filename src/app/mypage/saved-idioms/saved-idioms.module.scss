@@ -1,0 +1,100 @@
+.container {
+  background: #f2f2f7;
+  min-height: 100vh;
+  padding: 24px 20px;
+
+  .backButton {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    text-align: center;
+  }
+
+  .tabNav {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    border-bottom: 1.5px solid #e0e0e0;
+    -webkit-overflow-scrolling: touch;
+
+    .tabButton {
+      background: none;
+      border: none;
+      outline: none;
+      border-bottom: 3px solid transparent;
+      color: #888;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: color 0.2s, border-bottom 0.2s;
+      background-color: transparent;
+      white-space: nowrap;
+      margin-right: 2px;
+
+      &.activeTab {
+        border-bottom: 3px solid #007aff;
+        color: #007aff;
+        font-weight: 700;
+      }
+
+      .tabArrow {
+        margin: 0 4px;
+        font-size: 18px;
+        font-weight: 700;
+        color: inherit;
+      }
+    }
+  }
+
+  .error {
+    color: #d50000;
+    margin-bottom: 12px;
+  }
+
+  .idiomList {
+    padding: 0;
+    margin: 0;
+
+    .idiomItem {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 16px 0;
+      margin-bottom: 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .mainWord {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+
+      .translations {
+        color: #888;
+        margin-bottom: 8px;
+      }
+
+      .explanationBtn {
+        font-size: 15px;
+        padding: 4px 12px;
+        margin-bottom: 4px;
+      }
+
+      .explanationBox {
+        margin-top: 8px;
+        color: #fff;
+        background: #222;
+        font-size: 15px;
+        border-radius: 8px;
+        padding: 12px 16px;
+      }
+    }
+  }
+}

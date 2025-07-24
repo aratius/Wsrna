@@ -7,6 +7,7 @@ import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { supabase } from "@/lib/supabaseClient";
 import Loading from "@/components/Loading";
+import styles from "./create.module.scss";
 
 function QuizPreviewModal({
   open,
@@ -17,73 +18,17 @@ function QuizPreviewModal({
 }: any) {
   if (!open) return null;
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        background: "rgba(0,0,0,0.3)",
-        zIndex: 1000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="quiz-modal card"
-        style={{
-          background: "#fff",
-          borderRadius: 12,
-          maxWidth: 400,
-          width: "90vw",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
-        }}
-      >
-        <h2
-          style={{
-            marginBottom: 16,
-            fontWeight: 700,
-            fontSize: 22,
-            color: "#222",
-          }}
-        >
-          Quiz Preview
-        </h2>
+    <div className={styles.modalOverlay}>
+      <div className={`quiz-modal card ${styles.modalCard}`}>
+        <h2 className={styles.modalTitle}>Quiz Preview</h2>
         {quizzes.map((q: any, idx: number) => (
-          <div
-            key={idx}
-            className="card"
-            style={{ marginBottom: 24, padding: 16 }}
-          >
+          <div key={idx} className={`card ${styles.quizCard}`}>
             {q.main_word && (
-              <div style={{ marginBottom: 6 }}>
-                <span
-                  style={{
-                    display: "block",
-                    fontWeight: 700,
-                    fontSize: 20,
-                    color: "#222",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {q.main_word}
-                </span>
+              <div className={styles.mainWordBlock}>
+                <span className={styles.mainWord}>{q.main_word}</span>
                 {Array.isArray(q.main_word_translations) &&
                   q.main_word_translations.length > 0 && (
-                    <span
-                      style={{
-                        display: "block",
-                        marginTop: 2,
-                        color: "#007AFF",
-                        fontWeight: 500,
-                        fontSize: 15,
-                        wordBreak: "break-word",
-                      }}
-                    >
+                    <span className={styles.translations}>
                       [
                       {q.main_word_translations.map((t: string, i: number) => (
                         <span key={i}>
@@ -97,143 +42,38 @@ function QuizPreviewModal({
               </div>
             )}
             {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
-            <div
-              className="card"
-              style={{
-                marginBottom: 10,
-                padding: 14,
-                borderRadius: 8,
-                background: "#f9f9fb",
-                border: "1px solid #ececec",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
-              }}
-            >
+            <div className={`card ${styles.quizInnerCard}`}>
               {/* Quiz部分 */}
-              <div style={{ marginBottom: 10 }}>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: "#5856d6",
-                    marginBottom: 6,
-                    fontSize: 15,
-                  }}
-                >
-                  Quiz
-                </span>
-                <div
-                  style={{
-                    color: "#222",
-                    fontSize: 16,
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  {q.question}
-                </div>
+              <div className={styles.quizSection}>
+                <span className={styles.quizLabel}>Quiz</span>
+                <div className={styles.quizText}>{q.question}</div>
               </div>
               {/* Answer部分 */}
-              <div style={{ marginBottom: 10 }}>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: "#34c759",
-                    fontSize: 15,
-                    display: "block",
-                  }}
-                >
-                  Answer
-                </span>
-                <div
-                  style={{
-                    color: "#222",
-                    fontSize: 16,
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  {q.answer}
-                </div>
+              <div className={styles.quizSection}>
+                <span className={styles.answerLabel}>Answer</span>
+                <div className={styles.quizText}>{q.answer}</div>
               </div>
               {/* Translation部分 */}
-              <div style={{ marginBottom: 10 }}>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: "#ff9500",
-                    fontSize: 15,
-                    display: "block",
-                  }}
-                >
-                  Translation
-                </span>
-                <div
-                  style={{
-                    color: "#222",
-                    fontSize: 16,
-                    whiteSpace: "pre-line",
-                  }}
-                >
-                  {q.sentence_translation}
-                </div>
+              <div className={styles.quizSection}>
+                <span className={styles.translationLabel}>Translation</span>
+                <div className={styles.quizText}>{q.sentence_translation}</div>
               </div>
               {/* Explanation部分 */}
               {q.explanation && (
-                <div
-                  style={{
-                    color: "#888",
-                    fontSize: 13,
-                    background: "#f8f8f8",
-                    borderRadius: 6,
-                    border: "1px solid #ececec",
-                    padding: "8px 12px",
-                    marginTop: 4,
-                  }}
-                >
-                  {q.explanation}
-                </div>
+                <div className={styles.explanationBox}>{q.explanation}</div>
               )}
             </div>
           </div>
         ))}
-        <div
-          style={{
-            position: "sticky",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            zIndex: 10,
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: -24,
-              left: 0,
-              width: "100%",
-              minWidth: "100%",
-              height: 24,
-              pointerEvents: "none",
-            }}
-          />
-          <div
-            style={{
-              width: "100%",
-              minWidth: "100%",
-              padding: "16px 0 0 0",
-              display: "flex",
-              gap: 12,
-              position: "relative",
-            }}
-          >
-            <button
-              className="btn"
-              onClick={onClose}
-              style={{ flex: 1, background: "#ccc", color: "#222" }}
-            >
+        <div className={styles.modalFooter}>
+          <div className={styles.modalFooterSpacer} />
+          <div className={styles.modalFooterBtns}>
+            <button className={`btn ${styles.closeBtn}`} onClick={onClose}>
               Close
             </button>
             <button
-              className="btn"
+              className={`btn ${styles.submitBtn}`}
               onClick={onSubmit}
-              style={{ flex: 2 }}
               disabled={submitting}
             >
               {submitting ? "Submitting..." : "Submit"}
@@ -484,39 +324,32 @@ export default function CreatePage() {
         submitting={submitting}
       />
       <div
-        style={{
-          width: "100vw",
-          minHeight: "100vh",
-          margin: 0,
-          padding: isMobile ? 16 : 24,
-          background: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-        }}
+        className={
+          styles.container + (isMobile ? " " + styles.containerMobile : "")
+        }
       >
-        <div className="card" style={{ marginBottom: 24 }}>
-          <div className="card-header" style={{ marginBottom: 12 }}>
+        <div className={`card ${styles.cardMargin}`}>
+          <div className={`card-header ${styles.cardHeaderMargin}`}>
             Create Quiz !!
           </div>
           <div className="card-body" style={{ padding: 0 }}>
-            <div
-              className="quiz-form-wrapper"
-              style={{ maxWidth: 420, margin: "0 auto", padding: 0 }}
-            >
+            <div className={`quiz-form-wrapper ${styles.formWrapper}`}>
               {pairLoading && (
-                <div className="quiz-form-status">
+                <div className={styles.formStatus}>
                   Loading language pairs...
                 </div>
               )}
-              {pairError && <div className="quiz-form-error">{pairError}</div>}
+              {pairError && <div className={styles.formError}>{pairError}</div>}
               {languagePairs.length === 0 && !pairLoading ? (
-                <div className="quiz-form-error">
+                <div className={styles.formError}>
                   No language pairs found. Please register a pair in My Page
                   first.
                 </div>
               ) : (
-                <form className="quiz-form" onSubmit={handleSubmit}>
+                <form
+                  className={`quiz-form ${styles.form}`}
+                  onSubmit={handleSubmit}
+                >
                   <select
                     className="quiz-form-control"
                     value={selectedPairId}
@@ -535,51 +368,34 @@ export default function CreatePage() {
                     ))}
                   </select>
                   <label
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      marginTop: 4,
-                      marginBottom: 6,
-                      color: "#888",
-                    }}
+                    className={styles.formLabel}
                     htmlFor="from-translation"
                   >
                     From
                   </label>
                   <input
                     id="from-translation"
-                    className="quiz-form-control"
+                    className={`quiz-form-control ${styles.formInput}`}
                     type="text"
                     placeholder="例: 役に立たない"
                     value={fromTranslation}
                     onChange={(e) => setFromTranslation(e.target.value)}
-                    style={{ fontSize: 15 }}
                   />
-                  <label
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      marginTop: 8,
-                      marginBottom: 6,
-                      color: "#888",
-                    }}
-                    htmlFor="to-text"
-                  >
+                  <label className={styles.formLabel} htmlFor="to-text">
                     To
-                    <span style={{ color: "#ff3b30", marginLeft: 2 }}>*</span>
+                    <span className={styles.requiredMark}>*</span>
                   </label>
                   <input
                     id="to-text"
-                    className="quiz-form-control"
+                    className={`quiz-form-control ${styles.formInput}`}
                     type="text"
                     placeholder="例: useless"
                     value={toText}
                     onChange={(e) => setToText(e.target.value)}
                     required
-                    style={{ fontSize: 15 }}
                   />
                   <button
-                    className="quiz-form-btn"
+                    className={`quiz-form-btn ${styles.formBtn}`}
                     type="submit"
                     disabled={loading || !selectedPairId}
                   >
@@ -587,7 +403,7 @@ export default function CreatePage() {
                   </button>
                 </form>
               )}
-              {error && <div className="quiz-form-error">{error}</div>}
+              {error && <div className={styles.formError}>{error}</div>}
             </div>
           </div>
         </div>

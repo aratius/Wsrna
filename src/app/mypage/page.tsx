@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styles from "./mypage.module.scss";
 
 const menuItems = [
   { label: "Account Info", href: "/mypage/account" },
@@ -9,47 +10,22 @@ const menuItems = [
 
 export default function MyPage() {
   return (
-    <div
-      style={{
-        background: "#f2f2f7",
-        minHeight: "100vh",
-        padding: "24px 20px",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 24,
-          fontWeight: 700,
-          margin: "0 0 24px 0",
-          textAlign: "center",
-        }}
-      >
-        My Page
-      </h1>
-      <ul style={{ padding: 0, margin: 0 }}>
+    <div className={styles.container}>
+      <h1 className={styles.title}>My Page</h1>
+      <ul className={styles.menuList}>
         {menuItems.map((item, idx) => (
           <li
             key={item.href}
+            className={styles.menuItem}
             style={{
               borderBottom:
                 idx !== menuItems.length - 1 ? "1px solid #e0e0e0" : "none",
               background: "none",
             }}
           >
-            <Link
-              href={item.href}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "18px 20px",
-                textDecoration: "none",
-                color: "#222",
-                fontSize: 17,
-              }}
-            >
+            <Link href={item.href} className={styles.menuLink}>
               {item.label}
-              <span style={{ color: "#bbb", fontSize: 22 }}>&gt;</span>
+              <span className={styles.arrow}>&gt;</span>
             </Link>
           </li>
         ))}

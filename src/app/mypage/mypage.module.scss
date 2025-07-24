@@ -1,0 +1,41 @@
+.container {
+  background: #f2f2f7;
+  min-height: 100vh;
+  padding: 24px 20px;
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    text-align: center;
+  }
+
+  .menuList {
+    padding: 0;
+    margin: 0;
+
+    .menuItem {
+      border-bottom: 1px solid #e0e0e0;
+      background: none;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .menuLink {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 20px;
+        text-decoration: none;
+        color: #222;
+        font-size: 17px;
+
+        .arrow {
+          color: #bbb;
+          font-size: 22px;
+        }
+      }
+    }
+  }
+}

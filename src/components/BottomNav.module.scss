@@ -1,0 +1,12 @@
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  background: #fff;
+
+  &.avatarActive {
+    border: 2px solid #4285f4;
+  }
+}

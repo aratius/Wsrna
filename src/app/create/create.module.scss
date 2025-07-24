@@ -1,0 +1,185 @@
+.container {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &.containerMobile {
+    padding: 16px;
+  }
+
+  .cardMargin {
+    margin-bottom: 24px;
+  }
+  .cardHeaderMargin {
+    margin-bottom: 12px;
+  }
+
+  .formWrapper {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0;
+
+    .formStatus {
+      /* 状態表示用 */
+    }
+    .formError {
+      color: #d50000;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .form {
+      /* quiz-formの追加装飾があればここに */
+      .formLabel {
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 8px;
+        margin-bottom: 6px;
+        color: #888;
+        display: block;
+      }
+      .formInput {
+        font-size: 15px;
+      }
+      .requiredMark {
+        color: #ff3b30;
+        margin-left: 2px;
+      }
+      .formBtn {
+        /* quiz-form-btnの追加装飾があればここに */
+      }
+    }
+  }
+
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .modalCard {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
+      padding-bottom: 0;
+
+      .modalTitle {
+        margin-bottom: 16px;
+        font-weight: 700;
+        font-size: 22px;
+        color: #222;
+      }
+      .quizCard {
+        margin-bottom: 24px;
+        padding: 16px;
+        .mainWordBlock {
+          margin-bottom: 6px;
+          .mainWord {
+            display: block;
+            font-weight: 700;
+            font-size: 20px;
+            color: #222;
+            word-break: break-word;
+          }
+          .translations {
+            display: block;
+            margin-top: 2px;
+            color: #007aff;
+            font-weight: 500;
+            font-size: 15px;
+            word-break: break-word;
+          }
+        }
+        .quizInnerCard {
+          margin-bottom: 10px;
+          padding: 14px;
+          border-radius: 8px;
+          background: #f9f9fb;
+          border: 1px solid #ececec;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+          .quizSection {
+            margin-bottom: 10px;
+            .quizLabel {
+              font-weight: 600;
+              color: #5856d6;
+              margin-bottom: 6px;
+              font-size: 15px;
+            }
+            .answerLabel {
+              font-weight: 600;
+              color: #34c759;
+              font-size: 15px;
+              display: block;
+            }
+            .translationLabel {
+              font-weight: 600;
+              color: #ff9500;
+              font-size: 15px;
+              display: block;
+            }
+            .quizText {
+              color: #222;
+              font-size: 16px;
+              white-space: pre-line;
+            }
+            .explanationBox {
+              color: #888;
+              font-size: 13px;
+              background: #f8f8f8;
+              border-radius: 6px;
+              border: 1px solid #ececec;
+              padding: 8px 12px;
+              margin-top: 4px;
+            }
+          }
+        }
+      }
+      .modalFooter {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        .modalFooterSpacer {
+          position: absolute;
+          top: -24px;
+          left: 0;
+          width: 100%;
+          min-width: 100%;
+          height: 24px;
+          pointer-events: none;
+        }
+        .modalFooterBtns {
+          width: 100%;
+          min-width: 100%;
+          padding: 16px 0 0 0;
+          display: flex;
+          gap: 12px;
+          position: relative;
+          .closeBtn {
+            flex: 1;
+            background: #ccc;
+            color: #222;
+          }
+          .submitBtn {
+            flex: 2;
+          }
+        }
+      }
+    }
+  }
+}

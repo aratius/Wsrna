@@ -5,6 +5,7 @@ import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_card.scss";
+import styles from "./page.module.scss";
 
 export default function Home() {
   const session = useSession();
@@ -26,19 +27,15 @@ export default function Home() {
   };
 
   return (
-    <div className="card" style={{ margin: "24px 0" }}>
-      <div className="card-header" style={{ marginBottom: 8 }}>
+    <div className={`card ${styles.cardMargin}`}>
+      <div className={`card-header ${styles.cardHeaderMargin}`}>
         Welcome, {session.user?.email}!
       </div>
       <div className="card-body">
-        <button
-          className="btn"
-          onClick={handleLogout}
-          style={{ marginBottom: 16 }}
-        >
+        <button className={`btn ${styles.logoutButton}`} onClick={handleLogout}>
           Log out
         </button>
-        <p style={{ color: "#888", fontSize: 15 }}>
+        <p className={styles.infoText}>
           Dashboard and main features coming soon
         </p>
       </div>

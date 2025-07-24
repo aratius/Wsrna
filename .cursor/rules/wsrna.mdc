@@ -2,35 +2,87 @@
 
 description: |
 This project is a pop, PWA-based, language learning app where users input vocabulary or grammar points they want to study.
-An LLM (OpenAI GPT-4) generates at least 5 diverse cloze questions per input.
-Users solve 10 spaced-repetition-scheduled questions per day (forgetting-curve based),
-and can also practice freely. All question vocab is stored in an in-app dictionary with layered hints.
+It uses OpenAI GPT-4 to generate contextual cloze questions, and has a daily review flow based on spaced repetition.
+The design is intentionally bright, modern, and aligned with iOS Human Interface Guidelines (HIG).
 
-Key principles:
+All styles must be written using SCSS Modules.
+Inline styles in JSX are strictly forbidden.
 
-- Self-driven learning, not passive memorization
-- Avoid “Potemkin understanding” by reusing the same input in varied contexts
-- Pop, fun, bright UX that makes users want to come back daily
-- Built with Next.js (App Router) + Supabase + OpenAI
-- Cursor will be used for implementation; code must follow the structure and logic below
+style-guidelines:
+css:
+strategy: "SCSS Modules"
+file-naming: "\*.module.scss"
+principles: - "JSX 内の `style={{}}` によるインラインスタイルは禁止。すべてのスタイルは SCSS ファイルで管理すること。" - "SCSS は **モジュール化された構造** で管理し、UI ごとのファイルに分割する。" - "スタイルの **共通変数** は `variables.scss` 等に集約し、色、余白、フォントサイズなどはすべて変数化する。" - "不要なネストは避け、読みやすさと保守性を最優先する。" - "iOS Human Interface Guidelines (ライトモード) に沿った配色・タイポグラフィを遵守する。" - "`className` のみ使用し、`style=` プロパティの使用は禁止（ESLint で検出）" - "状態によるスタイル変化（active, selected など）は SCSS 側で `.is-active` などの修飾クラスで制御する。" - "`!important` の使用は禁止。スタイルの構造を見直して対応する。" - "ID セレクタ、グローバルセレクタ（html, body, div など）、ユーティリティクラス風命名は禁止。" - "SCSS のネストは最大 3 階層までに制限する。"
 
-Functional Features:
+tools: - "PostCSS (autoprefixer)" - "SCSS Lint (stylelint-scss)" - "ESLint + plugin:react/recommended + 独自ルールで JSX 内 style を禁止"
 
-- User-authenticated via Supabase (Google OAuth)
-- Vocabulary/grammar input is unified; LLM determines type
-- For each input, 5+ unique cloze problems are generated and stored
-- Questions include:
-  - `question` (with blank)
-  - `answer`
-  - `dictionary` (keyword → meaning)
-  - `hint_levels` (4-step progressive hints)
-  - `sentence_translation` (translated sentence from To→From)
-  - `topic`, `fromLang`, `toLang`
-- A scheduler determines next review timing per item based on the forgetting curve
-- Users review 10 questions/day, prioritized by nextScheduledAt
-- Repeat questions reuse different variations (not the same sentence)
-- A built-in dictionary shows encountered words, lets users favorite entries
+examples:
+good:
+jsx: |
+<button className={styles.primaryButton}>OK</button>
+scss: |
+.primaryButton {
+background-color: $color-primary;
+font-size: $font-size-base;
+}
+bad:
+jsx: |
+<button style={{ backgroundColor: '#007aff', fontSize: '17px' }}>NG</button>
+reason: "❌ インラインスタイルは禁止されています。SCSS Modules を使用してください。"
 
-UI/UX Design Rules:
+rules:
 
-- The design must follow iOS H
+- name: "No inline styles in JSX"
+  pattern: "<[^>]+style={{[^}]+}}"
+  message: "❌ JSX 内の inline style はすべて禁止です。SCSS Modules に移行してください。"
+  level: error
+
+- name: "No !important usage"
+  pattern: "!important"
+  message: "❌ `!important` の使用は禁止です。スタイル構造を見直してください。"
+  level: error
+
+- name: "No global selectors"
+  pattern: '(^|[^\w-])(#\w+|html|body|input|button|textarea|div|span|h[1-6])(\s|{|:|$)'
+  message: "❌ グローバルセレクタは禁止です。SCSS Modules のクラスセレクタを使用してください。"
+  level: error
+
+- name: "Avoid hardcoded color values"
+  pattern: '(color|background(-color)?|border(-color)?):\s*(#[0-9a-fA-F]{3,6}|rgb|rgba)'
+  message: "❌ カラーコードを直書きせず、共通変数 ($color-*) を使用してください。"
+  level: error
+
+- name: "Avoid hardcoded font sizes"
+  pattern: 'font-size:\s*\d+px'
+  message: "❌ フォントサイズは変数 ($font-size-*) を使用してください。"
+  level: error
+
+- name: "No ID selectors"
+  pattern: '#[a-zA-Z0-9_-]+'
+  message: "❌ ID セレクタは禁止です。すべてクラスで制御してください。"
+  level: error
+
+- name: "Avoid utility-like global classnames"
+  pattern: '\.(text-center|mt-\d+|px-\d+|bg-[a-z]+|text-[a-z]+)'
+  message: "❌ ユーティリティクラス風の命名は使用禁止です。SCSS Modules による明示的な命名を行ってください。"
+  level: error
+
+- name: "Nesting depth limit (3 levels max)"
+  pattern: '^(\s{2,}){3,}'
+  globs: ["**/*.scss"]
+  message: "⚠️ SCSS のネストが深すぎます（最大 3 階層推奨）。構造を見直してください。"
+  level: warning
+
+globs:
+
+- "\*_/_.tsx"
+- "\*_/_.ts"
+- "\*_/_.scss"
+- "\*_/_.module.scss"
+
+meta:
+enforced-by: - "ESLint" - "stylelint" - "Cursor PR review"
+severity: "error"
+rationale: |
+保守性、可搬性、デザイン統一、レスポンシブ対応、ダークモード拡張性を担保するために、インラインスタイルやグローバル CSS は完全禁止。
+本プロジェクトでは SCSS Modules を唯一のスタイル記述手段とし、再利用性の高いモジュール設計を実現します。
