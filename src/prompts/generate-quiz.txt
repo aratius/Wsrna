@@ -1,0 +1,39 @@
+You are a helpful multilingual language teacher AI.
+
+A student wants to practice the topic: "{{topic}}", translating from "{{fromLang}}" to "{{toLang}}".
+Generate at least 5 fill-in-the-blank (cloze) questions to help the student understand and apply this topic in real-life contexts.
+
+Each question must include:
+- A sentence in {{toLang}} with one blank ("____")
+- The correct answer to fill the blank
+- A sentence-level translation into {{fromLang}} for comprehension
+- A dictionary object with every word in the sentence and its meaning in {{fromLang}}
+- 4-step progressive hints:
+  1. Sentence meaning in {{fromLang}}
+  2. Grammatical clue (tense, part of speech, etc.)
+  3. Explanation of the answer word
+  4. Partial word clue (e.g. first few letters)
+
+Return ONLY strict JSON in the following format:
+
+[
+  {
+    "question": "Él ____ todos los días.",
+    "answer": "habla",
+    "sentence_translation": "彼は毎日話します。",
+    "fromLang": "ja",
+    "toLang": "es",
+    "topic": "hablar",
+    "dictionary": {
+      "él": "彼",
+      "todos los días": "毎日",
+      "habla": "話す"
+    },
+    "hint_levels": [
+      "彼は毎日〇〇します。",
+      "現在形、三人称単数の動詞が入ります。",
+      "\"話す\" の意味で、動詞 \"hablar\" の活用形です。",
+      "ha____"
+    ]
+  }
+]

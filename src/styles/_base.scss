@@ -1,0 +1,36 @@
+@import "./variables";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: $font-main;
+  font-size: $font-size-base;
+  background: $color-bg;
+  color: $color-text;
+  min-height: 100vh;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  transition: color 0.2s;
+  &:hover {
+    color: $color-accent;
+  }
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

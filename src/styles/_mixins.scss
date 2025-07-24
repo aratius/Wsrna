@@ -1,0 +1,42 @@
+// BEMヘルパー
+@mixin block($block) {
+  .#{$block} {
+    @content;
+  }
+}
+
+@mixin element($block, $element) {
+  .#{$block}__#{$element} {
+    @content;
+  }
+}
+
+@mixin modifier($block, $modifier) {
+  .#{$block}--#{$modifier} {
+    @content;
+  }
+}
+
+// レスポンシブ
+@mixin respond($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: 600px) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: 900px) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  }
+}
+
+// フレックスセンター
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

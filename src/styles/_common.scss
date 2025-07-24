@@ -1,0 +1,224 @@
+@import "./variables";
+@import "./mixins";
+
+// ボタン
+.btn {
+  display: inline-block;
+  padding: $space-sm $space-md;
+  border-radius: 6px;
+  background: $color-primary;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: $color-accent;
+  }
+  &--secondary {
+    background: $color-secondary;
+    color: #222;
+  }
+  &--success {
+    background: $color-success;
+  }
+  &--error {
+    background: $color-error;
+  }
+}
+
+// カード
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  padding: $space-lg;
+  margin-bottom: $space-md;
+}
+
+// マージン・パディングユーティリティ
+.m-xs {
+  margin: $space-xs !important;
+}
+.m-sm {
+  margin: $space-sm !important;
+}
+.m-md {
+  margin: $space-md !important;
+}
+.m-lg {
+  margin: $space-lg !important;
+}
+.m-xl {
+  margin: $space-xl !important;
+}
+
+.p-xs {
+  padding: $space-xs !important;
+}
+.p-sm {
+  padding: $space-sm !important;
+}
+.p-md {
+  padding: $space-md !important;
+}
+.p-lg {
+  padding: $space-lg !important;
+}
+.p-xl {
+  padding: $space-xl !important;
+}
+
+// Authページ
+.auth {
+  max-width: 360px;
+  margin: 80px auto;
+  padding: $space-lg;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  &__title {
+    font-size: 1.5rem;
+    margin-bottom: $space-md;
+    color: $color-primary;
+  }
+}
+
+// Quizページ
+.quiz {
+  max-width: 480px;
+  margin: 48px auto;
+  padding: $space-lg;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  &__title {
+    font-size: 1.4rem;
+    color: $color-secondary;
+    margin-bottom: $space-md;
+  }
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+    margin-bottom: $space-lg;
+  }
+  &__input {
+    padding: $space-sm;
+    border: 1.5px solid $color-secondary;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    &:focus {
+      border-color: $color-primary;
+      background: lighten($color-secondary, 35%);
+    }
+  }
+  &__error {
+    color: $color-error;
+    margin-bottom: $space-md;
+  }
+  &__result {
+    margin-top: $space-md;
+    background: $color-bg;
+    border-left: 6px solid $color-primary;
+  }
+  &__question {
+    font-weight: bold;
+    margin-bottom: $space-sm;
+    color: $color-primary;
+  }
+  &__choices {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    margin-bottom: $space-sm;
+    padding-left: 0;
+  }
+  &__choice {
+    background: $color-secondary;
+    color: #fff;
+    border-radius: 6px;
+    padding: $space-xs $space-sm;
+    &--answer {
+      background: $color-success;
+      color: #222;
+      font-weight: bold;
+    }
+  }
+  &__explanation {
+    font-size: $font-size-sm;
+    color: $color-text;
+    background: lighten($color-accent, 35%);
+    border-radius: 6px;
+    padding: $space-xs $space-sm;
+    margin-top: $space-xs;
+  }
+}
+
+// MyQuizzesページ
+.myquizzes {
+  max-width: 600px;
+  margin: 48px auto;
+  padding: $space-lg;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  &__title {
+    font-size: 1.4rem;
+    color: $color-primary;
+    margin-bottom: $space-md;
+  }
+  &__error {
+    color: $color-error;
+    margin-bottom: $space-md;
+  }
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+  }
+  &__item {
+    background: $color-bg;
+    border-left: 6px solid $color-secondary;
+    margin-bottom: 0;
+  }
+  &__question {
+    font-weight: bold;
+    margin-bottom: $space-xs;
+    color: $color-secondary;
+  }
+  &__choices {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    margin-bottom: $space-xs;
+    padding-left: 0;
+  }
+  &__choice {
+    background: $color-primary;
+    color: #fff;
+    border-radius: 6px;
+    padding: $space-xs $space-sm;
+    &--answer {
+      background: $color-success;
+      color: #222;
+      font-weight: bold;
+    }
+  }
+  &__explanation {
+    font-size: $font-size-sm;
+    color: $color-text;
+    background: lighten($color-accent, 35%);
+    border-radius: 6px;
+    padding: $space-xs $space-sm;
+    margin-top: $space-xs;
+  }
+  &__meta {
+    font-size: $font-size-sm;
+    color: $color-text;
+    margin-top: $space-xs;
+    opacity: 0.7;
+  }
+}
