@@ -40,15 +40,7 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </head>
-      <body
-        style={{
-          background: "#e5e5e5",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <body>
         <AppHeightSetter />
         <div
           style={{
