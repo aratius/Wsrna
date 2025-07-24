@@ -63,10 +63,7 @@ export default async function HelpPage({
           </Link>
         </div>
       </div>
-      <h1 className={styles.title}>
-        {langCode === "ja" ? "ヘルプ" : "Help"}
-        <hr className={styles.gradientTextHr} />
-      </h1>
+      <h1 className={styles.title}>{langCode === "ja" ? "ヘルプ" : "Help"}</h1>
       <div
         className={styles.helpContent}
         dangerouslySetInnerHTML={{ __html: contentHtml }}
