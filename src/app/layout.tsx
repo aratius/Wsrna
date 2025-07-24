@@ -11,6 +11,7 @@ import {
   notoSansKR,
   notoSans,
 } from "@/styles/fonts";
+import AppHeightSetter from "@/components/AppHeightSetter";
 
 export const metadata: Metadata = {
   title: "wsrna",
@@ -41,6 +42,7 @@ export default function RootLayout({
           justifyContent: "center",
         }}
       >
+        <AppHeightSetter />
         <div
           style={{
             maxWidth: 390,
