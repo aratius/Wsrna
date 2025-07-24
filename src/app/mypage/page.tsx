@@ -39,6 +39,12 @@ export default function MyPage() {
               </Link>
             </li>
           ))}
+          <li className={styles.menuItem}>
+            <Link href="/mypage/help" className={styles.menuLink}>
+              Help
+              <span className={styles.arrow}>&gt;</span>
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
