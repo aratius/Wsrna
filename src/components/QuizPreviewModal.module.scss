@@ -1,0 +1,217 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.15); /* より透過度を高く */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalCard {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
+  padding-bottom: 0;
+  padding-top: 24px;
+  padding-left: 16px;
+  padding-right: 16px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  /* スクロールバーを常時非表示 */
+}
+.modalCard::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+/* スクロール時のみオーバーレイで表示 */
+.modalCard:has(:hover),
+.modalCard:active,
+.modalCard:focus-within {
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #fff;
+}
+.modalCard:has(:hover)::-webkit-scrollbar,
+.modalCard:active::-webkit-scrollbar,
+.modalCard:focus-within::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+  background: transparent;
+}
+.modalCard:has(:hover)::-webkit-scrollbar-thumb,
+.modalCard:active::-webkit-scrollbar-thumb,
+.modalCard:focus-within::-webkit-scrollbar-thumb {
+  background: rgba(180, 180, 180, 0.5);
+  border-radius: 8px;
+}
+
+.modalTitle {
+  margin-top: 4px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 22px;
+  color: #222;
+}
+
+.quizCard {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: none;
+}
+
+.mainWordBlock {
+  margin-bottom: 6px;
+}
+
+.mainWord {
+  display: block;
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+  word-break: break-word;
+}
+
+.translations {
+  display: block;
+  margin-top: 2px;
+  color: #007aff;
+  font-weight: 500;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.quizInnerCard {
+  margin-bottom: 10px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f9f9fb;
+  border: 1px solid #ececec;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.quizSection {
+  margin-bottom: 10px;
+}
+
+.quizLabel {
+  font-weight: 600;
+  color: #5856d6;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.answerLabel {
+  font-weight: 600;
+  color: #34c759;
+  font-size: 15px;
+  display: block;
+}
+
+.translationLabel {
+  font-weight: 600;
+  color: #ff9500;
+  font-size: 15px;
+  display: block;
+}
+
+.quizText {
+  color: #222;
+  font-size: 16px;
+  white-space: pre-line;
+}
+
+.explanationBox {
+  color: #888;
+  font-size: 13px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  border: 1px solid #ececec;
+  padding: 8px 12px;
+  margin-top: 4px;
+}
+
+.modalFooter {
+  position: sticky;
+  bottom: 16px;
+  width: 100%;
+  z-index: 10;
+}
+
+.modalFooterSpacer {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  width: 100%;
+  min-width: 100%;
+  height: 24px;
+  pointer-events: none;
+}
+
+.modalFooterBtns {
+  width: 100%;
+  min-width: 100%;
+  padding: 16px 0 0 0;
+  display: flex;
+  gap: 12px;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.closeBtn {
+  flex: 1;
+  background: #ccc;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitBtn {
+  flex: 2;
+  background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .modalCard {
+    max-width: 98vw;
+    padding-left: 4vw;
+    padding-right: 4vw;
+  }
+  .quizCard {
+    padding: 8px;
+  }
+  .quizInnerCard {
+    padding: 8px;
+  }
+  .closeBtn,
+  .submitBtn {
+    font-size: 15px;
+    padding: 11px 0;
+  }
+}

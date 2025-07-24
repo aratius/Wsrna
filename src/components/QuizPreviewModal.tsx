@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../app/create/create.module.scss";
+import styles from "./QuizPreviewModal.module.scss";
 
 export interface QuizPreviewModalProps {
   open: boolean;
@@ -19,10 +19,10 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
   if (!open) return null;
   return (
     <div className={styles.modalOverlay}>
-      <div className={`quiz-modal card ${styles.modalCard}`}>
+      <div className={styles.modalCard}>
         <h2 className={styles.modalTitle}>Quiz Preview</h2>
         {quizzes.map((q: any, idx: number) => (
-          <div key={idx} className={`card ${styles.quizCard}`}>
+          <div key={idx} className={styles.quizCard}>
             {q.main_word && (
               <div className={styles.mainWordBlock}>
                 <span className={styles.mainWord}>{q.main_word}</span>
@@ -42,7 +42,7 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
               </div>
             )}
             {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
-            <div className={`card ${styles.quizInnerCard}`}>
+            <div className={styles.quizInnerCard}>
               {/* Quiz部分 */}
               <div className={styles.quizSection}>
                 <span className={styles.quizLabel}>Quiz</span>
@@ -68,11 +68,11 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
         <div className={styles.modalFooter}>
           <div className={styles.modalFooterSpacer} />
           <div className={styles.modalFooterBtns}>
-            <button className={`btn ${styles.closeBtn}`} onClick={onClose}>
+            <button className={styles.closeBtn} onClick={onClose}>
               Close
             </button>
             <button
-              className={`btn ${styles.submitBtn}`}
+              className={styles.submitBtn}
               onClick={onSubmit}
               disabled={submitting}
             >
