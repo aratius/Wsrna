@@ -7,6 +7,11 @@ import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "./quiz.module.scss";
 import { useRef, useEffect, useState } from "react";
 
+function getAbbr(code: string) {
+  const lang = (supportedLanguages as any[]).find((l) => l.code === code);
+  return lang?.abbr || code.toUpperCase();
+}
+
 export default function QuizPage() {
   const session = useSession();
   const [reviews, setReviews] = useState<any[]>([]);
@@ -176,9 +181,9 @@ export default function QuizPage() {
                   styles.tabButton + (active ? " " + styles.activeTab : "")
                 }
               >
-                {(lp.from_lang || "").toUpperCase()}
+                {getAbbr(lp.from_lang)}
                 <span className={styles.tabArrow}>›</span>
-                {(lp.to_lang || "").toUpperCase()}
+                {getAbbr(lp.to_lang)}
               </button>
             );
           })}

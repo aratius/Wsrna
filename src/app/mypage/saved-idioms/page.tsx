@@ -62,6 +62,11 @@ export default function SavedIdiomsPage() {
     ? idioms.filter((i) => i.language_pair_id === selectedPairId)
     : idioms;
 
+  function getAbbr(code: string) {
+    const lang = (supportedLanguages as any[]).find((l) => l.code === code);
+    return lang?.abbr || code.toUpperCase();
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.card + " card"}>
@@ -81,9 +86,9 @@ export default function SavedIdiomsPage() {
                   styles.tabButton + (active ? " " + styles.activeTab : "")
                 }
               >
-                {(lp.from_lang || "").toUpperCase()}
+                {getAbbr(lp.from_lang)}
                 <span className={styles.tabArrow}>›</span>
-                {(lp.to_lang || "").toUpperCase()}
+                {getAbbr(lp.to_lang)}
               </button>
             );
           })}
