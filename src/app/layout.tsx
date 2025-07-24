@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "./globals.scss";
 import "../styles/index.scss";
 import SupabaseProvider from "@/components/SupabaseProvider";
 import BottomNav from "@/components/BottomNav";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import {
+  poppins,
+  notoSansJP,
+  notoSansSC,
+  notoSansTC,
+  notoSansKR,
+  notoSans,
+} from "@/styles/fonts";
 
 export const metadata: Metadata = {
   title: "wsrna",
@@ -31,9 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html
+      lang="ja"
+      className={`${poppins.variable} ${notoSansJP.variable} ${notoSansSC.variable} ${notoSansTC.variable} ${notoSansKR.variable} ${notoSans.variable}`}
+    >
       <body
-        className={geistSans.className}
         style={{
           background: "#e5e5e5",
           minHeight: "100vh",

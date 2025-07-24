@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
 import { supabase } from "@/lib/supabaseClient";
-import "@/styles/_base.scss";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_card.scss";
 

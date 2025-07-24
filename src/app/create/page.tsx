@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import "@/styles/_base.scss";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
@@ -43,22 +42,45 @@ function QuizPreviewModal({
           boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
         }}
       >
-        <h2 style={{ marginBottom: 16 }}>Quiz Preview</h2>
+        <h2
+          style={{
+            marginBottom: 16,
+            fontWeight: 700,
+            fontSize: 22,
+            color: "#222",
+          }}
+        >
+          Quiz Preview
+        </h2>
         {quizzes.map((q: any, idx: number) => (
           <div
             key={idx}
             style={{
-              marginBottom: 20,
+              marginBottom: 24,
               borderBottom: "1px solid #eee",
-              paddingBottom: 12,
+              paddingBottom: 16,
             }}
           >
             {q.main_word && (
-              <div style={{ marginBottom: 8 }}>
-                <b>Main word:</b> {q.main_word}
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: 20,
+                  color: "#222",
+                  marginBottom: 6,
+                }}
+              >
+                {q.main_word}
                 {Array.isArray(q.main_word_translations) &&
                   q.main_word_translations.length > 0 && (
-                    <span style={{ marginLeft: 8, color: "#007AFF" }}>
+                    <span
+                      style={{
+                        marginLeft: 8,
+                        color: "#007AFF",
+                        fontWeight: 500,
+                        fontSize: 15,
+                      }}
+                    >
                       [
                       {q.main_word_translations.map((t: string, i: number) => (
                         <span key={i}>
@@ -71,15 +93,62 @@ function QuizPreviewModal({
                   )}
               </div>
             )}
-            <div style={{ marginBottom: 8 }}>
-              <b>Quiz:</b> {q.question}
+            <div
+              style={{
+                background: "#f2f2f7",
+                borderRadius: 8,
+                padding: "12px 14px",
+                marginBottom: 10,
+                border: "1px solid #e0e0e0",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: "#5856d6",
+                  marginBottom: 6,
+                  fontSize: 15,
+                }}
+              >
+                Quiz
+              </div>
+              <div
+                style={{ color: "#222", fontSize: 16, whiteSpace: "pre-line" }}
+              >
+                {q.question}
+              </div>
             </div>
-            <div style={{ marginBottom: 8 }}>
-              <b>Answer:</b> {q.answer}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 8,
+              }}
+            >
+              <span style={{ fontWeight: 600, color: "#34c759", fontSize: 15 }}>
+                Answer:
+              </span>
+              <span style={{ color: "#222", fontSize: 16 }}>{q.answer}</span>
             </div>
-            <div style={{ marginBottom: 8 }}>
-              <b>Translation:</b> {q.sentence_translation}
+            <div style={{ color: "#888", fontSize: 14, marginBottom: 8 }}>
+              <span style={{ fontWeight: 500 }}>Translation:</span>{" "}
+              {q.sentence_translation}
             </div>
+            {q.explanation && (
+              <div
+                style={{
+                  color: "#888",
+                  fontSize: 13,
+                  background: "#f8f8f8",
+                  borderRadius: 6,
+                  padding: "8px 12px",
+                  marginTop: 4,
+                }}
+              >
+                {q.explanation}
+              </div>
+            )}
           </div>
         ))}
         <div style={{ display: "flex", gap: 12, marginTop: 16 }}>

@@ -1,39 +1,36 @@
 ---
+
 description: |
-  This project is a pop, PWA-based, language learning app where users input vocabulary or grammar points they want to study.
-  An LLM (OpenAI GPT-4) generates at least 5 diverse cloze questions per input.
-  Users solve 10 spaced-repetition-scheduled questions per day (forgetting-curve based),
-  and can also practice freely. All question vocab is stored in an in-app dictionary with layered hints.
+This project is a pop, PWA-based, language learning app where users input vocabulary or grammar points they want to study.
+An LLM (OpenAI GPT-4) generates at least 5 diverse cloze questions per input.
+Users solve 10 spaced-repetition-scheduled questions per day (forgetting-curve based),
+and can also practice freely. All question vocab is stored in an in-app dictionary with layered hints.
 
-  Key principles:
-  - Self-driven learning, not passive memorization
-  - Avoid “Potemkin understanding” by reusing the same input in varied contexts
-  - Pop, fun, bright UX that makes users want to come back daily
-  - Built with Next.js (App Router) + Supabase + OpenAI
-  - Cursor will be used for implementation; code must follow the structure and logic below
+Key principles:
 
-  Features:
-  - User-authenticated via Supabase (Google OAuth)
-  - Vocabulary/grammar input is unified, LLM determines type
-  - For each input, 5+ unique cloze problems are generated and stored
-  - Questions include:
-      - `question` (with blank)
-      - `answer`
-      - `dictionary` (keyword → meaning)
-      - `hint_levels` (4-step progressive hints)
-  - A scheduler determines next review timing per item based on the forgetting curve
-  - Users review 10 questions/day, prioritized by nextScheduledAt
-  - Repeat questions reuse different variations
-  - A built-in dictionary shows encountered words, lets users favorite entries
-  - Frontend design should be colorful, playful, mobile-first, with soft curves and light animations
+- Self-driven learning, not passive memorization
+- Avoid “Potemkin understanding” by reusing the same input in varied contexts
+- Pop, fun, bright UX that makes users want to come back daily
+- Built with Next.js (App Router) + Supabase + OpenAI
+- Cursor will be used for implementation; code must follow the structure and logic below
 
-globs:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.md"
-  - "**/*.json"
-  - "**/*.yml"
-  - "**/*.yaml"
-  - "**/*.sql"
-alwaysApply: false
----
+Functional Features:
+
+- User-authenticated via Supabase (Google OAuth)
+- Vocabulary/grammar input is unified; LLM determines type
+- For each input, 5+ unique cloze problems are generated and stored
+- Questions include:
+  - `question` (with blank)
+  - `answer`
+  - `dictionary` (keyword → meaning)
+  - `hint_levels` (4-step progressive hints)
+  - `sentence_translation` (translated sentence from To→From)
+  - `topic`, `fromLang`, `toLang`
+- A scheduler determines next review timing per item based on the forgetting curve
+- Users review 10 questions/day, prioritized by nextScheduledAt
+- Repeat questions reuse different variations (not the same sentence)
+- A built-in dictionary shows encountered words, lets users favorite entries
+
+UI/UX Design Rules:
+
+- The design must follow iOS H

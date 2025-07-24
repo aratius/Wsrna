@@ -60,7 +60,7 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: "/myquizzes",
+    href: "/mypage",
     label: "My Page",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24">
@@ -86,7 +86,7 @@ export default function BottomNav() {
       {NAV_ITEMS.map((item) => {
         const active = pathname === item.href;
         // My Pageアイコンだけ動的に差し替え
-        if (item.href === "/myquizzes") {
+        if (item.href === "/mypage") {
           return (
             <Link
               href={item.href}

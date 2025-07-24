@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
-import "@/styles/_base.scss";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
