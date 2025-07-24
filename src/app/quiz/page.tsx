@@ -142,17 +142,20 @@ export default function QuizPage() {
               <div>No quizzes to review.</div>
             ) : (
               review && (
-                <div className={`card review__item`} key={review.id}>
-                  <div className="card-body">
-                    {/* From例文 */}
-                    <div className={styles.quizSection}>
-                      <b>From:</b> {review.quiz.question}
+                <div
+                  className={`card ${styles.quizCard} review__item`}
+                  key={review.id}
+                >
+                  {/* Quiz部分 */}
+                  <div className={styles.quizSection}>
+                    <span className={styles.quizLabel}>Quiz</span>
+                    <div className={styles.quizText}>
+                      {review.quiz.question}
                     </div>
-                    {/* To例文訳文 */}
-                    <div className={styles.quizSection}>
-                      <b>Translation:</b> {review.quiz.sentence_translation}
-                    </div>
-                    {/* 回答エリア */}
+                  </div>
+                  {/* Answer部分 */}
+                  <div className={styles.quizSection}>
+                    <span className={styles.answerLabel}>Answer</span>
                     <form
                       className={styles.quizForm}
                       onSubmit={(e) => {
@@ -160,12 +163,6 @@ export default function QuizPage() {
                         handleAnswer(review);
                       }}
                     >
-                      <label
-                        className={styles.formLabel}
-                        htmlFor={`answer-${review.id}`}
-                      >
-                        Answer
-                      </label>
                       <input
                         id={`answer-${review.id}`}
                         className={
@@ -194,76 +191,51 @@ export default function QuizPage() {
                         Answer
                       </button>
                     </form>
-                    {/* ヒントボタンとヒント表示 */}
+                  </div>
+                  {/* 正誤判定と詳細ボタン＋Nextボタン */}
+                  {results[review.id] !== undefined && (
                     <div className={styles.quizSection}>
+                      <div
+                        className={
+                          results[review.id] ? styles.correct : styles.incorrect
+                        }
+                      >
+                        {results[review.id] ? "Correct!" : "Incorrect."}
+                      </div>
                       <button
                         className={styles.quizFormBtn}
                         type="button"
-                        onClick={() => handleShowHint(review.id, review.quiz)}
-                        disabled={
-                          !review.quiz.hint_levels ||
-                          (hintIndexes[review.id] || 0) >=
-                            (review.quiz.hint_levels?.length || 0)
+                        onClick={() =>
+                          setShowDetails((prev) => ({
+                            ...prev,
+                            [review.id]: true,
+                          }))
                         }
                       >
-                        Hint
+                        Details
                       </button>
-                      <ul className={styles.hintList}>
-                        {review.quiz.hint_levels &&
-                          review.quiz.hint_levels
-                            .slice(0, hintIndexes[review.id] || 0)
-                            .map((hint: string, i: number) => (
-                              <li key={i}>{hint}</li>
-                            ))}
-                      </ul>
+                      <DetailsModal
+                        open={!!showDetails[review.id]}
+                        onClose={() =>
+                          setShowDetails((prev) => ({
+                            ...prev,
+                            [review.id]: false,
+                          }))
+                        }
+                        quiz={review.quiz}
+                      />
+                      {/* Nextボタン */}
+                      <button
+                        className={styles.quizFormBtn}
+                        type="button"
+                        onClick={() => {
+                          setCurrentIndex((idx) => idx + 1);
+                        }}
+                      >
+                        Next
+                      </button>
                     </div>
-                    {/* 正誤判定と詳細ボタン＋Nextボタン */}
-                    {results[review.id] !== undefined && (
-                      <div className={styles.quizSection}>
-                        <div
-                          className={
-                            results[review.id]
-                              ? styles.correct
-                              : styles.incorrect
-                          }
-                        >
-                          {results[review.id] ? "Correct!" : "Incorrect."}
-                        </div>
-                        <button
-                          className={styles.quizFormBtn}
-                          type="button"
-                          onClick={() =>
-                            setShowDetails((prev) => ({
-                              ...prev,
-                              [review.id]: true,
-                            }))
-                          }
-                        >
-                          Details
-                        </button>
-                        <DetailsModal
-                          open={!!showDetails[review.id]}
-                          onClose={() =>
-                            setShowDetails((prev) => ({
-                              ...prev,
-                              [review.id]: false,
-                            }))
-                          }
-                          quiz={review.quiz}
-                        />
-                        {/* Nextボタン */}
-                        <button
-                          className={styles.quizFormBtn}
-                          type="button"
-                          onClick={() => {
-                            setCurrentIndex((idx) => idx + 1);
-                          }}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               )
             )}
