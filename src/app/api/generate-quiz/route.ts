@@ -4,9 +4,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import openai from '@/lib/openai';
 import fs from 'fs';
 import path from 'path';
+import supportedLanguages from '@/lib/supportedLanguages.json';
 
 function fillTemplate(template: string, vars: Record<string, string>) {
   return template.replace(/{{(\w+)}}/g, (_, key) => vars[key] || '');
+}
+
+function getLanguageLabel(code: string): string {
+  const lang = (supportedLanguages as any[]).find(l => l.code === code);
+  return lang ? lang.label : code;
 }
 
 export async function POST(req: NextRequest) {
@@ -18,8 +24,9 @@ export async function POST(req: NextRequest) {
   // プロンプトテンプレートを外部ファイルから読み込み
   const promptPath = path.join(process.cwd(), 'src/prompts/generate-quiz.txt');
   const template = fs.readFileSync(promptPath, 'utf8');
-  // main_word もテンプレートに渡す必要がある
-  let prompt = fillTemplate(template, { main_word, main_word_translations: main_word_translations || '', fromLang, toLang });
+  // fromLangを現地語表記に変換
+  const fromLangLabel = getLanguageLabel(fromLang);
+  let prompt = fillTemplate(template, { main_word, main_word_translations: main_word_translations || '', fromLang: fromLangLabel, toLang });
 
   // main_wordが構文・パターンの場合は補助説明を追加
   if (/\[.*\]|\.\.\.|ing\b|\bto\b|\bof\b|\bis\b|\bare\b|\bam\b|\bbe\b|\bwas\b|\bwere\b|\bhas\b|\bhave\b|\bhad\b|\bwill\b|\bwould\b|\bcan\b|\bcould\b|\bshould\b|\bmay\b|\bmight\b|\bmust\b|\bshall\b|\bdo\b|\bdid\b|\bdoes\b/.test(main_word)) {

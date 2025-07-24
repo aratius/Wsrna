@@ -7,6 +7,8 @@ All 5 questions must use "{{main_word}}" as the answer and as the main focus. Do
 
 If "{{main_word}}" is a phrase, grammar pattern, or construction (for example, if it contains brackets, ellipses, or is not a single word), treat it as a grammar structure or idiomatic pattern. In that case, every question must use the entire pattern (not just a part or a single word from it) as the answer and as the main focus. Do NOT use any other word, idiom, or part of the pattern as the answer. Do NOT generate questions about words that merely appear in example sentences. Only generate questions about the exact pattern or structure given as "{{main_word}}".
 
+IMPORTANT: The blank ("____") in each question must always correspond to the main_word or a part of the main_word (if it is a phrase or pattern). Never make the blank correspond to any word or phrase that is not part of the main_word. Do NOT create questions where an unrelated or irrelevant word is blanked out. The blank must always be the main_word or a direct component of the main_word.
+
 If you cannot generate exactly 5 questions, return as many valid questions as you can (minimum 1), but do NOT include any incorrect, irrelevant, or incomplete questions. Accuracy and correctness are more important than quantity. Never include questions where the main_word or main_word_translations are incorrect or do not match the intended meaning.
 
 For main_word_translations, you MUST always provide at least one accurate and appropriate translation for the main_word in {{fromLang}}. If the user does not provide a translation, you must research and generate a suitable translation yourself. Never leave main_word_translations empty or incomplete.
@@ -18,10 +20,10 @@ Each question must include:
 - The main word, idiom, or grammar point being tested (main_word)
 - 1 to 3 minimal translations of main_word in {{fromLang}} (main_word_translations: array)
 - 2 to 3 example sentences (in {{toLang}}) using the main_word, with their translations in {{fromLang}} (example_sentences: array of objects with 'sentence' and 'translation')
-- An explanation (in {{fromLang}}) about the main word/idiom/grammar point (explanation). The explanation should be concise, ideally no more than 3 lines.
+- An explanation (in {{fromLang}}) about the main word/idiom/grammar point (explanation). The explanation MUST be written in {{fromLang}} only, and should be concise, ideally no more than 3 lines.
 - A sentence-level translation into {{fromLang}} for comprehension
 - A dictionary object with every word in the sentence and ideally 2 to 6 possible meanings (as an array) in {{fromLang}}. If a word has only one common meaning, return it as a single-element array.
-- 4-step progressive hints:
+- 4-step progressive hints (hint_levels), ALL written in {{fromLang}} only:
   1. Sentence meaning in {{fromLang}}
   2. Grammatical clue (tense, part of speech, etc.)
   3. Explanation of the answer word
@@ -54,7 +56,7 @@ Example format:
       "hint_levels": [
         "彼は毎日〇〇します。",
         "現在形、三人称単数の動詞が入ります。",
-        "\"話す\" の意味で、動詞 \"hablar\" の活用形です。",
+        ""話す" の意味で、動詞 "hablar" の活用形です。",
         "ha____"
       ]
     }
