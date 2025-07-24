@@ -5,13 +5,18 @@ import html from "remark-html";
 import Link from "next/link";
 import styles from "../mypage.module.scss";
 
-interface Props {
-  searchParams?: { lang?: string };
-}
-
-export default async function HelpPage({ searchParams }: Props) {
-  const lang = searchParams?.lang === "en" ? "en" : "ja";
-  const filePath = path.join(process.cwd(), `src/content/help.${lang}.md`);
+/**
+ * @param {{ searchParams?: { [key: string]: string | string[] | undefined } }} param0
+ */
+export default async function HelpPage({
+  searchParams,
+}: {
+  searchParams?: any;
+}) {
+  const langParam = searchParams?.lang;
+  const lang = Array.isArray(langParam) ? langParam[0] : langParam;
+  const langCode = lang === "en" ? "en" : "ja";
+  const filePath = path.join(process.cwd(), `src/content/help.${langCode}.md`);
   const markdown = fs.readFileSync(filePath, "utf8");
   const result = await remark().use(html).process(markdown);
   const contentHtml = result.toString();
@@ -36,7 +41,9 @@ export default async function HelpPage({ searchParams }: Props) {
           <Link href="/mypage/help?lang=ja">
             <span
               className={
-                lang === "ja" ? styles.helpLangActive : styles.helpLangInactive
+                langCode === "ja"
+                  ? styles.helpLangActive
+                  : styles.helpLangInactive
               }
             >
               日
@@ -46,7 +53,9 @@ export default async function HelpPage({ searchParams }: Props) {
           <Link href="/mypage/help?lang=en">
             <span
               className={
-                lang === "en" ? styles.helpLangActive : styles.helpLangInactive
+                langCode === "en"
+                  ? styles.helpLangActive
+                  : styles.helpLangInactive
               }
             >
               EN
@@ -54,7 +63,10 @@ export default async function HelpPage({ searchParams }: Props) {
           </Link>
         </div>
       </div>
-      <h1 className={styles.title}>{lang === "ja" ? "ヘルプ" : "Help"}</h1>
+      <h1 className={styles.title}>
+        {langCode === "ja" ? "ヘルプ" : "Help"}
+        <hr className={styles.gradientTextHr} />
+      </h1>
       <div
         className={styles.helpContent}
         dangerouslySetInnerHTML={{ __html: contentHtml }}
