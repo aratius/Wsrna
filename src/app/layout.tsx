@@ -67,6 +67,7 @@ export default function RootLayout({
               style={{
                 flex: 1,
                 overflow: "auto",
+                position: "relative",
               }}
             >
               {children}
