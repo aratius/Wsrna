@@ -32,7 +32,7 @@ function QuizPreviewModal({
       }}
     >
       <div
-        className="quiz-modal"
+        className="quiz-modal card"
         style={{
           background: "#fff",
           borderRadius: 12,
@@ -40,7 +40,6 @@ function QuizPreviewModal({
           width: "90vw",
           maxHeight: "90vh",
           overflowY: "auto",
-          padding: 24,
           boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
         }}
       >
@@ -58,14 +57,7 @@ function QuizPreviewModal({
           <div
             key={idx}
             className="card"
-            style={{
-              marginBottom: 24,
-              padding: 16,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-              borderRadius: 10,
-              border: "1px solid #f0f0f0",
-              background: "#fff",
-            }}
+            style={{ marginBottom: 24, padding: 16 }}
           >
             {q.main_word && (
               <div style={{ marginBottom: 6 }}>
@@ -190,6 +182,7 @@ function QuizPreviewModal({
                     fontSize: 13,
                     background: "#f8f8f8",
                     borderRadius: 6,
+                    border: "1px solid #ececec",
                     padding: "8px 12px",
                     marginTop: 4,
                   }}
@@ -200,22 +193,52 @@ function QuizPreviewModal({
             </div>
           </div>
         ))}
-        <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-          <button
-            className="btn"
-            onClick={onClose}
-            style={{ flex: 1, background: "#ccc", color: "#222" }}
+        <div
+          style={{
+            position: "sticky",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 10,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: -24,
+              left: 0,
+              width: "100%",
+              minWidth: "100%",
+              height: 24,
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              width: "100%",
+              minWidth: "100%",
+              padding: "16px 0 0 0",
+              display: "flex",
+              gap: 12,
+              position: "relative",
+            }}
           >
-            Close
-          </button>
-          <button
-            className="btn"
-            onClick={onSubmit}
-            style={{ flex: 2 }}
-            disabled={submitting}
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
+            <button
+              className="btn"
+              onClick={onClose}
+              style={{ flex: 1, background: "#ccc", color: "#222" }}
+            >
+              Close
+            </button>
+            <button
+              className="btn"
+              onClick={onSubmit}
+              style={{ flex: 2 }}
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Submit"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -276,7 +299,7 @@ export default function CreatePage() {
     e.preventDefault();
     if (!selectedPairId) return;
     if (!toText.trim()) {
-      setError("To（出題言語）は必須です。");
+      setError("The 'To' field is required.");
       return;
     }
     setLoading(true);
@@ -308,12 +331,11 @@ export default function CreatePage() {
       });
       const data = await res.json();
       if (data.error) {
-        // エラー詳細はconsoleに
+        // Log error details to console
         console.error("Quiz generation error:", data);
         setError(
-          "クイズ生成中にエラーが発生しました。もう一度生成してください。"
+          "An error occurred while generating the quiz. Please try again."
         );
-        // main_wordの最頻値でフィルタ
         return;
       } else if (Array.isArray(data.questions)) {
         // main_wordの最頻値でフィルタ
@@ -331,7 +353,7 @@ export default function CreatePage() {
       } else setError("API response is invalid: " + JSON.stringify(data));
     } catch (e: any) {
       console.error("Quiz generation fetch error:", e);
-      setError(e.message);
+      setError("A network or server error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -449,8 +471,8 @@ export default function CreatePage() {
     <>
       {loading && (
         <Loading
-          message="クイズを生成中です"
-          subMessage="最大30秒ほどかかる場合があります"
+          message="Generating quiz..."
+          subMessage="This may take up to 30 seconds."
           fullscreen
         />
       )}
