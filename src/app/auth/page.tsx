@@ -5,7 +5,15 @@ import "@/styles/components/_card.scss";
 
 export default function AuthPage() {
   const handleSignIn = async () => {
-    await supabase.auth.signInWithOAuth({ provider: "google" });
+    const isProd =
+      typeof window !== "undefined" && window.location.hostname !== "localhost";
+    const redirectTo = isProd
+      ? "https://wsrna.vercel.app/" // ←本番ドメインに書き換えてください
+      : "http://localhost:3000/";
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
   };
 
   return (

@@ -95,7 +95,7 @@ function QuizPreviewModal({
             )}
             {/* Quiz部分 */}
             <div style={{ marginBottom: 10 }}>
-              <div
+              <span
                 style={{
                   fontWeight: 600,
                   color: "#5856d6",
@@ -104,31 +104,35 @@ function QuizPreviewModal({
                 }}
               >
                 Quiz
-              </div>
+              </span>
               <div
                 style={{ color: "#222", fontSize: 16, whiteSpace: "pre-line" }}
               >
                 {q.question}
               </div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 8,
-              }}
-            >
+            {/* Answer部分 */}
+            <div style={{ marginBottom: 10 }}>
               <span style={{ fontWeight: 600, color: "#34c759", fontSize: 15 }}>
                 Answer:
               </span>
-              <span style={{ color: "#222", fontSize: 16 }}>{q.answer}</span>
+              <div
+                style={{
+                  color: "#222",
+                  fontSize: 16,
+                  display: "inline",
+                  marginLeft: 8,
+                }}
+              >
+                {q.answer}
+              </div>
             </div>
-            <div style={{ height: 10 }} />
+            {/* Translation部分 */}
             <div style={{ color: "#888", fontSize: 14, marginBottom: 8 }}>
               <span style={{ fontWeight: 500 }}>Translation:</span>{" "}
               {q.sentence_translation}
             </div>
+            {/* Explanation部分 */}
             {q.explanation && (
               <div
                 style={{
