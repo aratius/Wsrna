@@ -32,14 +32,13 @@
       margin-top: 8px;
       margin-bottom: 8px;
     }
-    .form {
+    .quizForm {
       /* quiz-formの追加装飾があればここに */
       .formLabel {
-        font-size: 13px;
+        color: #888;
+        font-size: 11px;
         font-weight: 500;
         margin-top: 8px;
-        margin-bottom: 6px;
-        color: #888;
         display: block;
       }
       .formInput {
@@ -50,6 +49,7 @@
         margin-left: 2px;
       }
       .formBtn {
+        margin-top: 20px;
         /* quiz-form-btnの追加装飾があればここに */
       }
     }
@@ -182,4 +182,119 @@
       }
     }
   }
+}
+
+.quizFormWrapper {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.quizForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.quizFormControl {
+  font-size: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafbfc;
+  color: #222;
+  outline: none;
+  transition: border 0.2s;
+  width: 100%;
+  appearance: none;
+  padding-right: 40px;
+}
+
+.quizFormControl:focus {
+  border: 1.5px solid #5856d6;
+  background: #fff;
+  color: #222;
+}
+
+.quizFormControl option {
+  color: #222;
+  background: #fff;
+}
+
+select.quizFormControl {
+  appearance: none;
+  background: #fafbfc
+    url('data:image/svg+xml;utf8,<svg fill="%23222" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+    no-repeat right 12px center/20px 20px;
+  padding-right: 40px;
+}
+
+.quizFormBtn {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.quizFormBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quizFormError {
+  color: #d50000;
+  background: #fff0f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.quizFormStatus {
+  color: #5856d6;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+  .quizFormWrapper {
+    box-sizing: border-box;
+    padding: 0 2vw;
+  }
+  .quizForm {
+    gap: 12px;
+  }
+  .quizFormControl,
+  .quizFormBtn {
+    font-size: 15px;
+    padding: 11px 10px;
+  }
+}
+
+.gradientText {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.gradientTextHr {
+  border: none;
+  height: 0.5px;
+  width: 100%;
+  margin: 8px 0 0 0;
+  background: #ccc;
+  border-radius: 1px;
 }

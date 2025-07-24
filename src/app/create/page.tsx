@@ -8,82 +8,7 @@ import supportedLanguages from "@/lib/supportedLanguages.json";
 import { supabase } from "@/lib/supabaseClient";
 import Loading from "@/components/Loading";
 import styles from "./create.module.scss";
-
-function QuizPreviewModal({
-  open,
-  onClose,
-  quizzes,
-  onSubmit,
-  submitting,
-}: any) {
-  if (!open) return null;
-  return (
-    <div className={styles.modalOverlay}>
-      <div className={`quiz-modal card ${styles.modalCard}`}>
-        <h2 className={styles.modalTitle}>Quiz Preview</h2>
-        {quizzes.map((q: any, idx: number) => (
-          <div key={idx} className={`card ${styles.quizCard}`}>
-            {q.main_word && (
-              <div className={styles.mainWordBlock}>
-                <span className={styles.mainWord}>{q.main_word}</span>
-                {Array.isArray(q.main_word_translations) &&
-                  q.main_word_translations.length > 0 && (
-                    <span className={styles.translations}>
-                      [
-                      {q.main_word_translations.map((t: string, i: number) => (
-                        <span key={i}>
-                          {t}
-                          {i < q.main_word_translations.length - 1 ? ", " : ""}
-                        </span>
-                      ))}
-                      ]
-                    </span>
-                  )}
-              </div>
-            )}
-            {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
-            <div className={`card ${styles.quizInnerCard}`}>
-              {/* Quiz部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.quizLabel}>Quiz</span>
-                <div className={styles.quizText}>{q.question}</div>
-              </div>
-              {/* Answer部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.answerLabel}>Answer</span>
-                <div className={styles.quizText}>{q.answer}</div>
-              </div>
-              {/* Translation部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.translationLabel}>Translation</span>
-                <div className={styles.quizText}>{q.sentence_translation}</div>
-              </div>
-              {/* Explanation部分 */}
-              {q.explanation && (
-                <div className={styles.explanationBox}>{q.explanation}</div>
-              )}
-            </div>
-          </div>
-        ))}
-        <div className={styles.modalFooter}>
-          <div className={styles.modalFooterSpacer} />
-          <div className={styles.modalFooterBtns}>
-            <button className={`btn ${styles.closeBtn}`} onClick={onClose}>
-              Close
-            </button>
-            <button
-              className={`btn ${styles.submitBtn}`}
-              onClick={onSubmit}
-              disabled={submitting}
-            >
-              {submitting ? "Submitting..." : "Submit"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import QuizPreviewModal from "@/components/QuizPreviewModal";
 
 export default function CreatePage() {
   const session = useSession();
@@ -330,10 +255,11 @@ export default function CreatePage() {
       >
         <div className={`card ${styles.cardMargin}`}>
           <div className={`card-header ${styles.cardHeaderMargin}`}>
-            Create Quiz !!
+            <span className={styles.gradientText}>Create Quiz !!</span>
+            <hr className={styles.gradientTextHr} />
           </div>
           <div className="card-body" style={{ padding: 0 }}>
-            <div className={`quiz-form-wrapper ${styles.formWrapper}`}>
+            <div className={styles.formWrapper}>
               {pairLoading && (
                 <div className={styles.formStatus}>
                   Loading language pairs...
@@ -346,12 +272,16 @@ export default function CreatePage() {
                   first.
                 </div>
               ) : (
-                <form
-                  className={`quiz-form ${styles.form}`}
-                  onSubmit={handleSubmit}
-                >
+                <form className={styles.quizForm} onSubmit={handleSubmit}>
+                  <label
+                    className={styles.formLabel}
+                    htmlFor="language-pair-select"
+                  >
+                    Language
+                  </label>
                   <select
-                    className="quiz-form-control"
+                    id="language-pair-select"
+                    className={styles.quizFormControl}
                     value={selectedPairId}
                     onChange={(e) => setSelectedPairId(e.target.value)}
                     required
@@ -361,7 +291,7 @@ export default function CreatePage() {
                       <option key={lp.id} value={lp.id}>
                         {supportedLanguages.find((l) => l.code === lp.from_lang)
                           ?.label || lp.from_lang}
-                        {" → "}
+                        {" › "}
                         {supportedLanguages.find((l) => l.code === lp.to_lang)
                           ?.label || lp.to_lang}
                       </option>
@@ -375,7 +305,7 @@ export default function CreatePage() {
                   </label>
                   <input
                     id="from-translation"
-                    className={`quiz-form-control ${styles.formInput}`}
+                    className={styles.quizFormControl + " " + styles.formInput}
                     type="text"
                     placeholder="例: 役に立たない"
                     value={fromTranslation}
@@ -387,7 +317,7 @@ export default function CreatePage() {
                   </label>
                   <input
                     id="to-text"
-                    className={`quiz-form-control ${styles.formInput}`}
+                    className={styles.quizFormControl + " " + styles.formInput}
                     type="text"
                     placeholder="例: useless"
                     value={toText}
@@ -395,7 +325,7 @@ export default function CreatePage() {
                     required
                   />
                   <button
-                    className={`quiz-form-btn ${styles.formBtn}`}
+                    className={styles.quizFormBtn + " " + styles.formBtn}
                     type="submit"
                     disabled={loading || !selectedPairId}
                   >
@@ -403,7 +333,7 @@ export default function CreatePage() {
                   </button>
                 </form>
               )}
-              {error && <div className={styles.formError}>{error}</div>}
+              {error && <div className={styles.quizFormError}>{error}</div>}
             </div>
           </div>
         </div>
