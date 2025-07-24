@@ -215,6 +215,8 @@ export default function CreatePage() {
         }
         alert("Quizzes saved!");
         setShowModal(false);
+        setToText("");
+        setFromTranslation("");
       }
     } finally {
       setSubmitting(false);

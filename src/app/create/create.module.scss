@@ -282,12 +282,24 @@ select.quizFormControl {
 .gradientText {
   font-size: 1.5rem;
   background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
   font-weight: 800;
   letter-spacing: 0.04em;
+  animation: gradientMove 6s linear infinite alternate;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .gradientTextHr {

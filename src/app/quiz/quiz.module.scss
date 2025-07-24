@@ -140,12 +140,24 @@ select.quizFormControl {
 .gradientText {
   font-size: 1.5rem;
   background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+  background-size: 200% 100%;
+  background-position: 0% 50%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
   font-weight: 800;
   letter-spacing: 0.04em;
+  animation: gradientMove 6s linear infinite alternate;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .gradientTextHr {
@@ -392,6 +404,9 @@ select.quizFormControl {
   color: #5856d6;
   margin-bottom: 12px;
   font-size: 15px;
+  line-height: 1;
+  padding: 0;
+  margin-right: 8px;
 }
 .answerLabel {
   font-weight: 600;
@@ -617,4 +632,30 @@ select.quizFormControl {
   font-size: 12px;
   font-weight: 600;
   margin-right: 6px;
+}
+
+.quizProgressBarWrapper {
+  width: calc(100% - 36px);
+  height: 6px;
+  background: #ececec;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.quizProgressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #007aff 0%, #ff9500 70%, #34c759 100%);
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1),
+    background 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progressBlue {
+  background: #007aff;
+}
+.progressOrange {
+  background: #ff9500;
+}
+.progressGreen {
+  background: #34c759;
 }
