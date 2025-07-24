@@ -303,7 +303,7 @@ export default function CreatePage() {
                   id="from-translation"
                   className={styles.quizFormControl + " " + styles.formInput}
                   type="text"
-                  placeholder="例: 役に立たない"
+                  placeholder="ex: a little"
                   value={fromTranslation}
                   onChange={(e) => setFromTranslation(e.target.value)}
                 />
@@ -315,7 +315,7 @@ export default function CreatePage() {
                   id="to-text"
                   className={styles.quizFormControl + " " + styles.formInput}
                   type="text"
-                  placeholder="例: useless"
+                  placeholder="ex: un poco"
                   value={toText}
                   onChange={(e) => setToText(e.target.value)}
                   required
