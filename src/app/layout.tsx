@@ -46,19 +46,12 @@ export default function RootLayout({
         <AppHeightSetter />
         <div
           style={{
-            position: "fixed",
-            height: "100vh",
-            inset: 0,
+            maxWidth: 390,
+            width: "100%",
             display: "flex",
             flexDirection: "column",
-            maxWidth: 390,
-            margin: "0 auto",
-            borderRadius: 16,
-            overflow: "hidden",
-            boxShadow: "0 0 20px rgba(0, 0, 0, 0.05)",
-            background: "#fff",
-            width: "100%",
-            minHeight: 667,
+            justifyContent: "start",
+            height: "100vh",
           }}
         >
           <SupabaseProvider>
@@ -66,26 +59,13 @@ export default function RootLayout({
             <div
               className="mainContent"
               style={{
-                flex: "1 1 auto",
-                overflowY: "auto",
-                overflowX: "hidden",
-                position: "relative",
-                marginBottom: 56, // BottomNavの高さ分
+                flex: 1,
+                overflow: "auto",
               }}
             >
               {children}
             </div>
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                width: "100%",
-              }}
-            >
-              <BottomNav />
-            </div>
+            <BottomNav />
           </SupabaseProvider>
         </div>
       </body>
