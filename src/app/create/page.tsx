@@ -93,15 +93,8 @@ function QuizPreviewModal({
                   )}
               </div>
             )}
-            <div
-              style={{
-                background: "#f2f2f7",
-                borderRadius: 8,
-                padding: "12px 14px",
-                marginBottom: 10,
-                border: "1px solid #e0e0e0",
-              }}
-            >
+            {/* Quiz部分 */}
+            <div style={{ marginBottom: 10 }}>
               <div
                 style={{
                   fontWeight: 600,
@@ -131,6 +124,7 @@ function QuizPreviewModal({
               </span>
               <span style={{ color: "#222", fontSize: 16 }}>{q.answer}</span>
             </div>
+            <div style={{ height: 10 }} />
             <div style={{ color: "#888", fontSize: 14, marginBottom: 8 }}>
               <span style={{ fontWeight: 500 }}>Translation:</span>{" "}
               {q.sentence_translation}
