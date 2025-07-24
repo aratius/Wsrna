@@ -31,6 +31,7 @@ function QuizPreviewModal({
       }}
     >
       <div
+        className="quiz-modal"
         style={{
           background: "#fff",
           borderRadius: 12,
@@ -367,6 +368,13 @@ export default function CreatePage() {
     }
   };
 
+  // quizzesがセットされたら自動でモーダルを開く
+  useEffect(() => {
+    if (quizzes.length > 0) {
+      setShowModal(true);
+    }
+  }, [quizzes]);
+
   if (!session) return null;
 
   return (
@@ -439,15 +447,7 @@ export default function CreatePage() {
               {error}
             </div>
           )}
-          {quizzes.length > 0 && (
-            <button
-              className="btn"
-              style={{ marginTop: 16 }}
-              onClick={() => setShowModal(true)}
-            >
-              Preview
-            </button>
-          )}
+          {quizzes.length > 0 && null}
         </div>
       </div>
       {/* Remove non-modal quiz preview. Only keep modal-based preview. */}

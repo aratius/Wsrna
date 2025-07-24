@@ -19,7 +19,12 @@ export async function POST(req: NextRequest) {
   const promptPath = path.join(process.cwd(), 'src/prompts/generate-quiz.txt');
   const template = fs.readFileSync(promptPath, 'utf8');
   // main_word もテンプレートに渡す必要がある
-  const prompt = fillTemplate(template, { main_word, main_word_translations: main_word_translations || '', fromLang, toLang });
+  let prompt = fillTemplate(template, { main_word, main_word_translations: main_word_translations || '', fromLang, toLang });
+
+  // main_wordが構文・パターンの場合は補助説明を追加
+  if (/\[.*\]|\.\.\.|ing\b|\bto\b|\bof\b|\bis\b|\bare\b|\bam\b|\bbe\b|\bwas\b|\bwere\b|\bhas\b|\bhave\b|\bhad\b|\bwill\b|\bwould\b|\bcan\b|\bcould\b|\bshould\b|\bmay\b|\bmight\b|\bmust\b|\bshall\b|\bdo\b|\bdid\b|\bdoes\b/.test(main_word)) {
+    prompt += '\n\nNote: The main_word provided is a grammar pattern or construction. All questions must use the entire pattern as the answer and focus, not just a single word. Do not use any other word or idiom as the answer.';
+  }
 
   try {
     const completion = await openai.chat.completions.create({

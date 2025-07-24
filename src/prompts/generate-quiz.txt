@@ -5,6 +5,8 @@ Generate exactly 5 fill-in-the-blank (cloze) questions to help the student under
 
 All 5 questions must use "{{main_word}}" as the answer and as the main focus. Do not use any other main_word or answer.
 
+If "{{main_word}}" is a phrase, grammar pattern, or construction (for example, if it contains brackets, ellipses, or is not a single word), treat it as a grammar structure or idiomatic pattern. In that case, every question must use the entire pattern (not just a part or a single word from it) as the answer and as the main focus. Do NOT use any other word, idiom, or part of the pattern as the answer. Do NOT generate questions about words that merely appear in example sentences. Only generate questions about the exact pattern or structure given as "{{main_word}}".
+
 Each question must include:
 - A sentence in {{toLang}} with one blank ("____")
 - The correct answer to fill the blank
