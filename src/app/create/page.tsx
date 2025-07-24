@@ -56,30 +56,39 @@ function QuizPreviewModal({
         {quizzes.map((q: any, idx: number) => (
           <div
             key={idx}
+            className="card"
             style={{
               marginBottom: 24,
-              borderBottom: "1px solid #eee",
-              paddingBottom: 16,
+              padding: 16,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+              borderRadius: 10,
+              border: "1px solid #f0f0f0",
+              background: "#fff",
             }}
           >
             {q.main_word && (
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: 20,
-                  color: "#222",
-                  marginBottom: 6,
-                }}
-              >
-                {q.main_word}
+              <div style={{ marginBottom: 6 }}>
+                <span
+                  style={{
+                    display: "block",
+                    fontWeight: 700,
+                    fontSize: 20,
+                    color: "#222",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {q.main_word}
+                </span>
                 {Array.isArray(q.main_word_translations) &&
                   q.main_word_translations.length > 0 && (
                     <span
                       style={{
-                        marginLeft: 8,
+                        display: "block",
+                        marginTop: 2,
                         color: "#007AFF",
                         fontWeight: 500,
                         fontSize: 15,
+                        wordBreak: "break-word",
                       }}
                     >
                       [
@@ -114,24 +123,47 @@ function QuizPreviewModal({
             </div>
             {/* Answer部分 */}
             <div style={{ marginBottom: 10 }}>
-              <span style={{ fontWeight: 600, color: "#34c759", fontSize: 15 }}>
-                Answer:
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: "#34c759",
+                  fontSize: 15,
+                  display: "block",
+                }}
+              >
+                Answer
               </span>
               <div
                 style={{
                   color: "#222",
                   fontSize: 16,
-                  display: "inline",
-                  marginLeft: 8,
+                  whiteSpace: "pre-line",
                 }}
               >
                 {q.answer}
               </div>
             </div>
             {/* Translation部分 */}
-            <div style={{ color: "#888", fontSize: 14, marginBottom: 8 }}>
-              <span style={{ fontWeight: 500 }}>Translation:</span>{" "}
-              {q.sentence_translation}
+            <div style={{ marginBottom: 10 }}>
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: "#ff9500",
+                  fontSize: 15,
+                  display: "block",
+                }}
+              >
+                Translation
+              </span>
+              <div
+                style={{
+                  color: "#222",
+                  fontSize: 16,
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {q.sentence_translation}
+              </div>
             </div>
             {/* Explanation部分 */}
             {q.explanation && (
@@ -249,8 +281,15 @@ export default function CreatePage() {
         }),
       });
       const data = await res.json();
-      if (data.error) setError(data.error);
-      else if (Array.isArray(data.questions)) {
+      if (data.error) {
+        // エラー詳細はconsoleに
+        console.error("Quiz generation error:", data);
+        setError(
+          "クイズ生成中にエラーが発生しました。もう一度生成してください。"
+        );
+        // main_wordの最頻値でフィルタ
+        return;
+      } else if (Array.isArray(data.questions)) {
         // main_wordの最頻値でフィルタ
         const freq: Record<string, number> = {};
         data.questions.forEach((q: any) => {
@@ -265,6 +304,7 @@ export default function CreatePage() {
         setQuizzes(filtered);
       } else setError("API response is invalid: " + JSON.stringify(data));
     } catch (e: any) {
+      console.error("Quiz generation fetch error:", e);
       setError(e.message);
     } finally {
       setLoading(false);
