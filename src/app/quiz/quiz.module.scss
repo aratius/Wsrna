@@ -184,39 +184,49 @@ select.quizFormControl {
   padding: 24px 16px;
 
   .tabNav {
+    width: 100%;
     display: flex;
-    gap: 0;
+    gap: 8px;
     margin-bottom: 20px;
+    align-items: center;
+
     overflow-x: auto;
-    border-bottom: 1.5px solid #e0e0e0;
-    -webkit-overflow-scrolling: touch;
+    /* 横スクロールバーを非表示にする */
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE/Edge
+
+    &::-webkit-scrollbar {
+      height: 0;
+      display: none; // Chrome, Safari, Opera
+      background: transparent;
+    }
 
     .tabButton {
-      background: none;
-      border: none;
-      outline: none;
-      border-bottom: 3px solid transparent;
-      color: #888;
-      font-weight: 500;
-      font-size: 16px;
-      padding: 10px 18px;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      color: #222;
+      font-size: 15px;
+      font-weight: 400;
+      padding: 7px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: color 0.2s, border-bottom 0.2s;
-      background-color: transparent;
-      white-space: nowrap;
-      margin-right: 2px;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      margin-right: 0;
 
       &.activeTab {
-        border-bottom: 3px solid #007aff;
-        color: #007aff;
+        background: #007aff;
+        color: #fff;
+        border-color: #007aff;
         font-weight: 700;
+        span {
+          color: #fff;
+        }
       }
 
       .tabArrow {
-        margin: 0 4px;
         font-size: 18px;
-        font-weight: 700;
-        color: inherit;
+        color: #888;
+        margin: 0 4px;
       }
     }
   }
