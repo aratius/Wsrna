@@ -280,9 +280,6 @@ export default function CreatePage() {
         </div>
         <div className="card-body" style={{ padding: 0 }}>
           <div className={styles.formWrapper}>
-            {pairLoading && (
-              <div className={styles.formStatus}>Loading language pairs...</div>
-            )}
             {pairError && <div className={styles.formError}>{pairError}</div>}
             {languagePairs.length === 0 && !pairLoading ? (
               <div className={styles.formError}>
