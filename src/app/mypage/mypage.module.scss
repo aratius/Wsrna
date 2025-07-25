@@ -2,6 +2,7 @@
 
 .mypage {
   padding: $spacing-s;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -25,6 +26,7 @@
     }
   }
   &__menu-list {
+    width: 100%;
     display: flex;
     flex-direction: column;
   }

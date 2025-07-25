@@ -3,7 +3,7 @@ import path from "path";
 import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
-import styles from "../mypage.module.scss";
+import styles from "./help.module.scss";
 
 /**
  * @param {{ searchParams?: { [key: string]: string | string[] | undefined } }} param0
@@ -22,40 +22,32 @@ export default async function HelpPage({
   const contentHtml = result.toString();
 
   return (
-    <div className={styles.helpWrapper}>
-      <div className={styles.helpHeader}>
-        <Link href="/mypage">
-          <button
-            className={
-              styles.button +
-              " " +
-              styles.buttonOutlined +
-              " " +
-              styles.helpBackBtn
-            }
-          >
-            戻る
-          </button>
-        </Link>
-        <div className={styles.helpLangSwitch}>
+    <div className={styles["help"]}>
+      <div className={styles["help__header"]}>
+        <h1 className={styles["help__header__title"]}>
+          {langCode === "ja" ? "ヘルプ" : "Help"}
+        </h1>
+        <div className={styles["help__header__lang-switch"]}>
           <Link href="/mypage/help?lang=ja">
             <span
               className={
                 langCode === "ja"
-                  ? styles.helpLangActive
-                  : styles.helpLangInactive
+                  ? styles["help__header__lang-switch__lang--active"]
+                  : styles["help__header__lang-switch__lang--inactive"]
               }
             >
               日
             </span>
           </Link>
-          <span className={styles.helpLangDivider}>/</span>
+          <span className={styles["help__header__lang-switch__divider"]}>
+            /
+          </span>
           <Link href="/mypage/help?lang=en">
             <span
               className={
                 langCode === "en"
-                  ? styles.helpLangActive
-                  : styles.helpLangInactive
+                  ? styles["help__header__lang-switch__lang--active"]
+                  : styles["help__header__lang-switch__lang--inactive"]
               }
             >
               EN
@@ -63,9 +55,8 @@ export default async function HelpPage({
           </Link>
         </div>
       </div>
-      <h1 className={styles.title}>{langCode === "ja" ? "ヘルプ" : "Help"}</h1>
       <div
-        className={styles.helpContent}
+        className={styles["help__content"]}
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
     </div>
