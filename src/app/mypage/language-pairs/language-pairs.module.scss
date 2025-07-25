@@ -24,6 +24,7 @@
       outline: none;
       transition: border 0.2s;
       color: #222;
+      position: relative;
 
       &:focus {
         border: 1.5px solid #5856d6;

@@ -128,7 +128,7 @@ export default function LanguagePairsPage() {
             </option>
           ))}
         </select>
-        <span className={styles["lang__form__arrow"]}>&rarr;</span>
+        <span className={styles["lang__form__arrow"]}>›</span>
         <select
           className={styles["lang__form__select"]}
           value={toLang}
