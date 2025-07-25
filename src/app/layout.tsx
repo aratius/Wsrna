@@ -42,28 +42,10 @@ export default function RootLayout({
       </head>
       <body>
         <AppHeightSetter />
-        <div
-          style={{
-            maxWidth: 390,
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "start",
-            height: "100vh",
-          }}
-        >
+        <div className="main_wrapper">
           <SupabaseProvider>
             <PwaInstallPrompt />
-            <div
-              className="mainContent"
-              style={{
-                flex: 1,
-                overflow: "auto",
-                position: "relative",
-              }}
-            >
-              {children}
-            </div>
+            <main className="main">{/* {children} */}</main>
             <BottomNav />
           </SupabaseProvider>
         </div>

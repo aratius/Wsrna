@@ -90,85 +90,23 @@ img {
   }
 }
 
-// 共通スクロールバー削除済み
-
-.tab-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-.tab-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-.tab-scrollbar::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 2px;
-  transition: background 0.2s;
-}
-.tab-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: #007aff;
-}
-.tab-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.quiz-modal {
-  transform: translateY(60px);
-  opacity: 0;
-  animation: quizModalIn 1s ease-in-out forwards;
-}
-
-@keyframes quizModalIn {
-  0% {
-    transform: translateY(60px);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(10px);
-    opacity: 0.7;
-  }
-  80% {
-    transform: translateY(0);
-    opacity: 0.9;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.quiz-modal.card {
-  max-width: 400px;
-  width: auto;
-  margin: 16px;
-  border-radius: 16px;
-}
-
-// スマホのブレークポイントを広げる
-$mobile-breakpoint: 600px;
-
-@media (max-width: #{$mobile-breakpoint}) {
-  // メイン画面のカードを全画面化
-  .card {
-    box-shadow: none;
-    border-radius: 0;
-    border: none;
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-    background: #fff;
-    box-sizing: border-box;
-  }
-  // 余白調整
-  body,
-  .app-main,
-  .main-content {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-}
-
 input,
 select,
 textarea {
   font-size: 16px;
+}
+
+.main_wrapper {
+  max-width: 390px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+.main {
+  flex: 1;
+  overflow: auto;
+  position: relative;
 }
