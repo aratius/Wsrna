@@ -5,6 +5,7 @@
 
   &__title {
     @include gradient_title();
+    padding-bottom: $spacing-s;
 
     &::before {
       content: "";

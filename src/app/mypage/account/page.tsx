@@ -20,27 +20,26 @@ export default function AccountInfoPage() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card + " card"}>
-        <button onClick={() => router.back()} className={styles.backButton}>
-          &lt; 戻る
-        </button>
-        <h2 className={styles.title}>Account Info</h2>
-        <div className={styles.accountInfoBox}>
-          {avatarUrl && (
-            <img src={avatarUrl} alt="avatar" className={styles.avatar} />
-          )}
-          <div className={styles.accountInfoText}>
-            <div className={styles.userName}>{name}</div>
-            <div className={styles.userEmail}>{email || "-"}</div>
+    <div className={styles["account"]}>
+      <h2 className={styles["account__title"]}>Account Info</h2>
+      <div className={styles["account__info"]}>
+        {avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="avatar"
+            className={styles["account__info__avatar"]}
+          />
+        )}
+        <div className={styles["account__info__text"]}>
+          <div className={styles["account__info__user-name"]}>{name}</div>
+          <div className={styles["account__info__user-email"]}>
+            {email || "-"}
           </div>
         </div>
-        <div className={styles.infoBox}>
-          <button className={styles.logoutBtn} onClick={handleLogout}>
-            ログアウト
-          </button>
-        </div>
       </div>
+      <button className={styles["account__logout-btn"]} onClick={handleLogout}>
+        ログアウト
+      </button>
     </div>
   );
 }
