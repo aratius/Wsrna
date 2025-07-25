@@ -112,76 +112,69 @@ export default function LanguagePairsPage() {
   if (!session) return null;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card + " card"}>
-        <button onClick={() => router.back()} className={styles.backButton}>
-          &lt; 戻る
-        </button>
-        <h2 className={styles.title}>Language Pairs</h2>
-        {lpLoading && <div className={styles.status}>Loading...</div>}
-        {lpError && <div className={styles.error}>{lpError}</div>}
-        <form onSubmit={handleAddPair} className={styles.formRow}>
-          <select
-            className={styles.select}
-            value={fromLang}
-            onChange={(e) => setFromLang(e.target.value)}
-            required
-          >
-            <option value="">From</option>
-            {supportedLanguages.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-          <span className={styles.arrow}>&rarr;</span>
-          <select
-            className={styles.select}
-            value={toLang}
-            onChange={(e) => setToLang(e.target.value)}
-            required
-          >
-            <option value="">To</option>
-            {supportedLanguages.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.label}
-              </option>
-            ))}
-          </select>
-          <button
-            className={styles.addBtn}
-            type="submit"
-            disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
-          >
-            Add
-          </button>
-        </form>
-        <ul className={styles.list}>
-          {languagePairs.map((lp, idx) => (
-            <li key={lp.id} className={styles.listItem}>
-              <span className={styles.langLabel}>
-                {supportedLanguages.find((l) => l.code === lp.from_lang)
-                  ?.label || lp.from_lang}
-              </span>
-              <span className={styles.arrow}>&rarr;</span>
-              <span className={styles.langLabel}>
-                {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
-                  lp.to_lang}
-              </span>
-              <button
-                className={styles.deleteBtn}
-                type="button"
-                onClick={() => handleDeletePair(lp.id)}
-              >
-                Delete
-              </button>
-            </li>
+    <div className={styles["lang"]}>
+      <h2 className={styles["lang__title"]}>Language Pairs</h2>
+      <form onSubmit={handleAddPair} className={styles["lang__form"]}>
+        <select
+          className={styles["lang__form__select"]}
+          value={fromLang}
+          onChange={(e) => setFromLang(e.target.value)}
+          required
+        >
+          <option value="">From</option>
+          {supportedLanguages.map((l) => (
+            <option key={l.code} value={l.code}>
+              {l.label}
+            </option>
           ))}
-          {languagePairs.length === 0 && !lpLoading && (
-            <li className={styles.empty}>No language pairs found.</li>
-          )}
-        </ul>
-      </div>
+        </select>
+        <span className={styles["lang__form__arrow"]}>&rarr;</span>
+        <select
+          className={styles["lang__form__select"]}
+          value={toLang}
+          onChange={(e) => setToLang(e.target.value)}
+          required
+        >
+          <option value="">To</option>
+          {supportedLanguages.map((l) => (
+            <option key={l.code} value={l.code}>
+              {l.label}
+            </option>
+          ))}
+        </select>
+        <button
+          className={styles["lang__form__add-btn"]}
+          type="submit"
+          disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
+        >
+          Add
+        </button>
+      </form>
+      <ul className={styles["lang__list"]}>
+        {languagePairs.map((lp, idx) => (
+          <li key={lp.id} className={styles["lang__list-item"]}>
+            <span className={styles["lang__label"]}>
+              {supportedLanguages.find((l) => l.code === lp.from_lang)?.label ||
+                lp.from_lang}
+            </span>
+            <span className={styles["lang__arrow"]}>›</span>
+            <span className={styles["lang__label"]}>
+              {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
+                lp.to_lang}
+            </span>
+            <button
+              className={styles["lang__delete-btn"]}
+              type="button"
+              onClick={() => handleDeletePair(lp.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+        {languagePairs.length === 0 && !lpLoading && (
+          <li className={styles["lang__empty"]}>No language pairs found.</li>
+        )}
+      </ul>
     </div>
   );
 }
