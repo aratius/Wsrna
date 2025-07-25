@@ -67,3 +67,52 @@ $spacing-xl: 32px;
 $border-radius: 12px;
 $shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
 $shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+// アニメーション付きグラデーションマスクテキスト用mixin
+@mixin animated-gradient-text(
+  $gradient:
+    linear-gradient(
+      90deg,
+      #007aff,
+      #5856d6,
+      #34c759,
+      #ffcc00,
+      #ff9500,
+      #af52de,
+      #007aff
+    ),
+  $duration: 3s
+) {
+  background: $gradient;
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: animated-gradient-text-move $duration linear infinite;
+}
+
+@keyframes animated-gradient-text-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// タイトルの共通スタイル用mixin
+@mixin gradient_title($font-size: 2rem) {
+  font-size: $font-size;
+  font-weight: 700;
+  padding-bottom: $spacing-s;
+  text-align: left;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: $color-text-primary;
+  position: relative;
+  @include animated-gradient-text();
+}

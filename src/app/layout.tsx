@@ -45,7 +45,7 @@ export default function RootLayout({
         <div className="main_wrapper">
           <SupabaseProvider>
             <PwaInstallPrompt />
-            <main className="main">{/* {children} */}</main>
+            <main className="main">{children}</main>
             <BottomNav />
           </SupabaseProvider>
         </div>

@@ -1,3 +1,5 @@
+@import "@/styles/_variables.scss";
+
 html,
 body {
   font-family: var(--font-poppins), var(--font-noto-sans-jp),
@@ -30,6 +32,12 @@ body {
   justify-content: center;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* テキスト要素は基本黒系 */
@@ -103,6 +111,12 @@ textarea {
   flex-direction: column;
   justify-content: flex-start;
   height: 100vh;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+
+  // スマートフォン向けのボーダー半径を調整
+  @media (max-width: 600px) {
+    border-radius: $spacing-s;
+  }
 }
 
 .main {
