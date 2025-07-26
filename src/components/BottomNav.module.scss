@@ -26,8 +26,10 @@
   transition: color 0.2s;
 
   &.isActive {
-    color: #7c4dff;
-    font-weight: 500;
+    span {
+      color: #7c4dff;
+      font-weight: 500;
+    }
   }
 }
 

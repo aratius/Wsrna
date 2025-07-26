@@ -112,7 +112,14 @@ export default function SavedIdiomsPage() {
               </div>
               <button
                 type="button"
-                className={styles["saved__list-item__explanation-btn"]}
+                className={[
+                  styles["saved__list-item__explanation-btn"],
+                  explanationOpen[idiom.id]
+                    ? styles["saved__list-item__explanation-btn--open"]
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 onClick={() =>
                   setExplanationOpen((prev) => ({
                     ...prev,
