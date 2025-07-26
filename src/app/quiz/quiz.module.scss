@@ -16,48 +16,55 @@
     flex-direction: column;
   }
 
-  &__header {
-    width: 100%;
-    margin-bottom: $spacing-m;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  &__title {
+    @include gradient_title();
+    padding-bottom: $spacing-s;
+  }
 
-    &__title {
-      @include gradient_title();
-      padding-bottom: $spacing-s;
+  &__tab {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+    border-bottom: 1.5px solid #e0e0e0;
+
+    overflow-x: auto;
+    /* 横スクロールバーを非表示にする */
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE/Edge
+
+    &::-webkit-scrollbar {
+      height: 0;
+      display: none; // Chrome, Safari, Opera
+      background: transparent;
     }
 
-    &__language-selector {
-      display: flex;
-      align-items: center;
-      gap: $spacing-xs;
+    &__button {
+      border: none;
+      box-shadow: none;
+      background: #fff;
+      color: #222;
+      font-size: 15px;
+      font-weight: 400;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+    }
 
-      &__select {
-        font-size: $font-size-sm;
-        padding: 8px 12px;
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        background: #fafbfc;
-        color: $color-text-primary;
-        outline: none;
-        transition: border 0.2s;
-        appearance: none;
-        background: #fafbfc
-          url('data:image/svg+xml;utf8,<svg fill="%23222" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
-          no-repeat right 12px center/20px 20px;
-        padding-right: 40px;
-
-        &:focus {
-          border: 1.5px solid $color-primary;
-          background: #fff;
-        }
-
-        option {
-          color: $color-text-primary;
-          background: #fff;
-        }
+    &__button--active {
+      color: #5856d6;
+      font-weight: 700;
+      span {
+        color: #5856d6;
       }
+    }
+
+    &-arrow {
+      font-size: 18px;
+      color: #888;
+      margin: 0 4px;
     }
   }
 
