@@ -26,7 +26,7 @@
   transition: color 0.2s;
 
   &.isActive {
-    color: #5856d6;
+    color: #7c4dff;
     font-weight: 500;
   }
 }
@@ -51,5 +51,5 @@
   border: 1px solid #ccc;
 }
 .avatarActive {
-  border: 2px solid #5856d6;
+  border: 2px solid #7c4dff;
 }
