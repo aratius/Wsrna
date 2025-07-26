@@ -189,6 +189,7 @@ select.quizFormControl {
     gap: 8px;
     margin-bottom: 20px;
     align-items: center;
+    border-bottom: 1.5px solid #e0e0e0;
 
     overflow-x: auto;
     /* 横スクロールバーを非表示にする */
@@ -202,7 +203,8 @@ select.quizFormControl {
     }
 
     .tabButton {
-      border: 1px solid #e0e0e0;
+      border: none;
+      box-shadow: none;
       background: #fff;
       color: #222;
       font-size: 15px;
@@ -214,12 +216,10 @@ select.quizFormControl {
       margin-right: 0;
 
       &.activeTab {
-        background: #007aff;
-        color: #fff;
-        border-color: #007aff;
+        color: #5856d6;
         font-weight: 700;
         span {
-          color: #fff;
+          color: #5856d6;
         }
       }
 

@@ -1,6 +1,7 @@
 @import "@/styles/_variables.scss";
 
 .lang {
+  width: 100%;
   padding: $spacing-s 0;
 
   &__title {
@@ -56,7 +57,7 @@
   }
 
   &__list {
-    padding: $spacing-s;
+    padding: 0 0 0 $spacing-s;
     margin: 0;
     list-style: none;
     width: 100%;
@@ -91,13 +92,13 @@
         background: $color-error;
         color: #fff;
         border: none;
-        border-radius: $spacing-s;
-        padding: 8px 12px;
-        margin: 0 0 0 auto;
-        font-size: 0.92rem;
+        border-radius: 8px;
+        font-size: 15px;
         font-weight: 600;
+        padding: 8px 18px;
+        margin: 0 0 0 auto;
         cursor: pointer;
-        transition: background 0.2s;
+        transition: background 0.2s, opacity 0.2s;
         &:hover {
           background: darken($color-error, 10%);
         }
