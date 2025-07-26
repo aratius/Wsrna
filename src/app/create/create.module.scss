@@ -1,164 +1,202 @@
-.container {
+@import "@/styles/_variables.scss";
+
+.create {
   width: 100%;
-  padding: 24px 16px;
-  background: #fff;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
+  padding: $spacing-s;
 
-  .cardMargin {
-    margin-bottom: 24px;
-  }
-  .cardHeaderMargin {
-    margin-bottom: 12px;
-  }
-
-  .formWrapper {
+  &__container {
+    width: 100%;
     max-width: 420px;
     margin: 0 auto;
-    padding: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 
-    .formStatus {
-      /* 状態表示用 */
+    &--mobile {
+      @media (max-width: 600px) {
+        padding: $spacing-s;
+      }
     }
-    .formError {
+  }
+
+  &__header {
+    margin-bottom: $spacing-m;
+    padding-bottom: $spacing-s;
+    border-bottom: 1px solid #ececec;
+
+    &__title {
+      font-size: $font-size-lg;
+      font-weight: 700;
+      background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
+      background-size: 200% 100%;
+      background-position: 0% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      letter-spacing: 0.04em;
+      animation: gradientMove 6s linear infinite alternate;
+    }
+
+    &__divider {
+      border: none;
+      height: 0.5px;
+      width: 100%;
+      margin: $spacing-xs 0 0 0;
+      background: #ccc;
+      border-radius: 1px;
+    }
+  }
+
+  &__content {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__form {
+    &__wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    &__error {
       color: #d50000;
-      margin-top: 8px;
-      margin-bottom: 8px;
+      background: #fff0f0;
+      border-radius: 6px;
+      padding: $spacing-s;
+      margin-bottom: $spacing-s;
+      font-size: $font-size-sm;
+      border: 1px solid #ffcdd2;
     }
-    .quizForm {
-      /* quiz-formの追加装飾があればここに */
-      .formLabel {
-        color: #888;
-        font-size: 11px;
+
+    &__container {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-m;
+      width: 100%;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+
+      &__label {
+        color: $color-text-secondary;
+        font-size: $font-size-sm;
         font-weight: 500;
-        margin-top: 8px;
+        margin-bottom: $spacing-xs;
         display: block;
       }
-      .formInput {
-        font-size: 15px;
-      }
-      .requiredMark {
+
+      &__required {
         color: #ff3b30;
         margin-left: 2px;
       }
-      .formBtn {
-        margin-top: 20px;
-        /* quiz-form-btnの追加装飾があればここに */
+    }
+
+    &__control {
+      font-size: $font-size-base;
+      padding: 12px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fafbfc;
+      color: $color-text-primary;
+      outline: none;
+      transition: border 0.2s;
+      width: 100%;
+      appearance: none;
+      padding-right: 40px;
+
+      &:focus {
+        border: 1.5px solid $color-primary;
+        background: #fff;
+      }
+
+      &--select {
+        background: #fafbfc
+          url('data:image/svg+xml;utf8,<svg fill="%23222" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+          no-repeat right 12px center/20px 20px;
+        padding-right: 40px;
+
+        option {
+          color: $color-text-primary;
+          background: #fff;
+        }
+      }
+
+      &--input {
+        font-size: $font-size-base;
+      }
+    }
+
+    &__button {
+      font-size: $font-size-base;
+      font-weight: 600;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: $spacing-m;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(88, 86, 214, 0.3);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
     }
   }
-}
 
-.quizFormWrapper {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.quizForm {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-}
-
-.quizFormControl {
-  font-size: 16px;
-  padding: 12px 14px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: #fafbfc;
-  color: #222;
-  outline: none;
-  transition: border 0.2s;
-  width: 100%;
-  appearance: none;
-  padding-right: 40px;
-}
-
-.quizFormControl:focus {
-  border: 1.5px solid #5856d6;
-  background: #fff;
-  color: #222;
-}
-
-.quizFormControl option {
-  color: #222;
-  background: #fff;
-}
-
-select.quizFormControl {
-  appearance: none;
-  background: #fafbfc
-    url('data:image/svg+xml;utf8,<svg fill="%23222" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
-    no-repeat right 12px center/20px 20px;
-  padding-right: 40px;
-}
-
-.quizFormBtn {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px 0;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
-}
-
-.quizFormBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.quizFormError {
-  color: #d50000;
-  background: #fff0f0;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-top: 8px;
-  font-size: 15px;
-}
-
-.quizFormStatus {
-  color: #5856d6;
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-
-@media (max-width: 600px) {
-  .quizFormWrapper {
-    box-sizing: border-box;
-    padding: 0 2vw;
+  &__loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
   }
-  .quizForm {
-    gap: 12px;
-  }
-  .quizFormControl,
-  .quizFormBtn {
-    font-size: 15px;
-    padding: 11px 10px;
+
+  &__modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: $spacing-s;
   }
 }
 
-.gradientText {
-  font-size: 1.5rem;
-  background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
-  background-size: 200% 100%;
-  background-position: 0% 50%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  animation: gradientMove 6s linear infinite alternate;
-}
-
+// アニメーション
 @keyframes gradientMove {
   0% {
     background-position: 0% 50%;
@@ -168,11 +206,23 @@ select.quizFormControl {
   }
 }
 
-.gradientTextHr {
-  border: none;
-  height: 0.5px;
-  width: 100%;
-  margin: 8px 0 0 0;
-  background: #ccc;
-  border-radius: 1px;
+// レスポンシブ対応
+@media (max-width: 600px) {
+  .create {
+    &__container {
+      padding: $spacing-s;
+    }
+
+    &__form {
+      &__control {
+        font-size: $font-size-sm;
+        padding: 10px 12px;
+      }
+
+      &__button {
+        font-size: $font-size-sm;
+        padding: 10px 0;
+      }
+    }
+  }
 }

@@ -271,73 +271,108 @@ export default function CreatePage() {
       />
       <div
         className={
-          styles.container + (isMobile ? " " + styles.containerMobile : "")
+          styles.create__container +
+          (isMobile ? " " + styles.create__container + "--mobile" : "")
         }
       >
-        <div className={`card-header ${styles.cardHeaderMargin}`}>
-          <span className={styles.gradientText}>Create Quiz !!</span>
-          <hr className={styles.gradientTextHr} />
+        <div className={styles.create__header}>
+          <h1 className={styles.create__header__title}>Create Quiz !!</h1>
+          <hr className={styles.create__header__divider} />
         </div>
-        <div className="card-body" style={{ padding: 0 }}>
-          <div className={styles.formWrapper}>
-            {pairError && <div className={styles.formError}>{pairError}</div>}
+        <div className={styles.create__content}>
+          <div className={styles.create__form__wrapper}>
+            {pairError && (
+              <div className={styles.create__form__error}>{pairError}</div>
+            )}
             {languagePairs.length === 0 && !pairLoading ? (
-              <div className={styles.formError}>
+              <div className={styles.create__form__error}>
                 No language pairs found. Please register a pair in My Page
                 first.
               </div>
             ) : (
-              <form className={styles.quizForm} onSubmit={handleSubmit}>
-                <label
-                  className={styles.formLabel}
-                  htmlFor="language-pair-select"
-                >
-                  Language
-                </label>
-                <select
-                  id="language-pair-select"
-                  className={styles.quizFormControl}
-                  value={selectedPairId}
-                  onChange={(e) => setSelectedPairId(e.target.value)}
-                  required
-                >
-                  <option value="">Select language pair (From → To)</option>
-                  {languagePairs.map((lp) => (
-                    <option key={lp.id} value={lp.id}>
-                      {supportedLanguages.find((l) => l.code === lp.from_lang)
-                        ?.label || lp.from_lang}
-                      {" › "}
-                      {supportedLanguages.find((l) => l.code === lp.to_lang)
-                        ?.label || lp.to_lang}
-                    </option>
-                  ))}
-                </select>
-                <label className={styles.formLabel} htmlFor="from-translation">
-                  From
-                </label>
-                <input
-                  id="from-translation"
-                  className={styles.quizFormControl + " " + styles.formInput}
-                  type="text"
-                  placeholder={`ex: ${fromLangGreeting}`}
-                  value={fromTranslation}
-                  onChange={(e) => setFromTranslation(e.target.value)}
-                />
-                <label className={styles.formLabel} htmlFor="to-text">
-                  To
-                  <span className={styles.requiredMark}>*</span>
-                </label>
-                <input
-                  id="to-text"
-                  className={styles.quizFormControl + " " + styles.formInput}
-                  type="text"
-                  placeholder={`ex: ${toLangGreeting}`}
-                  value={toText}
-                  onChange={(e) => setToText(e.target.value)}
-                  required
-                />
+              <form
+                className={styles.create__form__container}
+                onSubmit={handleSubmit}
+              >
+                <div className={styles.create__form__field}>
+                  <label
+                    className={styles.create__form__field__label}
+                    htmlFor="language-pair-select"
+                  >
+                    Language
+                  </label>
+                  <select
+                    id="language-pair-select"
+                    className={
+                      styles.create__form__control +
+                      " " +
+                      styles.create__form__control +
+                      "--select"
+                    }
+                    value={selectedPairId}
+                    onChange={(e) => setSelectedPairId(e.target.value)}
+                    required
+                  >
+                    <option value="">Select language pair (From → To)</option>
+                    {languagePairs.map((lp) => (
+                      <option key={lp.id} value={lp.id}>
+                        {supportedLanguages.find((l) => l.code === lp.from_lang)
+                          ?.label || lp.from_lang}
+                        {" › "}
+                        {supportedLanguages.find((l) => l.code === lp.to_lang)
+                          ?.label || lp.to_lang}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.create__form__field}>
+                  <label
+                    className={styles.create__form__field__label}
+                    htmlFor="from-translation"
+                  >
+                    From
+                  </label>
+                  <input
+                    id="from-translation"
+                    className={
+                      styles.create__form__control +
+                      " " +
+                      styles.create__form__control +
+                      "--input"
+                    }
+                    type="text"
+                    placeholder={`ex: ${fromLangGreeting}`}
+                    value={fromTranslation}
+                    onChange={(e) => setFromTranslation(e.target.value)}
+                  />
+                </div>
+                <div className={styles.create__form__field}>
+                  <label
+                    className={styles.create__form__field__label}
+                    htmlFor="to-text"
+                  >
+                    To
+                    <span className={styles.create__form__field__required}>
+                      *
+                    </span>
+                  </label>
+                  <input
+                    id="to-text"
+                    className={
+                      styles.create__form__control +
+                      " " +
+                      styles.create__form__control +
+                      "--input"
+                    }
+                    type="text"
+                    placeholder={`ex: ${toLangGreeting}`}
+                    value={toText}
+                    onChange={(e) => setToText(e.target.value)}
+                    required
+                  />
+                </div>
                 <button
-                  className={styles.quizFormBtn + " " + styles.formBtn}
+                  className={styles.create__form__button}
                   type="submit"
                   disabled={loading || !selectedPairId}
                 >
@@ -345,7 +380,7 @@ export default function CreatePage() {
                 </button>
               </form>
             )}
-            {error && <div className={styles.quizFormError}>{error}</div>}
+            {error && <div className={styles.create__form__error}>{error}</div>}
           </div>
         </div>
       </div>
