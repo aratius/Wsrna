@@ -18,19 +18,27 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
 }) => {
   if (!open) return null;
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalCard}>
-        <h2 className={styles.modalTitle + " " + styles.gradientText}>
-          Quiz Preview
-        </h2>
+    <div className={styles.quiz_preview_modal__overlay}>
+      <div className={styles.quiz_preview_modal__card}>
+        <h2 className={styles.quiz_preview_modal__title}>Quiz Preview</h2>
         {quizzes.map((q: any, idx: number) => (
-          <div key={idx} className={styles.quizCard}>
+          <div key={idx} className={styles.quiz_preview_modal__quiz__card}>
             {q.main_word && (
-              <div className={styles.mainWordBlock}>
-                <span className={styles.mainWord}>{q.main_word}</span>
+              <div
+                className={styles.quiz_preview_modal__quiz__main_word__block}
+              >
+                <span
+                  className={styles.quiz_preview_modal__quiz__main_word__text}
+                >
+                  {q.main_word}
+                </span>
                 {Array.isArray(q.main_word_translations) &&
                   q.main_word_translations.length > 0 && (
-                    <span className={styles.translations}>
+                    <span
+                      className={
+                        styles.quiz_preview_modal__quiz__main_word__translations
+                      }
+                    >
                       [
                       {q.main_word_translations.map((t: string, i: number) => (
                         <span key={i}>
@@ -44,37 +52,64 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
               </div>
             )}
             {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
-            <div className={styles.quizInnerCard}>
+            <div className={styles.quiz_preview_modal__quiz__content}>
               {/* Quiz部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.quizLabel}>Quiz</span>
-                <div className={styles.quizText}>{q.question}</div>
+              <div className={styles.quiz_preview_modal__quiz__section}>
+                <span className={styles.quiz_preview_modal__quiz__label}>
+                  Quiz
+                </span>
+                <div className={styles.quiz_preview_modal__quiz__text}>
+                  {q.question}
+                </div>
               </div>
               {/* Answer部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.answerLabel}>Answer</span>
-                <div className={styles.quizText}>{q.answer}</div>
+              <div className={styles.quiz_preview_modal__quiz__section}>
+                <span className={styles.quiz_preview_modal__quiz__label}>
+                  Answer
+                </span>
+                <div className={styles.quiz_preview_modal__quiz__text}>
+                  {q.answer}
+                </div>
               </div>
               {/* Translation部分 */}
-              <div className={styles.quizSection}>
-                <span className={styles.translationLabel}>Translation</span>
-                <div className={styles.quizText}>{q.sentence_translation}</div>
+              <div className={styles.quiz_preview_modal__quiz__section}>
+                <span className={styles.quiz_preview_modal__quiz__label}>
+                  Translation
+                </span>
+                <div className={styles.quiz_preview_modal__quiz__text}>
+                  {q.sentence_translation}
+                </div>
               </div>
               {/* Explanation部分 */}
               {q.explanation && (
-                <div className={styles.explanationBox}>{q.explanation}</div>
+                <div className={styles.quiz_preview_modal__quiz__explanation}>
+                  {q.explanation}
+                </div>
               )}
             </div>
           </div>
         ))}
-        <div className={styles.modalFooter}>
-          <div className={styles.modalFooterSpacer} />
-          <div className={styles.modalFooterBtns}>
-            <button className={styles.closeBtn} onClick={onClose}>
+        <div className={styles.quiz_preview_modal__footer}>
+          <div className={styles.quiz_preview_modal__footer__spacer} />
+          <div className={styles.quiz_preview_modal__footer__buttons}>
+            <button
+              className={
+                styles.quiz_preview_modal__button +
+                " " +
+                styles.quiz_preview_modal__button +
+                "--close"
+              }
+              onClick={onClose}
+            >
               Close
             </button>
             <button
-              className={styles.submitBtn}
+              className={
+                styles.quiz_preview_modal__button +
+                " " +
+                styles.quiz_preview_modal__button +
+                "--submit"
+              }
               onClick={onSubmit}
               disabled={submitting}
             >
