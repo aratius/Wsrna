@@ -165,62 +165,58 @@ export default function QuizPage() {
   }, [review?.id]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.gradientText}>Today's Quiz !!</div>
-      <div className={`card-header ${styles.cardHeaderMargin}`}></div>
-      <div className="card-body">
-        {/* タブUI */}
-        <nav className={styles.tabNav + " tab-scrollbar"}>
-          {languagePairs.map((lp) => {
-            const active = selectedPairId === lp.id;
-            return (
-              <button
-                key={lp.id}
-                onClick={() => setSelectedPairId(lp.id)}
-                className={
-                  styles.tabButton + (active ? " " + styles.activeTab : "")
-                }
-              >
-                {getAbbr(lp.from_lang)}
-                <span className={styles.tabArrow}>›</span>
-                {getAbbr(lp.to_lang)}
-              </button>
-            );
-          })}
-        </nav>
-        {/* クイズリスト本体 */}
-        <div className={styles.quizList}>
+    <div className={styles.quiz}>
+      <div className={styles.quiz__container}>
+        <div className={styles.quiz__header}>
+          <h1 className={styles.quiz__header__title}>Today's Quiz !!</h1>
+          <div className={styles.quiz__header__language_selector}>
+            <select
+              className={styles.quiz__header__language_selector__select}
+              value={selectedPairId}
+              onChange={(e) => setSelectedPairId(e.target.value)}
+            >
+              {languagePairs.map((lp) => (
+                <option key={lp.id} value={lp.id}>
+                  {getAbbr(lp.from_lang)} → {getAbbr(lp.to_lang)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className={styles.quiz__content}>
           {(filteredReviews.length === 0 && !loading) || isFinished ? (
             <div>No quizzes to review.</div>
           ) : (
             review &&
             (() => {
               // 進捗に応じた色を決定
-              let progressColorClass = styles.progressBlue;
+              let progressColorClass = "";
               const progressRatio = (currentIndex + 1) / filteredReviews.length;
               if (progressRatio >= 0.99) {
-                progressColorClass = styles.progressGreen;
+                progressColorClass = "green";
               } else if (progressRatio >= 0.7) {
-                progressColorClass = styles.progressOrange;
+                progressColorClass = "orange";
               }
               return (
-                <div
-                  className={`card ${styles.quizCard} review__item`}
-                  style={{ position: "relative" }}
-                >
+                <div className={styles.quiz__card}>
                   {/* プログレスバー */}
-                  <div className={styles.quizProgressBarWrapper}>
+                  <div className={styles.quiz__progress__wrapper}>
                     <div
                       className={
-                        styles.quizProgressBar + " " + progressColorClass
+                        styles.quiz__progress__bar +
+                        (progressColorClass === "green"
+                          ? " " + styles.quiz__progress__bar + "--green"
+                          : progressColorClass === "orange"
+                          ? " " + styles.quiz__progress__bar + "--orange"
+                          : "")
                       }
                       style={{ width: `${progressRatio * 100}%` }}
                     />
                   </div>
                   {/* ヒントアイコン＋モーダルラッパー */}
-                  <div className={styles.hintIconWrapper}>
+                  <div className={styles.quiz__hint__wrapper}>
                     <button
-                      className={styles.hintIconBtn}
+                      className={styles.quiz__hint__button}
                       onClick={() =>
                         setShowHintModal((prev) => ({
                           ...prev,
@@ -247,8 +243,10 @@ export default function QuizPage() {
                     {/* ヒントポップアップ（シンプルなCSS Transition） */}
                     <div
                       className={
-                        styles.hintPopup +
-                        (showHintModal[review.id] ? " " + styles.visible : "")
+                        styles.quiz__hint__popup +
+                        (showHintModal[review.id]
+                          ? " " + styles.quiz__hint__popup + "--visible"
+                          : "")
                       }
                     >
                       {review.quiz.hint_levels &&
@@ -263,7 +261,7 @@ export default function QuizPage() {
                           {review.quiz.hint_levels.length >
                             (hintIndexes[review.id] || 0) && (
                             <button
-                              className={styles.hintMoreBtn}
+                              className={styles.quiz__hint__more_button}
                               onClick={() =>
                                 handleShowHint(review.id, review.quiz)
                               }
@@ -278,9 +276,9 @@ export default function QuizPage() {
                     </div>
                   </div>
                   {/* Quiz部分 */}
-                  <div className={styles.quizSection}>
-                    <span className={styles.quizLabel}>Quiz</span>
-                    <div className={styles.quizText}>
+                  <div className={styles.quiz__section}>
+                    <span className={styles.quiz__section__label}>Quiz</span>
+                    <div className={styles.quiz__section__text}>
                       {(() => {
                         const answer = review.quiz.answer;
                         const attemptsCount = attempts[review.id] || 0;
@@ -291,8 +289,8 @@ export default function QuizPage() {
                         const isShowFirstChar =
                           results[review.id] === false && attemptsCount === 2;
                         const colorClass = isCorrect
-                          ? styles.correctAnswer
-                          : styles.incorrectAnswer;
+                          ? styles.quiz__answer + "--correct"
+                          : styles.quiz__answer + "--incorrect";
                         const parts = review.quiz.question.split("____");
                         if (isShowFullAnswer) {
                           return (
@@ -317,16 +315,16 @@ export default function QuizPage() {
                       })()}
                     </div>
                     {review.quiz.sentence_translation && (
-                      <div className={styles.translationLabel}>
+                      <div className={styles.quiz__section__translation}>
                         - {review.quiz.sentence_translation}
                       </div>
                     )}
                   </div>
                   {/* Answer部分 */}
-                  <div className={styles.quizSection}>
-                    <span className={styles.answerLabel}>Answer</span>
+                  <div className={styles.quiz__section}>
+                    <span className={styles.quiz__section__label}>Answer</span>
                     <form
-                      className={styles.quizForm}
+                      className={styles.quiz__form}
                       onSubmit={(e) => {
                         e.preventDefault();
                         handleAnswer(review);
@@ -336,14 +334,15 @@ export default function QuizPage() {
                         id={`answer-${review.id}`}
                         key={attempts[review.id] || 0}
                         className={
-                          styles.quizFormControl +
+                          styles.quiz__form__control +
                           " " +
-                          styles.quizFormInputFlex +
+                          styles.quiz__form__control +
+                          "--flex" +
                           (results[review.id] === true
-                            ? " " + styles.correctInput
+                            ? " " + styles.quiz__form__control + "--correct"
                             : results[review.id] === false &&
                               (attempts[review.id] || 0) > 0
-                            ? " " + styles.incorrectInput
+                            ? " " + styles.quiz__form__control + "--incorrect"
                             : "")
                         }
                         type="text"
@@ -366,17 +365,20 @@ export default function QuizPage() {
                       (results[review.id] === false &&
                         (attempts[review.id] || 0) < 3) ? (
                         <button
-                          className={styles.quizFormBtn}
+                          className={styles.quiz__form__button}
                           type="submit"
                           disabled={updating[review.id]}
                         >
                           Answer
                         </button>
                       ) : (
-                        <div className={styles.quizFormBtnRow}>
+                        <div className={styles.quiz__form__button_row}>
                           <button
                             className={
-                              styles.quizFormBtn + " " + styles.quizFormBtnHalf
+                              styles.quiz__form__button +
+                              " " +
+                              styles.quiz__form__button +
+                              "--half"
                             }
                             type="button"
                             onClick={() => {
@@ -391,9 +393,9 @@ export default function QuizPage() {
                       {(results[review.id] === true ||
                         (results[review.id] === false &&
                           (attempts[review.id] || 0) >= 3)) && (
-                        <div className={styles.detailsAccordionWrapper}>
+                        <div className={styles.quiz__details__wrapper}>
                           <button
-                            className={styles.detailsAccordionToggle}
+                            className={styles.quiz__details__toggle}
                             type="button"
                             onClick={() =>
                               setDetailsOpen((prev) => ({
@@ -406,14 +408,24 @@ export default function QuizPage() {
                           </button>
                           <div
                             className={
-                              styles.detailsAccordionContent +
-                              (detailsOpen[review.id] ? " " + styles.open : "")
+                              styles.quiz__details__content +
+                              (detailsOpen[review.id]
+                                ? " " + styles.quiz__details__content + "--open"
+                                : "")
                             }
                           >
                             {/* Main word/訳語 */}
                             {review.quiz.main_word && (
-                              <div className={styles.detailsMainWordBlock}>
-                                <span className={styles.detailsMainWord}>
+                              <div
+                                className={
+                                  styles.quiz__details__main_word__block
+                                }
+                              >
+                                <span
+                                  className={
+                                    styles.quiz__details__main_word__text
+                                  }
+                                >
                                   {review.quiz.main_word}
                                 </span>
                                 {Array.isArray(
@@ -423,7 +435,7 @@ export default function QuizPage() {
                                     0 && (
                                     <span
                                       className={
-                                        styles.detailsMainWordTranslation
+                                        styles.quiz__details__main_word__translation
                                       }
                                     >
                                       [
@@ -448,20 +460,24 @@ export default function QuizPage() {
                             {/* 例文リスト */}
                             {Array.isArray(review.quiz.example_sentences) &&
                               review.quiz.example_sentences.length > 0 && (
-                                <ul className={styles.detailsExampleList}>
+                                <ul
+                                  className={
+                                    styles.quiz__details__example__list
+                                  }
+                                >
                                   {review.quiz.example_sentences.map(
                                     (ex: any, i: number) => (
                                       <li key={i}>
                                         <span
                                           className={
-                                            styles.detailsExampleSentence
+                                            styles.quiz__details__example__sentence
                                           }
                                         >
                                           {ex.sentence}
                                         </span>
                                         <span
                                           className={
-                                            styles.detailsExampleTranslation
+                                            styles.quiz__details__example__translation
                                           }
                                         >
                                           - {ex.translation}
@@ -473,9 +489,15 @@ export default function QuizPage() {
                               )}
                             {/* Explanation */}
                             {review.quiz.explanation && (
-                              <div className={styles.detailsExplanationBox}>
+                              <div
+                                className={
+                                  styles.quiz__details__explanation__box
+                                }
+                              >
                                 <span
-                                  className={styles.detailsExplanationLabel}
+                                  className={
+                                    styles.quiz__details__explanation__label
+                                  }
                                 >
                                   Explanation
                                 </span>
@@ -487,7 +509,6 @@ export default function QuizPage() {
                       )}
                     </form>
                   </div>
-                  {/* 正誤判定と詳細ボタン＋Nextボタン */}
                 </div>
               );
             })()
