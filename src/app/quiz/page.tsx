@@ -167,22 +167,30 @@ export default function QuizPage() {
   return (
     <div className={styles.quiz}>
       <div className={styles.quiz__container}>
-        <div className={styles.quiz__header}>
-          <h1 className={styles.quiz__header__title}>Today's Quiz !!</h1>
-          <div className={styles.quiz__header__language_selector}>
-            <select
-              className={styles.quiz__header__language_selector__select}
-              value={selectedPairId}
-              onChange={(e) => setSelectedPairId(e.target.value)}
-            >
-              {languagePairs.map((lp) => (
-                <option key={lp.id} value={lp.id}>
-                  {getAbbr(lp.from_lang)} → {getAbbr(lp.to_lang)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <h1 className={styles.quiz__title}>Today's Quiz !!</h1>
+        {/* タブUI */}
+        <nav className={styles["quiz__tab"]}>
+          {languagePairs.map((lp) => {
+            const active = selectedPairId === lp.id;
+            return (
+              <button
+                key={lp.id}
+                onClick={() => setSelectedPairId(lp.id)}
+                className={[
+                  styles["quiz__tab__button"],
+                  active ? styles["quiz__tab__button--active"] : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {getAbbr(lp.from_lang)}
+                <span className={styles["quiz__tab-arrow"]}>›</span>
+                {getAbbr(lp.to_lang)}
+              </button>
+            );
+          })}
+        </nav>
+
         <div className={styles.quiz__content}>
           {(filteredReviews.length === 0 && !loading) || isFinished ? (
             <div>No quizzes to review.</div>

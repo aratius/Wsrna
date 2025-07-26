@@ -24,9 +24,8 @@
     justify-content: space-between;
 
     &__title {
-      font-size: $font-size-lg;
-      font-weight: 700;
-      color: $color-text-primary;
+      @include gradient_title();
+      padding-bottom: $spacing-s;
     }
 
     &__language-selector {
@@ -194,7 +193,7 @@
       border: none;
       padding: 6px 12px;
       border-radius: 4px;
-      font-size: $font-size-xs;
+      font-size: 12px;
       cursor: pointer;
       transition: background-color 0.2s;
 
@@ -393,7 +392,7 @@
 
       &__translation {
         display: block;
-        font-size: $font-size-xs;
+        font-size: 12px;
         color: $color-text-secondary;
         font-style: italic;
       }

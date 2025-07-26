@@ -29,17 +29,8 @@
     border-bottom: 1px solid #ececec;
 
     &__title {
-      font-size: $font-size-lg;
-      font-weight: 700;
-      background: linear-gradient(90deg, #007aff, #ff9500 60%, #af52de);
-      background-size: 200% 100%;
-      background-position: 0% 50%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
-      letter-spacing: 0.04em;
-      animation: gradientMove 6s linear infinite alternate;
+      @include gradient_title();
+      padding-bottom: $spacing-s;
     }
 
     &__divider {
