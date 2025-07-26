@@ -219,12 +219,21 @@
 
     &__label {
       display: block;
-      font-size: $font-size-sm;
+      font-size: 15px;
       font-weight: 600;
-      color: $color-text-secondary;
-      margin-bottom: $spacing-xs;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      line-height: 1;
+      padding: 0;
+      margin-right: 8px;
+      &--quiz {
+        color: #7c4dff;
+      }
+      &--answer {
+        color: #34c759;
+      }
+      &--translation {
+        color: #ff9500;
+      }
     }
 
     &__text {
