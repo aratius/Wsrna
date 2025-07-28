@@ -5,7 +5,7 @@
     max-width: 600px;
     height: 100%;
     margin: 0 auto;
-    padding: $spacing-m;
+    padding: $spacing-s;
     display: flex;
     flex-direction: column;
     /* スクロールバー非表示 */
@@ -83,12 +83,14 @@
 
       &--input {
         min-height: 44px;
+        background: #fafbfc;
       }
 
       &--select {
         min-height: 44px;
         cursor: pointer;
         color: $color-text-primary;
+        background: #fafbfc;
       }
     }
 
