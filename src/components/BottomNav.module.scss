@@ -1,13 +1,13 @@
 .bottomNav {
   width: 100%;
-  max-width: 390px;
   margin: 0 auto;
-  height: 56px;
+  height: 60px;
+  padding-top: 2px;
   background: #fff;
   border-top: 1px solid #ececec;
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  align-items: start;
   z-index: 100;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.03);
 }

@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./QuizPreviewModal.module.scss";
+import styles from "../create.module.scss";
 
-export interface QuizPreviewModalProps {
+export interface CreatePreviewModalProps {
   open: boolean;
   onClose: () => void;
   quizzes: any[];
@@ -9,7 +9,7 @@ export interface QuizPreviewModalProps {
   submitting: boolean;
 }
 
-const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
+const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
   open,
   onClose,
   quizzes,
@@ -18,19 +18,17 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
 }) => {
   if (!open) return null;
   return (
-    <div className={styles["quiz-preview-modal__overlay"]}>
-      <div className={styles["quiz-preview-modal__card"]}>
-        <h2 className={styles["quiz-preview-modal__title"]}>Quiz Preview</h2>
+    <div className={styles["create__preview__overlay"]}>
+      <div className={styles["create__preview__card"]}>
+        <h2 className={styles["create__preview__title"]}>Quiz Preview</h2>
         {quizzes.map((q: any, idx: number) => (
-          <div key={idx} className={styles["quiz-preview-modal__quiz__card"]}>
+          <div key={idx} className={styles["create__preview__quiz__card"]}>
             {q.main_word && (
               <div
-                className={styles["quiz-preview-modal__quiz__main-word__block"]}
+                className={styles["create__preview__quiz__main-word__block"]}
               >
                 <span
-                  className={
-                    styles["quiz-preview-modal__quiz__main-word__text"]
-                  }
+                  className={styles["create__preview__quiz__main-word__text"]}
                 >
                   {q.main_word}
                 </span>
@@ -38,9 +36,7 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
                   q.main_word_translations.length > 0 && (
                     <span
                       className={
-                        styles[
-                          "quiz-preview-modal__quiz__main-word__translations"
-                        ]
+                        styles["create__preview__quiz__main-word__translations"]
                       }
                     >
                       [
@@ -56,53 +52,51 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
               </div>
             )}
             {/* Quiz, Answer, Translation, Explanation をカードでラップ */}
-            <div className={styles["quiz-preview-modal__quiz__content"]}>
+            <div className={styles["create__preview__quiz__content"]}>
               {/* Quiz部分 */}
-              <div className={styles["quiz-preview-modal__quiz__section"]}>
-                <span className={styles["quiz-preview-modal__quiz__label"]}>
+              <div className={styles["create__preview__quiz__section"]}>
+                <span className={styles["create__preview__quiz__label"]}>
                   Quiz
                 </span>
-                <div className={styles["quiz-preview-modal__quiz__text"]}>
+                <div className={styles["create__preview__quiz__text"]}>
                   {q.question}
                 </div>
               </div>
               {/* Answer部分 */}
-              <div className={styles["quiz-preview-modal__quiz__section"]}>
-                <span className={styles["quiz-preview-modal__quiz__label"]}>
+              <div className={styles["create__preview__quiz__section"]}>
+                <span className={styles["create__preview__quiz__label"]}>
                   Answer
                 </span>
-                <div className={styles["quiz-preview-modal__quiz__text"]}>
+                <div className={styles["create__preview__quiz__text"]}>
                   {q.answer}
                 </div>
               </div>
               {/* Translation部分 */}
-              <div className={styles["quiz-preview-modal__quiz__section"]}>
-                <span className={styles["quiz-preview-modal__quiz__label"]}>
+              <div className={styles["create__preview__quiz__section"]}>
+                <span className={styles["create__preview__quiz__label"]}>
                   Translation
                 </span>
-                <div className={styles["quiz-preview-modal__quiz__text"]}>
+                <div className={styles["create__preview__quiz__text"]}>
                   {q.sentence_translation}
                 </div>
               </div>
               {/* Explanation部分 */}
               {q.explanation && (
-                <div
-                  className={styles["quiz-preview-modal__quiz__explanation"]}
-                >
+                <div className={styles["create__preview__quiz__explanation"]}>
                   {q.explanation}
                 </div>
               )}
             </div>
           </div>
         ))}
-        <div className={styles["quiz-preview-modal__footer"]}>
-          <div className={styles["quiz-preview-modal__footer__spacer"]} />
-          <div className={styles["quiz-preview-modal__footer__buttons"]}>
+        <div className={styles["create__preview__footer"]}>
+          <div className={styles["create__preview__footer__spacer"]} />
+          <div className={styles["create__preview__footer__buttons"]}>
             <button
               className={
-                styles["quiz-preview-modal__button"] +
+                styles["create__preview__button"] +
                 " " +
-                styles["quiz-preview-modal__button--close"]
+                styles["create__preview__button--close"]
               }
               onClick={onClose}
             >
@@ -110,9 +104,9 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
             </button>
             <button
               className={
-                styles["quiz-preview-modal__button"] +
+                styles["create__preview__button"] +
                 " " +
-                styles["quiz-preview-modal__button--submit"]
+                styles["create__preview__button--submit"]
               }
               onClick={onSubmit}
               disabled={submitting}
@@ -126,4 +120,4 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
   );
 };
 
-export default QuizPreviewModal;
+export default CreatePreviewModal;
