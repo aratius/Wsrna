@@ -101,15 +101,23 @@ export default function QuizHintModal({
           <>
             {/* ヒントヘッダー */}
             <div className={styles["quiz__hint__header"]}>
-              Hint ({Math.max(1, currentHintIndex)}/{totalHints})
+              Hint
+              <span>
+                ({Math.max(1, currentHintIndex)}/{totalHints})
+              </span>
             </div>
-            <div>
+            <div className={styles["quiz__hint__content"]}>
               {review.quiz.hint_levels[(hintIndexes[review.id] || 0) - 1] ||
                 review.quiz.hint_levels[0]}
             </div>
             {/* ボタン（最後のヒントの時は「閉じる」、それ以外は「さらにヒント」） */}
             <button
-              className={styles["quiz__hint__more-button"]}
+              className={
+                styles["quiz__hint__more-button"] +
+                (isLastHint
+                  ? " " + styles["quiz__hint__more-button"] + "--close"
+                  : "")
+              }
               onClick={handleMoreButtonClick}
             >
               {isLastHint ? "Close" : "More"}

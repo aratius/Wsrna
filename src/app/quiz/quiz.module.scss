@@ -205,13 +205,18 @@
         margin-bottom: $spacing-xs;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 1px solid #f0f0f0;
-        padding-bottom: $spacing-xs;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        span {
+          color: #7c4dff;
+          font-size: 12px;
+        }
       }
 
       // ヒント内容のスタイル
-      > div:first-child {
-        font-size: $font-size-base;
+      .quiz__hint__content {
+        font-size: 12px;
         line-height: 1.6;
         color: $color-text-primary;
         margin-bottom: $spacing-s;
@@ -240,6 +245,17 @@
 
       &:active {
         transform: translateY(0);
+      }
+
+      // Closeボタンの時のスタイル
+      &--close {
+        background: linear-gradient(90deg, #6c757d 0%, #5a6268 100%);
+        color: #fff;
+
+        &:hover {
+          background: linear-gradient(90deg, #5a6268 0%, #495057 100%);
+          box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
       }
     }
   }
