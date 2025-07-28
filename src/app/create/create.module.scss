@@ -199,16 +199,15 @@
         &__text {
           display: block;
           font-weight: 700;
-          font-size: 18px;
+          font-size: 16px;
           color: $color-text-primary;
           word-break: break-word;
         }
 
         &__translations {
           color: $color-primary;
-          font-size: $font-size-sm;
+          font-size: 14px;
           font-weight: 500;
-          margin-left: $spacing-xs;
         }
       }
 
@@ -228,33 +227,42 @@
       }
 
       &__label {
-        display: inline-block;
-        font-size: 12px;
+        display: block;
+        font-size: 15px;
         font-weight: 600;
-        color: #7c4dff;
-        background: rgba(124, 77, 255, 0.1);
-        padding: 2px 8px;
-        border-radius: 4px;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        line-height: 1;
+        padding: 0;
+        margin-right: 8px;
+        &--quiz {
+          color: #7c4dff;
+        }
+        &--answer {
+          color: #34c759;
+        }
+        &--translation {
+          color: #ff9500;
+        }
       }
 
       &__text {
         font-size: $font-size-base;
-        color: $color-text-primary;
         line-height: 1.5;
+        color: $color-text-primary;
+        margin-bottom: $spacing-xs;
         word-break: break-word;
       }
 
       &__explanation {
         margin-top: $spacing-s;
         padding: $spacing-s;
-        background: rgba(124, 77, 255, 0.05);
-        border-left: 3px solid $color-primary;
-        border-radius: 0 4px 4px 0;
-        font-size: $font-size-sm;
-        color: $color-text-secondary;
+        background: #f0f8ff;
+        border-radius: 6px;
+        border-left: 4px solid $color-primary;
+        font-size: 14px;
+        color: $color-text-primary;
+        margin-bottom: $spacing-xs;
+        letter-spacing: 0.5px;
         line-height: 1.6;
       }
     }

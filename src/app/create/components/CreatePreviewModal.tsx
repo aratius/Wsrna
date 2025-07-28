@@ -62,7 +62,13 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
               <div className={styles["create__preview__quiz__content"]}>
                 {/* Quiz部分 */}
                 <div className={styles["create__preview__quiz__section"]}>
-                  <span className={styles["create__preview__quiz__label"]}>
+                  <span
+                    className={
+                      styles["create__preview__quiz__label"] +
+                      " " +
+                      styles["create__preview__quiz__label--quiz"]
+                    }
+                  >
                     Quiz
                   </span>
                   <div className={styles["create__preview__quiz__text"]}>
@@ -71,7 +77,13 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                 </div>
                 {/* Answer部分 */}
                 <div className={styles["create__preview__quiz__section"]}>
-                  <span className={styles["create__preview__quiz__label"]}>
+                  <span
+                    className={
+                      styles["create__preview__quiz__label"] +
+                      " " +
+                      styles["create__preview__quiz__label--answer"]
+                    }
+                  >
                     Answer
                   </span>
                   <div className={styles["create__preview__quiz__text"]}>
@@ -80,7 +92,13 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                 </div>
                 {/* Translation部分 */}
                 <div className={styles["create__preview__quiz__section"]}>
-                  <span className={styles["create__preview__quiz__label"]}>
+                  <span
+                    className={
+                      styles["create__preview__quiz__label"] +
+                      " " +
+                      styles["create__preview__quiz__label--translation"]
+                    }
+                  >
                     Translation
                   </span>
                   <div className={styles["create__preview__quiz__text"]}>
