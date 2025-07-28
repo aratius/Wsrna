@@ -154,17 +154,22 @@
       justify-content: center;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+        background-color: rgba(124, 77, 255, 0.1);
       }
 
       svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         fill: none;
-        stroke: #222;
+        stroke: #7c4dff;
         stroke-width: 2;
         stroke-linecap: round;
         stroke-linejoin: round;
+        transition: stroke 0.2s;
+      }
+
+      &:hover svg {
+        stroke: #5a3fd8;
       }
     }
 
@@ -174,38 +179,57 @@
       right: 0;
       background: #fff;
       border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: $spacing-s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      min-width: 200px;
-      max-width: 300px;
-      font-size: $font-size-sm;
+      border-radius: 12px;
+      padding: $spacing-m;
+      box-shadow: 0 8px 24px rgba(124, 77, 255, 0.15);
+      min-width: 240px;
+      max-width: 320px;
+      font-size: $font-size-base;
       color: $color-text-primary;
       opacity: 0;
       visibility: hidden;
       transform: translateY(-10px);
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      border-left: 4px solid #7c4dff;
 
       &--visible {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
       }
+
+      // ヒント内容のスタイル
+      > div:first-child {
+        font-size: $font-size-base;
+        line-height: 1.6;
+        color: $color-text-primary;
+        margin-bottom: $spacing-s;
+        font-weight: 500;
+      }
     }
 
     &__more-button {
-      margin-top: $spacing-xs;
-      background: $color-primary;
+      margin-top: $spacing-s;
+      background: linear-gradient(90deg, #7c4dff 0%, #5a3fd8 100%);
       color: #fff;
       border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 12px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: $font-size-sm;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
+      display: inline-block;
+      text-align: center;
 
       &:hover {
-        background: darken($color-primary, 10%);
+        background: linear-gradient(90deg, #5a3fd8 0%, #4a2fc7 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
   }
