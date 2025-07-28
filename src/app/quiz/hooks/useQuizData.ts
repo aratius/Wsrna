@@ -5,9 +5,28 @@ export function useQuizData() {
   const session = useSession();
   const [reviews, setReviews] = useState<any[]>([]);
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
-  const [selectedPairId, setSelectedPairId] = useState<string>("");
+  const [selectedPairId, setSelectedPairIdState] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // localStorage key
+  const LS_KEY = "quiz_selectedPairId";
+
+  // 初期化時にlocalStorageからselectedPairIdを取得
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(LS_KEY);
+      if (stored) setSelectedPairIdState(stored);
+    }
+  }, []);
+
+  // setSelectedPairId: localStorageにも保存
+  const setSelectedPairId = (id: string) => {
+    setSelectedPairIdState(id);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LS_KEY, id);
+    }
+  };
 
   // クイズデータ取得
   useEffect(() => {
@@ -19,13 +38,21 @@ export function useQuizData() {
         const res = await fetch("/api/review-list", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: session.user.id }),
+          body: JSON.stringify({
+            user_id: session.user.id,
+            language_pair_id: selectedPairId || undefined
+          }),
         });
         const data = await res.json();
         if (data.error) setError(data.error);
         else {
           setReviews(data || []);
           console.log("review-list data:", data);
+          // デバッグ: quizデータの確認
+          if (data && data.length > 0) {
+            console.log("Sample review data:", data[0]);
+            console.log("Quiz data exists:", !!data[0]?.quiz);
+          }
         }
       } catch (e: any) {
         setError(e.message);
@@ -34,7 +61,7 @@ export function useQuizData() {
       }
     };
     fetchReviews();
-  }, [session]);
+  }, [session, selectedPairId]);
 
   // Language Pair取得
   useEffect(() => {
@@ -53,6 +80,13 @@ export function useQuizData() {
     };
     fetchPairs();
   }, [session, selectedPairId]);
+
+  // languagePairsが変わったとき、selectedPairIdが未設定なら自動でセット
+  useEffect(() => {
+    if (!selectedPairId && languagePairs.length > 0) {
+      setSelectedPairId(languagePairs[0].id);
+    }
+  }, [languagePairs, selectedPairId]);
 
   return {
     reviews,

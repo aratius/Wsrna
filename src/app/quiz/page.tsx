@@ -38,10 +38,8 @@ export default function QuizPage() {
     handleNext,
   } = useQuizState();
 
-  // 選択中のLanguage Pairのクイズのみ表示
-  const filteredReviews = selectedPairId
-    ? reviews.filter((r) => r.quiz?.language_pair_id === selectedPairId)
-    : reviews;
+  // API側でフィルタリング済みのため、そのまま使用
+  const filteredReviews = reviews;
 
   // 1問ずつ表示するロジック
   const review = filteredReviews[currentIndex];

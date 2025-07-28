@@ -25,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "supabase": "^2.31.8",
     "typescript": "^5"
   }
 }

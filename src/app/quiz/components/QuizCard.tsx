@@ -100,6 +100,15 @@ export default function QuizCard({
         </span>
         <div className={styles["quiz__section__text"]}>
           {(() => {
+            // review.quizがnullの場合のエラーハンドリング
+            if (!review.quiz) {
+              return (
+                <div className={styles["quiz__error"]}>
+                  Quiz data not found. Please try refreshing the page.
+                </div>
+              );
+            }
+
             const answer = review.quiz.answer;
             const attemptsCount = attempts[review.id] || 0;
             const isCorrect = results[review.id] === true;
@@ -206,7 +215,7 @@ export default function QuizCard({
             );
           })()}
         </div>
-        {review.quiz.sentence_translation && (
+        {review.quiz?.sentence_translation && (
           <div className={styles["quiz__section__translation"]}>
             - {review.quiz.sentence_translation}
           </div>
@@ -306,7 +315,7 @@ export default function QuizCard({
                 }
               >
                 {/* Main word/訳語 */}
-                {review.quiz.main_word && (
+                {review.quiz?.main_word && (
                   <div className={styles["quiz__details__main-word__block"]}>
                     <span className={styles["quiz__details__main-word__text"]}>
                       {review.quiz.main_word}
@@ -336,7 +345,7 @@ export default function QuizCard({
                   </div>
                 )}
                 {/* Explanation */}
-                {review.quiz.explanation && (
+                {review.quiz?.explanation && (
                   <div className={styles["quiz__details__explanation__box"]}>
                     <span
                       className={styles["quiz__details__explanation__label"]}

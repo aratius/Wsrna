@@ -49,7 +49,7 @@ export default function QuizHintModal({
   }, [review, showHintModal[review?.id], onSetShowHintModal]);
 
   const currentHintIndex = hintIndexes[review.id] || 0;
-  const totalHints = review.quiz.hint_levels?.length || 0;
+  const totalHints = review.quiz?.hint_levels?.length || 0;
   const isLastHint = currentHintIndex >= totalHints - 1;
 
   const handleHintButtonClick = (e: React.MouseEvent) => {
@@ -119,7 +119,7 @@ export default function QuizHintModal({
             : "")
         }
       >
-        {review.quiz.hint_levels && review.quiz.hint_levels.length > 0 ? (
+        {review.quiz?.hint_levels && review.quiz.hint_levels.length > 0 ? (
           <>
             {/* ヒントヘッダー */}
             <div className={styles["quiz__hint__header"]}>
@@ -129,7 +129,7 @@ export default function QuizHintModal({
               </span>
             </div>
             <div className={styles["quiz__hint__content"]}>
-              {review.quiz.hint_levels[hintIndexes[review.id] || 0]}
+              {review.quiz?.hint_levels[hintIndexes[review.id] || 0]}
             </div>
             {/* ボタン（最後のヒントの時は「閉じる」、それ以外は「さらにヒント」） */}
             <button
