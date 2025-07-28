@@ -29,14 +29,22 @@ export default function QuizHintModal({
 
     function handleClickOutside(e: MouseEvent) {
       const popup = document.querySelector(`.${styles["quiz__hint__popup"]}`);
-      if (popup && !(e.target instanceof Node && popup.contains(e.target))) {
-        onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      const button = document.querySelector(`.${styles["quiz__hint__button"]}`);
+
+      // ポップアップまたはボタン内のクリックは無視
+      if (
+        (popup && popup.contains(e.target as Node)) ||
+        (button && button.contains(e.target as Node))
+      ) {
+        return;
       }
+
+      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
     }
 
-    document.addEventListener("mousedown", handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
   }, [review, showHintModal[review?.id], onSetShowHintModal]);
 
@@ -44,7 +52,9 @@ export default function QuizHintModal({
   const totalHints = review.quiz.hint_levels?.length || 0;
   const isLastHint = currentHintIndex >= totalHints;
 
-  const handleHintButtonClick = () => {
+  const handleHintButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // イベントの伝播を停止
+
     if (showHintModal[review.id]) {
       // ヒントが開いている場合は閉じる
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
@@ -55,7 +65,9 @@ export default function QuizHintModal({
     }
   };
 
-  const handleMoreButtonClick = () => {
+  const handleMoreButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // イベントの伝播を停止
+
     if (isLastHint) {
       // 最後のヒントの場合は閉じる
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
@@ -68,12 +80,7 @@ export default function QuizHintModal({
   return (
     <div className={styles["quiz__hint__wrapper"]}>
       <button
-        className={
-          styles["quiz__hint__button"] +
-          (showHintModal[review.id]
-            ? " " + styles["quiz__hint__button"] + "--active"
-            : "")
-        }
+        className={styles["quiz__hint__button"]}
         onClick={handleHintButtonClick}
         aria-label="Show hint"
       >

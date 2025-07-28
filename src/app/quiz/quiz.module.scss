@@ -157,12 +157,6 @@
         background-color: rgba(124, 77, 255, 0.1);
       }
 
-      // ヒントが開いている状態のスタイル
-      &--active {
-        background-color: rgba(124, 77, 255, 0.15);
-        border: 1px solid rgba(124, 77, 255, 0.3);
-      }
-
       svg {
         width: 20px;
         height: 20px;
