@@ -469,6 +469,99 @@
       font-weight: 600;
     }
   }
+
+  // 空欄コンテナ
+  &__blanks-container {
+    display: inline-flex;
+    gap: 0.3em;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  // 単語単位の空欄
+  &__word-blank {
+    display: inline-flex;
+    align-items: center;
+    min-width: var(--min-width, 1em);
+    border-bottom: 2px solid #5856d6;
+    padding: 0 0.1em;
+    margin: 0 0.1em;
+    position: relative;
+
+    // 状態別下線色
+    &--correct {
+      border-bottom-color: #34c759;
+    }
+    &--incorrect {
+      border-bottom-color: #d50000;
+    }
+    // 単語の長さに応じて幅を調整
+    &[style*="--word-length: 1"] {
+      min-width: 0.8em;
+    }
+    &[style*="--word-length: 2"] {
+      min-width: 1.2em;
+    }
+    &[style*="--word-length: 3"] {
+      min-width: 1.6em;
+    }
+    &[style*="--word-length: 4"] {
+      min-width: 2em;
+    }
+    &[style*="--word-length: 5"] {
+      min-width: 2.4em;
+    }
+    &[style*="--word-length: 6"] {
+      min-width: 2.8em;
+    }
+    &[style*="--word-length: 7"] {
+      min-width: 3.2em;
+    }
+    &[style*="--word-length: 8"] {
+      min-width: 3.6em;
+    }
+    &[style*="--word-length: 9"] {
+      min-width: 4em;
+    }
+    &[style*="--word-length: 10"] {
+      min-width: 4.4em;
+    }
+
+    // 長い単語の場合は動的に計算
+    &[style*="--word-length: 11"],
+    &[style*="--word-length: 12"],
+    &[style*="--word-length: 13"],
+    &[style*="--word-length: 14"],
+    &[style*="--word-length: 15"] {
+      min-width: calc(var(--word-length) * 0.6em);
+    }
+  }
+
+  // 空欄の各文字
+  &__word-blank__char {
+    color: #5856d6;
+    font-weight: 600;
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.05em;
+    animation: blankPulse 2s ease-in-out infinite;
+  }
+
+  // 正解時の文字（緑色）
+  &__word-blank__char--correct {
+    color: #34c759;
+    animation: none;
+  }
+
+  // 空欄のパルスアニメーション
+  @keyframes blankPulse {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
 }
 
 // アニメーション

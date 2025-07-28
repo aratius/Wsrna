@@ -105,32 +105,105 @@ export default function QuizCard({
             const isCorrect = results[review.id] === true;
             const isShowFullAnswer =
               isCorrect || (results[review.id] === false && attemptsCount >= 3);
-            const isShowFirstChar =
-              results[review.id] === false && attemptsCount === 2;
             const colorClass = isCorrect
               ? styles["quiz__answer"] + "--correct"
               : styles["quiz__answer"] + "--incorrect";
+
+            // 正解を単語に分割し、各単語の文字数に基づいて空欄を生成
+            const splitAnswerIntoWords = (answer: string) => {
+              return answer.split(/\s+/).filter((word) => word.length > 0);
+            };
+
+            // 1つのテンプレートにまとめ、if分岐で内容を切り替える
             const parts = review.quiz.question.split("____");
-            if (isShowFullAnswer) {
-              return (
-                <>
-                  {parts[0]}
-                  <span className={colorClass}>{answer}</span>
-                  {parts[1]}
-                </>
-              );
-            } else if (isShowFirstChar) {
-              return (
-                <>
-                  {parts[0]}
-                  <span className={colorClass}>{answer[0]}</span>
-                  {"_".repeat(Math.max(answer.length - 1, 0))}
-                  {parts[1]}
-                </>
-              );
-            } else {
-              return review.quiz.question;
-            }
+            const answerWords = splitAnswerIntoWords(answer);
+
+            return (
+              <>
+                {parts[0]}
+                <span className={styles["quiz__blanks-container"]}>
+                  {answerWords.map((word, index) => {
+                    // isShowFullAnswer: 正解表示時（緑色で文字表示）
+                    // 共通化: word blankの描画を1つの関数でまとめる
+                    const renderWordBlank = ({
+                      word,
+                      index,
+                      showFullAnswer,
+                      isCorrect,
+                      isIncorrect,
+                    }: {
+                      word: string;
+                      index: number;
+                      showFullAnswer: boolean;
+                      isCorrect: boolean;
+                      isIncorrect: boolean;
+                    }) => {
+                      const style = {
+                        "--word-length": word.length,
+                        "--min-width": `${Math.max(word.length * 0.6, 1)}em`,
+                      } as React.CSSProperties;
+                      let blankClass = styles["quiz__word-blank"];
+                      if (isCorrect)
+                        blankClass += " " + styles["quiz__word-blank--correct"];
+                      if (isIncorrect)
+                        blankClass +=
+                          " " + styles["quiz__word-blank--incorrect"];
+
+                      if (showFullAnswer) {
+                        // 正解時: 全文字を緑色で表示
+                        return (
+                          <span
+                            key={index}
+                            className={blankClass}
+                            style={style}
+                          >
+                            {word.split("").map((char, charIndex) => (
+                              <span
+                                key={charIndex}
+                                className={
+                                  styles["quiz__word-blank__char"] +
+                                  " " +
+                                  styles["quiz__word-blank__char--correct"]
+                                }
+                              >
+                                {char}
+                              </span>
+                            ))}
+                          </span>
+                        );
+                      } else {
+                        // 通常時: 下線のみ
+                        return (
+                          <span
+                            key={index}
+                            className={blankClass}
+                            style={style}
+                          >
+                            {word.split("").map((_, charIndex) => (
+                              <span
+                                key={charIndex}
+                                className={styles["quiz__word-blank__char"]}
+                              ></span>
+                            ))}
+                          </span>
+                        );
+                      }
+                    };
+
+                    return renderWordBlank({
+                      word,
+                      index,
+                      showFullAnswer: isShowFullAnswer,
+                      isCorrect:
+                        isShowFullAnswer && results[review.id] === true,
+                      isIncorrect:
+                        isShowFullAnswer && results[review.id] === false,
+                    });
+                  })}
+                </span>
+                {parts[1]}
+              </>
+            );
           })()}
         </div>
         {review.quiz.sentence_translation && (
