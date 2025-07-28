@@ -125,7 +125,7 @@ export default function QuizHintModal({
             <div className={styles["quiz__hint__header"]}>
               Hint
               <span>
-                ({Math.max(1, currentHintIndex)}/{totalHints})
+                ({Math.max(1, currentHintIndex + 1)}/{totalHints})
               </span>
             </div>
             <div className={styles["quiz__hint__content"]}>
