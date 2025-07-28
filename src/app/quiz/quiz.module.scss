@@ -145,6 +145,7 @@
     &__button {
       background: none;
       border: none;
+      border-radius: 50%;
       padding: 8px;
       cursor: pointer;
       transition: background-color 0.2s;
@@ -154,6 +155,12 @@
 
       &:hover {
         background-color: rgba(124, 77, 255, 0.1);
+      }
+
+      // ヒントが開いている状態のスタイル
+      &--active {
+        background-color: rgba(124, 77, 255, 0.15);
+        border: 1px solid rgba(124, 77, 255, 0.3);
       }
 
       svg {
@@ -168,6 +175,11 @@
       }
 
       &:hover svg {
+        stroke: #5a3fd8;
+      }
+
+      // ヒントが開いている時のアイコン色
+      &--active svg {
         stroke: #5a3fd8;
       }
     }
@@ -249,12 +261,10 @@
 
       // Closeボタンの時のスタイル
       &--close {
-        background: linear-gradient(90deg, #6c757d 0%, #5a6268 100%);
-        color: #fff;
-
+        background: $color-error;
         &:hover {
-          background: linear-gradient(90deg, #5a6268 0%, #495057 100%);
-          box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+          background: darken($color-error, 10%);
+          box-shadow: 0 4px 12px rgba(213, 0, 0, 0.3);
         }
       }
     }

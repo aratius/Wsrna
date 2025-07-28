@@ -68,7 +68,12 @@ export default function QuizHintModal({
   return (
     <div className={styles["quiz__hint__wrapper"]}>
       <button
-        className={styles["quiz__hint__button"]}
+        className={
+          styles["quiz__hint__button"] +
+          (showHintModal[review.id]
+            ? " " + styles["quiz__hint__button"] + "--active"
+            : "")
+        }
         onClick={handleHintButtonClick}
         aria-label="Show hint"
       >
