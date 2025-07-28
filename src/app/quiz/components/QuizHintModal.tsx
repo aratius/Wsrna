@@ -10,6 +10,9 @@ interface QuizHintModalProps {
   onSetShowHintModal: (
     callback: (prev: { [id: string]: boolean }) => { [id: string]: boolean }
   ) => void;
+  onSetHintIndexes: (
+    callback: (prev: { [id: string]: number }) => { [id: string]: number }
+  ) => void;
 }
 
 export default function QuizHintModal({
@@ -18,6 +21,7 @@ export default function QuizHintModal({
   showHintModal,
   onShowHint,
   onSetShowHintModal,
+  onSetHintIndexes,
 }: QuizHintModalProps) {
   // ヒントモーダル外クリックで閉じる
   useEffect(() => {
@@ -45,7 +49,8 @@ export default function QuizHintModal({
       // ヒントが開いている場合は閉じる
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
     } else {
-      // ヒントが閉じている場合は開く
+      // ヒントが閉じている場合は開く（ヒントを最初から表示）
+      onSetHintIndexes((prev) => ({ ...prev, [review.id]: 0 }));
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: true }));
     }
   };
@@ -100,10 +105,10 @@ export default function QuizHintModal({
             </div>
             {/* ボタン（最後のヒントの時は「閉じる」、それ以外は「さらにヒント」） */}
             <button
-              className={styles["quiz__hint__more_button"]}
+              className={styles["quiz__hint__more-button"]}
               onClick={handleMoreButtonClick}
             >
-              {isLastHint ? "閉じる" : "さらにヒント"}
+              {isLastHint ? "Close" : "More"}
             </button>
           </>
         ) : (

@@ -64,6 +64,7 @@ export function useQuizState() {
     results,
     updating,
     hintIndexes,
+    setHintIndexes,
     showHintModal,
     setShowHintModal,
     attempts,

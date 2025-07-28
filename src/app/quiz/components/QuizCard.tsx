@@ -26,6 +26,9 @@ interface QuizCardProps {
     callback: (prev: { [id: string]: string }) => { [id: string]: string }
   ) => void;
   onNext: () => void;
+  onSetHintIndexes: (
+    callback: (prev: { [id: string]: number }) => { [id: string]: number }
+  ) => void;
 }
 
 export default function QuizCard({
@@ -45,6 +48,7 @@ export default function QuizCard({
   onSetDetailsOpen,
   onSetAnswers,
   onNext,
+  onSetHintIndexes,
 }: QuizCardProps) {
   // 進捗に応じた色を決定
   let progressColorClass = "";
@@ -79,6 +83,7 @@ export default function QuizCard({
         showHintModal={showHintModal}
         onShowHint={onShowHint}
         onSetShowHintModal={onSetShowHintModal}
+        onSetHintIndexes={onSetHintIndexes}
       />
 
       {/* Quiz部分 */}

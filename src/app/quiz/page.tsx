@@ -25,6 +25,7 @@ export default function QuizPage() {
     results,
     updating,
     hintIndexes,
+    setHintIndexes,
     showHintModal,
     setShowHintModal,
     attempts,
@@ -85,6 +86,7 @@ export default function QuizPage() {
                 onSetDetailsOpen={setDetailsOpen}
                 onSetAnswers={setAnswers}
                 onNext={handleNext}
+                onSetHintIndexes={setHintIndexes}
               />
             )
           )}
