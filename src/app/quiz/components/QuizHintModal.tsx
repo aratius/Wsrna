@@ -36,16 +36,35 @@ export default function QuizHintModal({
     };
   }, [review, showHintModal[review?.id], onSetShowHintModal]);
 
+  const currentHintIndex = hintIndexes[review.id] || 0;
+  const totalHints = review.quiz.hint_levels?.length || 0;
+  const isLastHint = currentHintIndex >= totalHints;
+
+  const handleHintButtonClick = () => {
+    if (showHintModal[review.id]) {
+      // ヒントが開いている場合は閉じる
+      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+    } else {
+      // ヒントが閉じている場合は開く
+      onSetShowHintModal((prev) => ({ ...prev, [review.id]: true }));
+    }
+  };
+
+  const handleMoreButtonClick = () => {
+    if (isLastHint) {
+      // 最後のヒントの場合は閉じる
+      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+    } else {
+      // まだヒントがある場合は次のヒントを表示
+      onShowHint(review.id, review.quiz);
+    }
+  };
+
   return (
     <div className={styles["quiz__hint__wrapper"]}>
       <button
         className={styles["quiz__hint__button"]}
-        onClick={() =>
-          onSetShowHintModal((prev) => ({
-            ...prev,
-            [review.id]: !prev[review.id],
-          }))
-        }
+        onClick={handleHintButtonClick}
         aria-label="Show hint"
       >
         <svg
@@ -79,15 +98,13 @@ export default function QuizHintModal({
               {review.quiz.hint_levels[(hintIndexes[review.id] || 0) - 1] ||
                 review.quiz.hint_levels[0]}
             </div>
-            {/* ヒントをさらに表示するボタン（任意） */}
-            {review.quiz.hint_levels.length > (hintIndexes[review.id] || 0) && (
-              <button
-                className={styles["quiz__hint__more_button"]}
-                onClick={() => onShowHint(review.id, review.quiz)}
-              >
-                さらにヒント
-              </button>
-            )}
+            {/* ボタン（最後のヒントの時は「閉じる」、それ以外は「さらにヒント」） */}
+            <button
+              className={styles["quiz__hint__more_button"]}
+              onClick={handleMoreButtonClick}
+            >
+              {isLastHint ? "閉じる" : "さらにヒント"}
+            </button>
           </>
         ) : (
           <div>ヒントはありません</div>

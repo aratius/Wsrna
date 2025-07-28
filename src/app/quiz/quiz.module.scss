@@ -146,7 +146,6 @@
       background: none;
       border: none;
       padding: 8px;
-      border-radius: 50%;
       cursor: pointer;
       transition: background-color 0.2s;
       display: flex;
@@ -180,7 +179,7 @@
       background: #fff;
       border: 1px solid #e0e0e0;
       border-radius: 12px;
-      padding: $spacing-m;
+      padding: $spacing-s;
       box-shadow: 0 8px 24px rgba(124, 77, 255, 0.15);
       min-width: 240px;
       max-width: 320px;
@@ -200,7 +199,7 @@
 
       // ヒント内容のスタイル
       > div:first-child {
-        font-size: $font-size-base;
+        font-size: 12px;
         line-height: 1.6;
         color: $color-text-primary;
         margin-bottom: $spacing-s;
@@ -209,13 +208,12 @@
     }
 
     &__more-button {
-      margin-top: $spacing-s;
       background: linear-gradient(90deg, #7c4dff 0%, #5a3fd8 100%);
       color: #fff;
       border: none;
-      padding: 8px 16px;
+      padding: 6px 10px;
       border-radius: 6px;
-      font-size: $font-size-sm;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
