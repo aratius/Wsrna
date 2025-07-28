@@ -197,9 +197,21 @@
         transform: translateY(0);
       }
 
+      // ヒントヘッダーのスタイル
+      .quiz__hint__header {
+        font-size: $font-size-sm;
+        font-weight: 600;
+        color: #7c4dff;
+        margin-bottom: $spacing-xs;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: $spacing-xs;
+      }
+
       // ヒント内容のスタイル
       > div:first-child {
-        font-size: 12px;
+        font-size: $font-size-base;
         line-height: 1.6;
         color: $color-text-primary;
         margin-bottom: $spacing-s;

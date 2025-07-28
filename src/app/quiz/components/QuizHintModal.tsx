@@ -99,6 +99,10 @@ export default function QuizHintModal({
       >
         {review.quiz.hint_levels && review.quiz.hint_levels.length > 0 ? (
           <>
+            {/* ヒントヘッダー */}
+            <div className={styles["quiz__hint__header"]}>
+              Hint ({Math.max(1, currentHintIndex)}/{totalHints})
+            </div>
             <div>
               {review.quiz.hint_levels[(hintIndexes[review.id] || 0) - 1] ||
                 review.quiz.hint_levels[0]}
