@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import styles from "../quiz.module.scss";
 
 interface QuizHintModalProps {
@@ -18,6 +19,23 @@ export default function QuizHintModal({
   onShowHint,
   onSetShowHintModal,
 }: QuizHintModalProps) {
+  // ヒントモーダル外クリックで閉じる
+  useEffect(() => {
+    if (!review || !showHintModal[review.id]) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      const popup = document.querySelector(`.${styles["quiz__hint__popup"]}`);
+      if (popup && !(e.target instanceof Node && popup.contains(e.target))) {
+        onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside, true);
+    };
+  }, [review, showHintModal[review?.id], onSetShowHintModal]);
+
   return (
     <div className={styles["quiz__hint__wrapper"]}>
       <button

@@ -47,21 +47,6 @@ export default function QuizPage() {
   const isFinished =
     filteredReviews.length > 0 && currentIndex >= filteredReviews.length;
 
-  // ヒントモーダル外クリックで閉じる
-  useEffect(() => {
-    if (!review || !showHintModal[review.id]) return;
-    function handleClickOutside(e: MouseEvent) {
-      const popup = document.querySelector(`.${styles.hintPopup}`);
-      if (popup && !(e.target instanceof Node && popup.contains(e.target))) {
-        setShowHintModal((prev) => ({ ...prev, [review.id]: false }));
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside, true);
-    };
-  }, [review, showHintModal[review?.id]]);
-
   // タブ切り替え時にcurrentIndexリセット
   useEffect(() => {
     setCurrentIndex(0);
