@@ -52,7 +52,7 @@ export function useQuizState() {
       const newIndex = current + 1;
       console.log('Updating hint index:', { id, current, newIndex });
 
-      if (quiz.hint_levels && current < quiz.hint_levels.length) {
+      if (quiz.hint_levels && current < quiz.hint_levels.length - 1) {
         return { ...prev, [id]: newIndex };
       }
       return prev;
