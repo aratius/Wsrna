@@ -68,11 +68,21 @@ export default function QuizHintModal({
   const handleMoreButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // イベントの伝播を停止
 
+    console.log("More button clicked:", {
+      currentHintIndex,
+      totalHints,
+      isLastHint,
+      hintIndexes: hintIndexes[review.id],
+      reviewId: review.id,
+    });
+
     if (isLastHint) {
       // 最後のヒントの場合は閉じる
+      console.log("Closing modal (last hint)");
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
     } else {
       // まだヒントがある場合は次のヒントを表示
+      console.log("Showing next hint");
       onShowHint(review.id, review.quiz);
     }
   };

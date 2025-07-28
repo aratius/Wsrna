@@ -40,10 +40,20 @@ export function useQuizState() {
   };
 
   const handleShowHint = (id: string, quiz: any) => {
+    console.log('handleShowHint called:', {
+      id,
+      currentIndex: hintIndexes[id] || 0,
+      totalHints: quiz.hint_levels?.length || 0,
+      hintLevels: quiz.hint_levels
+    });
+
     setHintIndexes((prev) => {
       const current = prev[id] || 0;
+      const newIndex = current + 1;
+      console.log('Updating hint index:', { id, current, newIndex });
+
       if (quiz.hint_levels && current < quiz.hint_levels.length) {
-        return { ...prev, [id]: current + 1 };
+        return { ...prev, [id]: newIndex };
       }
       return prev;
     });
