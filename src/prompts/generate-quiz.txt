@@ -9,6 +9,18 @@ If "{{main_word}}" is a phrase, grammar pattern, or construction (for example, i
 
 IMPORTANT: The blank ("____") in each question must always correspond to the main_word or a part of the main_word (if it is a phrase or pattern). Never make the blank correspond to any word or phrase that is not part of the main_word. Do NOT create questions where an unrelated or irrelevant word is blanked out. The blank must always be the main_word or a direct component of the main_word.
 
+CRITICAL: When the main_word contains auxiliary verbs like "do", "did", "done", "be", "to do", "to have done", etc. that function as wildcards or placeholders, you MUST replace these with specific, appropriate verbs in your example sentences and questions. The goal is to create natural, varied sentences that help students understand the core pattern or structure.
+
+For example:
+- "make it a rule to do" → use "make it a rule to walk", "make it a rule to study", etc.
+- "was to have done" → use "was to have finished", "was to have started", etc.
+- "do me a favor" → keep as "do me a favor" (when "do" is the actual meaning, not a wildcard)
+- "to do" → use "to walk", "to study", "to work", etc.
+
+IMPORTANT: You are NOT required to use the exact form of the main_word as provided. Adapt the verb forms according to the sentence context (present tense, past tense, third person singular, etc.) to create natural, grammatically correct sentences. The focus should be on understanding the core pattern or structure, not memorizing a specific verb form.
+
+This prevents awkward repetitions like "I make it a rule to do to walk" and makes the questions more natural and varied while promoting deeper understanding of the language patterns.
+
 If you cannot generate exactly 5 questions, return as many valid questions as you can (minimum 1), but do NOT include any incorrect, irrelevant, or incomplete questions. Accuracy and correctness are more important than quantity. Never include questions where the main_word or main_word_translations are incorrect or do not match the intended meaning.
 
 For main_word_translations, you MUST always provide at least one accurate and appropriate translation for the main_word in {{fromLang}}. If the user does not provide a translation, you must research and generate a suitable translation yourself. Never leave main_word_translations empty or incomplete.

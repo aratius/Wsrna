@@ -186,6 +186,7 @@ export default function CreatePage() {
           main_word_translations: q.main_word_translations,
           sentence_translation: q.sentence_translation,
           explanation: q.explanation,
+          hint_levels: q.hint_levels, // hint_levelsを追加
           // topic: q.topic || topic, // topic消す
           created_at: new Date().toISOString(),
           language_pair_id: selectedPairId,

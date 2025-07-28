@@ -198,20 +198,13 @@ export default function QuizCard({
               Answer
             </button>
           ) : (
-            <div className={styles["quiz__form__button_row"]}>
-              <button
-                className={
-                  styles["quiz__form__button"] +
-                  " " +
-                  styles["quiz__form__button"] +
-                  "--half"
-                }
-                type="button"
-                onClick={onNext}
-              >
-                Next
-              </button>
-            </div>
+            <button
+              className={styles["quiz__form__button"]}
+              type="button"
+              onClick={onNext}
+            >
+              Next
+            </button>
           )}
 
           {/* + Details 注釈リンクとアコーディオン（Nextボタンと同じ条件で表示） */}
@@ -241,15 +234,15 @@ export default function QuizCard({
               >
                 {/* Main word/訳語 */}
                 {review.quiz.main_word && (
-                  <div className={styles["quiz__details__main_word__block"]}>
-                    <span className={styles["quiz__details__main_word__text"]}>
+                  <div className={styles["quiz__details__main-word__block"]}>
+                    <span className={styles["quiz__details__main-word__text"]}>
                       {review.quiz.main_word}
                     </span>
                     {Array.isArray(review.quiz.main_word_translations) &&
                       review.quiz.main_word_translations.length > 0 && (
                         <span
                           className={
-                            styles["quiz__details__main_word__translation"]
+                            styles["quiz__details__main-word__translation"]
                           }
                         >
                           [
@@ -269,32 +262,6 @@ export default function QuizCard({
                       )}
                   </div>
                 )}
-                {/* 例文リスト */}
-                {Array.isArray(review.quiz.example_sentences) &&
-                  review.quiz.example_sentences.length > 0 && (
-                    <ul className={styles["quiz__details__example__list"]}>
-                      {review.quiz.example_sentences.map(
-                        (ex: any, i: number) => (
-                          <li key={i}>
-                            <span
-                              className={
-                                styles["quiz__details__example__sentence"]
-                              }
-                            >
-                              {ex.sentence}
-                            </span>
-                            <span
-                              className={
-                                styles["quiz__details__example__translation"]
-                              }
-                            >
-                              - {ex.translation}
-                            </span>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  )}
                 {/* Explanation */}
                 {review.quiz.explanation && (
                   <div className={styles["quiz__details__explanation__box"]}>
@@ -303,7 +270,11 @@ export default function QuizCard({
                     >
                       Explanation
                     </span>
-                    <span>{review.quiz.explanation}</span>
+                    <span
+                      className={styles["quiz__details__explanation__text"]}
+                    >
+                      {review.quiz.explanation}
+                    </span>
                   </div>
                 )}
               </div>
