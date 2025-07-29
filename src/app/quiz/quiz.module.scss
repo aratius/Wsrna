@@ -610,6 +610,50 @@
       line-height: 1.5;
     }
   }
+
+  // リセットボタン（もう10問解きたい）
+  &__reset-button {
+    background: #34c759;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #28a745;
+    }
+
+    &:active {
+      background: #1e7e34;
+    }
+  }
+
+  // 作成ボタン（問題を登録）
+  &__create-button {
+    background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #0056b3;
+    }
+
+    &:active {
+      background: #004085;
+    }
+  }
 }
 
 // アニメーション

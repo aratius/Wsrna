@@ -113,10 +113,29 @@ export function useQuizState() {
     setCurrentIndex((idx) => idx + 1);
   };
 
+  // 古いlocalStorageデータのクリーンアップ
+  const cleanupOldProgress = () => {
+    if (typeof window === "undefined") return;
+
+    const currentDate = getCurrentDate();
+    const keys = Object.keys(localStorage);
+
+    keys.forEach(key => {
+      if (key.startsWith('quiz_daily_progress_')) {
+        const keyDate = key.split('_').pop(); // 最後の部分が日付
+        if (keyDate && keyDate !== currentDate) {
+          localStorage.removeItem(key);
+          console.log('Cleaned up old progress:', key);
+        }
+      }
+    });
+  };
+
   // タブ切り替え時にcurrentIndexリセット
   useEffect(() => {
     setCurrentIndex(0);
     setAnsweredQuestions(new Set()); // 回答済みフラグもリセット
+    cleanupOldProgress(); // 古いデータをクリーンアップ
   }, []);
 
   return {

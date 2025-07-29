@@ -99,9 +99,35 @@ export default function QuizPage() {
                   <h3>🎉 Today's Learning Complete!</h3>
                   <p>You've completed 10 questions. Great job!</p>
                   <p>Keep up the good work tomorrow!</p>
+                  <button
+                    className={styles["quiz__reset-button"]}
+                    onClick={() => {
+                      if (selectedPairId) {
+                        const date = new Date();
+                        if (date.getHours() < 4) {
+                          date.setDate(date.getDate() - 1);
+                        }
+                        const key = `quiz_daily_progress_${selectedPairId}_${date
+                          .toISOString()
+                          .slice(0, 10)}`;
+                        localStorage.setItem(key, "0");
+                        window.location.reload();
+                      }
+                    }}
+                  >
+                    Solve 10 More Questions
+                  </button>
                 </div>
               ) : (
-                <div>No quizzes to review.</div>
+                <div>
+                  <p>No quizzes to review.</p>
+                  <button
+                    className={styles["quiz__create-button"]}
+                    onClick={() => (window.location.href = "/create")}
+                  >
+                    Create New Questions
+                  </button>
+                </div>
               )}
             </div>
           ) : (
