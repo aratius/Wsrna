@@ -115,7 +115,7 @@ export default function QuizPage() {
                       }
                     }}
                   >
-                    Solve 10 More Questions
+                    10 More Quizzes !!
                   </button>
                 </div>
               ) : (
@@ -125,7 +125,7 @@ export default function QuizPage() {
                     className={styles["quiz__create-button"]}
                     onClick={() => (window.location.href = "/create")}
                   >
-                    Create New Questions
+                    Create New Quizzes
                   </button>
                 </div>
               )}

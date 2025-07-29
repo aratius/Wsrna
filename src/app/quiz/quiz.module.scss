@@ -594,20 +594,19 @@
   // 学習完了メッセージ
   &__no-quizzes {
     text-align: center;
-    padding: 40px 20px;
+    margin-top: $spacing-m;
 
     h3 {
-      font-size: 1.5rem;
+      font-size: 20px;
       color: #34c759;
       margin-bottom: 16px;
       font-weight: 600;
     }
 
     p {
-      font-size: 1rem;
+      font-size: 14px;
       color: #666;
       margin-bottom: 8px;
-      line-height: 1.5;
     }
   }
 
@@ -621,7 +620,7 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 16px;
+    margin-top: $spacing-s;
     transition: background-color 0.2s;
 
     &:hover {
@@ -643,15 +642,15 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 16px;
-    transition: background-color 0.2s;
+    margin-top: $spacing-s;
+    transition: background 0.2s;
 
     &:hover {
-      background: #0056b3;
+      background: linear-gradient(90deg, #4b3bbd 0%, #5e35b1 100%);
     }
 
     &:active {
-      background: #004085;
+      background: linear-gradient(90deg, #3a2a8c 0%, #4527a0 100%);
     }
   }
 }
