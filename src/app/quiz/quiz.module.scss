@@ -480,6 +480,7 @@
 
   // 単語単位の空欄
   &__word-blank {
+    height: 17px;
     display: inline-flex;
     align-items: center;
     min-width: var(--min-width, 1em);
@@ -572,6 +573,42 @@
     background: #ffebee;
     border-radius: 6px;
     border: 1px solid #ffcdd2;
+  }
+
+  // 進捗表示
+  &__progress {
+    text-align: center;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+
+    span {
+      font-size: 0.9rem;
+      color: #6c757d;
+      font-weight: 500;
+    }
+  }
+
+  // 学習完了メッセージ
+  &__no-quizzes {
+    text-align: center;
+    padding: 40px 20px;
+
+    h3 {
+      font-size: 1.5rem;
+      color: #34c759;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
   }
 }
 

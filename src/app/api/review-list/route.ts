@@ -11,23 +11,25 @@ export async function POST(req: NextRequest) {
   }
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
-  const { data, error } = await supabase
+  // 1. 今日復習予定のクイズを取得
+  const { data: todayReviews, error: todayError } = await supabase
     .from('quiz_reviews')
     .select('*, quiz:quizzes(*)')
     .eq('user_id', user_id)
     .lte('next_review_at', today)
-    .eq('quiz.language_pair_id', language_pair_id)
-    .order('next_review_at', { ascending: true })
-    .limit(10);
+    .eq('quiz.language_pair_id', language_pair_id);
 
-  if (error) {
-    if (error.message && error.message.includes('relation') && error.message.includes('does not exist')) {
+  if (todayError) {
+    if (todayError.message && todayError.message.includes('relation') && todayError.message.includes('does not exist')) {
       return NextResponse.json({ error: 'Quiz table does not exist. Please contact the administrator.' }, { status: 500 });
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: todayError.message }, { status: 500 });
   }
 
   // quizがnullのものを除外
-  const filtered = (data || []).filter(r => r.quiz !== null);
-  return NextResponse.json(filtered);
+  const validTodayReviews = (todayReviews || []).filter(r => r.quiz !== null);
+
+    // 2. 最大10問まで返す（1日の上限）
+  const result = validTodayReviews.slice(0, 10);
+  return NextResponse.json(result);
 }

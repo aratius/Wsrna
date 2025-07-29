@@ -33,6 +33,8 @@ export default function QuizPage() {
     setCurrentIndex,
     detailsOpen,
     setDetailsOpen,
+    dailyProgress,
+    getDailyProgress,
     handleAnswer,
     handleShowHint,
     handleNext,
@@ -43,8 +45,17 @@ export default function QuizPage() {
 
   // 1問ずつ表示するロジック
   const review = filteredReviews[currentIndex];
+
+  // 10問制限の確認（localStorageの解答数に基づく）
+  const currentDailyProgress = selectedPairId
+    ? getDailyProgress(selectedPairId)
+    : 0;
+  const isDailyLimitReached = currentDailyProgress >= 10;
+
+  // 終了条件: 問題がない OR 全問完了 OR 10問制限到達
   const isFinished =
-    filteredReviews.length > 0 && currentIndex >= filteredReviews.length;
+    filteredReviews.length > 0 &&
+    (currentIndex >= filteredReviews.length || isDailyLimitReached);
 
   // タブ切り替え時にcurrentIndexリセット
   useEffect(() => {
@@ -62,15 +73,43 @@ export default function QuizPage() {
           onSelectPair={setSelectedPairId}
         />
 
+        {/* 今日の進捗表示 */}
+        {selectedPairId && (
+          <div className={styles["quiz__progress"]}>
+            <span>Today's Progress: {currentDailyProgress}/10 questions</span>
+            {isDailyLimitReached && (
+              <span
+                style={{
+                  color: "#34c759",
+                  fontWeight: "bold",
+                  marginLeft: "8px",
+                }}
+              >
+                ✓ Complete
+              </span>
+            )}
+          </div>
+        )}
+
         <div className={styles["quiz__content"]}>
           {(filteredReviews.length === 0 && !loading) || isFinished ? (
-            <div>No quizzes to review.</div>
+            <div className={styles["quiz__no-quizzes"]}>
+              {isDailyLimitReached ? (
+                <div>
+                  <h3>🎉 Today's Learning Complete!</h3>
+                  <p>You've completed 10 questions. Great job!</p>
+                  <p>Keep up the good work tomorrow!</p>
+                </div>
+              ) : (
+                <div>No quizzes to review.</div>
+              )}
+            </div>
           ) : (
             review && (
               <QuizCard
                 review={review}
                 currentIndex={currentIndex}
-                totalCount={filteredReviews.length}
+                totalCount={Math.min(filteredReviews.length, 10)}
                 answers={answers}
                 results={results}
                 attempts={attempts}
@@ -78,7 +117,7 @@ export default function QuizPage() {
                 hintIndexes={hintIndexes}
                 showHintModal={showHintModal}
                 detailsOpen={detailsOpen}
-                onAnswer={handleAnswer}
+                onAnswer={(review) => handleAnswer(review, selectedPairId)}
                 onShowHint={handleShowHint}
                 onSetShowHintModal={setShowHintModal}
                 onSetDetailsOpen={setDetailsOpen}

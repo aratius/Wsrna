@@ -156,15 +156,33 @@ export function useCreateState() {
           .order("created_at", { ascending: false })
           .limit(quizPayload.length);
         if (inserted && inserted.length > 0) {
-          const reviewPayload = inserted.map((q: any) => ({
-            user_id: session.user.id,
-            quiz_id: q.id,
-            last_reviewed_at: new Date().toISOString(),
-            next_review_at: new Date().toISOString().slice(0, 10),
-            interval_days: 1,
-            correct_streak: 0,
-            created_at: new Date().toISOString(),
-          }));
+          // イディオムセットごとにグループ化
+          const idiomGroups = new Map<string, any[]>();
+          inserted.forEach((quiz: any) => {
+            const idiomId = quiz.idiom_id;
+            if (!idiomGroups.has(idiomId)) {
+              idiomGroups.set(idiomId, []);
+            }
+            idiomGroups.get(idiomId)!.push(quiz);
+          });
+
+          // 各イディオムセットから1問だけを今日の復習リストに追加
+          const reviewPayload = [];
+          for (const [idiomId, quizzes] of idiomGroups) {
+            // ランダムに1問を選択
+            const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+            reviewPayload.push({
+              user_id: session.user.id,
+              quiz_id: randomQuiz.id,
+              last_reviewed_at: new Date().toISOString(),
+              next_review_at: new Date().toISOString().slice(0, 10), // 今日
+              interval_days: 1,
+              correct_streak: 0,
+              created_at: new Date().toISOString(),
+            });
+
+            // 残りの問題は何もしない（復習リストに登録しない）
+          }
           await supabase.from("quiz_reviews").insert(reviewPayload);
         }
         alert("Quizzes saved!");

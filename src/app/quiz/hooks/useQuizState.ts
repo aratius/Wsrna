@@ -11,11 +11,54 @@ export function useQuizState() {
   const [attempts, setAttempts] = useState<{ [id: string]: number; }>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [detailsOpen, setDetailsOpen] = useState<{ [id: string]: boolean; }>({});
+  const [dailyProgress, setDailyProgress] = useState<{ [languagePairId: string]: number }>({});
+  const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
 
-  const handleAnswer = async (review: any) => {
+  // 日付を取得（朝4時リセット）
+  const getCurrentDate = () => {
+    const now = new Date();
+    // 朝4時を基準に日付を計算
+    if (now.getHours() < 4) {
+      // 4時前は前日として扱う
+      now.setDate(now.getDate() - 1);
+    }
+    return now.toISOString().slice(0, 10); // YYYY-MM-DD
+  };
+
+  // localStorageから解答数を取得
+  const getDailyProgress = (languagePairId: string) => {
+    if (typeof window === "undefined") return 0;
+    const date = getCurrentDate();
+    const key = `quiz_daily_progress_${languagePairId}_${date}`;
+    const stored = localStorage.getItem(key);
+    return stored ? parseInt(stored, 10) : 0;
+  };
+
+  // localStorageに解答数を保存
+  const saveDailyProgress = (languagePairId: string, count: number) => {
+    if (typeof window === "undefined") return;
+    const date = getCurrentDate();
+    const key = `quiz_daily_progress_${languagePairId}_${date}`;
+    localStorage.setItem(key, count.toString());
+  };
+
+    const handleAnswer = async (review: any, languagePairId: string) => {
     const quiz = review.quiz;
     const userAnswer = answers[review.id]?.trim();
     if (!userAnswer) return;
+
+    // 重複回答を防ぐ
+    if (answeredQuestions.has(review.id)) {
+      console.log('Question already answered:', review.id);
+      return;
+    }
+
+    // デバッグ: 重複呼び出しチェック
+    console.log('handleAnswer called:', { reviewId: review.id, userAnswer });
+
+    // 回答済みフラグを設定
+    setAnsweredQuestions(prev => new Set(prev).add(review.id));
+
     const isCorrect = userAnswer === quiz.answer;
     setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
     setUpdating((prev) => ({ ...prev, [review.id]: true }));
@@ -37,6 +80,13 @@ export function useQuizState() {
       }),
     });
     setUpdating((prev) => ({ ...prev, [review.id]: false }));
+
+    // 解答数を更新
+    const currentProgress = getDailyProgress(languagePairId);
+    const newProgress = currentProgress + 1;
+    console.log('Progress update:', { languagePairId, currentProgress, newProgress });
+    saveDailyProgress(languagePairId, newProgress);
+    setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
   };
 
   const handleShowHint = (id: string, quiz: any) => {
@@ -66,6 +116,7 @@ export function useQuizState() {
   // タブ切り替え時にcurrentIndexリセット
   useEffect(() => {
     setCurrentIndex(0);
+    setAnsweredQuestions(new Set()); // 回答済みフラグもリセット
   }, []);
 
   return {
@@ -82,6 +133,8 @@ export function useQuizState() {
     setCurrentIndex,
     detailsOpen,
     setDetailsOpen,
+    dailyProgress,
+    getDailyProgress,
     handleAnswer,
     handleShowHint,
     handleNext,
