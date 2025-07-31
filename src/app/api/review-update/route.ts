@@ -4,8 +4,8 @@ import { supabase } from '@/lib/supabaseClient';
 // 連続記録ベースの間隔設定（連続正解回数に応じて間隔を延長）
 const getIntervalDays = (consecutiveCorrect: number): number => {
   if (consecutiveCorrect === 0) return 1; // 不正解時は翌日
-  if (consecutiveCorrect === 1) return 1; // 1回正解: 翌日
-  if (consecutiveCorrect === 2) return 3; // 2回連続正解: 3日後
+  if (consecutiveCorrect === 1) return 2; // 1回正解: 2日後
+  if (consecutiveCorrect === 2) return 4; // 2回連続正解: 4日後
   if (consecutiveCorrect === 3) return 7; // 3回連続正解: 7日後
   if (consecutiveCorrect === 4) return 14; // 4回連続正解: 14日後
   if (consecutiveCorrect === 5) return 30; // 5回連続正解: 30日後
@@ -71,8 +71,6 @@ export async function POST(req: NextRequest) {
       interval_days
     });
   }
-  console.log("correct_streak", correct_streak);
-  console.log("interval_days", interval_days);
 
   const today = new Date();
   const next_review = new Date(today);

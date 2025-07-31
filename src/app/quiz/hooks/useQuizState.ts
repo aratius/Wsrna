@@ -63,31 +63,59 @@ export function useQuizState() {
     }
     setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
     setUpdating((prev) => ({ ...prev, [review.id]: true }));
+
+    let attemptsCount = 0;
     if (!isCorrect) {
+      attemptsCount = (attempts[review.id] || 0) + 1;
       setAttempts((prev) => ({
         ...prev,
-        [review.id]: (prev[review.id] || 0) + 1,
+        [review.id]: attemptsCount,
       }));
     } else {
       setAttempts((prev) => ({ ...prev, [review.id]: 0 }));
     }
-    await fetch("/api/review-update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_id: review.user_id,
-        quiz_id: review.quiz_id,
-        correct: isCorrect,
-      }),
-    });
+
+    // 確定条件: 正解 OR 3回間違えて不正解確定
+    const isDetermined = isCorrect || attemptsCount >= 3;
+
+    if (isDetermined) {
+      console.log('Question determined, calling review-update API:', {
+        reviewId: review.id,
+        isCorrect,
+        attemptsCount,
+        isDetermined
+      });
+
+      await fetch("/api/review-update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: review.user_id,
+          quiz_id: review.quiz_id,
+          correct: isCorrect,
+        }),
+      });
+    } else {
+      console.log('Question not determined yet, skipping review-update API:', {
+        reviewId: review.id,
+        isCorrect,
+        attemptsCount,
+        isDetermined
+      });
+    }
+
     setUpdating((prev) => ({ ...prev, [review.id]: false }));
 
-    // 解答数を更新
-    const currentProgress = getDailyProgress(languagePairId);
-    const newProgress = currentProgress + 1;
-    console.log('Progress update:', { languagePairId, currentProgress, newProgress });
-    saveDailyProgress(languagePairId, newProgress);
-    setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
+    // 解答数を更新（正解の場合のみ）
+    if (isCorrect) {
+      const currentProgress = getDailyProgress(languagePairId);
+      const newProgress = currentProgress + 1;
+      console.log('Progress update (correct answer):', { languagePairId, currentProgress, newProgress });
+      saveDailyProgress(languagePairId, newProgress);
+      setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
+    } else {
+      console.log('Progress not updated (incorrect answer):', { languagePairId, isCorrect });
+    }
   };
 
   const handleShowHint = (id: string, quiz: any) => {
