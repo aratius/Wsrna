@@ -41,7 +41,11 @@ function CreatePageContent() {
     handleSubmitQuizzes,
   } = useCreateState();
 
-  if (!session) return null;
+  console.log("CreatePage - session:", session);
+  if (!session) {
+    console.log("CreatePage - session is null, returning null");
+    return null;
+  }
 
   // スマホ判定
   const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;

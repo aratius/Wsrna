@@ -48,7 +48,7 @@ export function useQuizState() {
     if (!userAnswer) return;
 
     // 重複回答を防ぐ（正解の場合のみ）
-    const isCorrect = userAnswer === quiz.answer;
+    const isCorrect = userAnswer.toLowerCase() === quiz.answer.toLowerCase();
     if (isCorrect && answeredQuestions.has(review.id)) {
       console.log('Question already answered correctly:', review.id);
       return;

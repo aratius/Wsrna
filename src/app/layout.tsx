@@ -45,11 +45,11 @@ export default function RootLayout({
         <AppHeightSetter />
         <div className="main_wrapper">
           <SupabaseProvider>
-            <AuthGuard>
-              <PwaInstallPrompt />
-              <main className="main">{children}</main>
-              <BottomNav />
-            </AuthGuard>
+            {/* <AuthGuard> */}
+            <PwaInstallPrompt />
+            <main className="main">{children}</main>
+            <BottomNav />
+            {/* </AuthGuard> */}
           </SupabaseProvider>
         </div>
       </body>
