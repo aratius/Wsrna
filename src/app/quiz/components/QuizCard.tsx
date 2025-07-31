@@ -2,6 +2,7 @@
 import { useState } from "react";
 import styles from "../quiz.module.scss";
 import QuizHintModal from "./QuizHintModal";
+import { motion } from "framer-motion";
 
 interface QuizCardProps {
   review: any;
@@ -60,7 +61,12 @@ export default function QuizCard({
   }
 
   return (
-    <div className={styles["quiz__card"]}>
+    <motion.div
+      className={styles["quiz__card"]}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       {/* プログレスバー */}
       <div className={styles["quiz__progress__wrapper"]}>
         <div
@@ -358,6 +364,6 @@ export default function QuizCard({
           )}
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

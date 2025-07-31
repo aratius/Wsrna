@@ -9,6 +9,8 @@ import { useCreateData } from "./hooks/useCreateData";
 import { useCreateState } from "./hooks/useCreateState";
 import CreateForm from "./components/CreateForm";
 import CreatePreviewModal from "./components/CreatePreviewModal";
+import { motion } from "framer-motion";
+import { AnimatedCreateContent } from "./components/AnimatedCreateContent";
 
 export default function CreatePage() {
   const session = useSession();
@@ -67,25 +69,39 @@ export default function CreatePage() {
         onSubmit={handleModalSubmit}
         submitting={submitting}
       />
-      <div className={styles["create__container"]}>
-        <h1 className={styles["create__title"]}>Create Quiz !!</h1>
-        <CreateForm
-          languagePairs={languagePairs}
-          pairLoading={pairLoading}
-          pairError={pairError}
-          selectedPairId={selectedPairId}
-          fromTranslation={fromTranslation}
-          toText={toText}
-          fromLangGreeting={fromLangGreeting}
-          toLangGreeting={toLangGreeting}
-          loading={loading}
-          error={error}
-          onSelectPair={setSelectedPairId}
-          onFromTranslationChange={setFromTranslation}
-          onToTextChange={setToText}
-          onSubmit={handleFormSubmit}
-        />
-      </div>
+      <motion.div
+        className={styles["create__container"]}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        <motion.h1
+          className={styles["create__title"]}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.1 }}
+        >
+          Create Quiz !!
+        </motion.h1>
+        <AnimatedCreateContent isLoading={pairLoading}>
+          <CreateForm
+            languagePairs={languagePairs}
+            pairLoading={pairLoading}
+            pairError={pairError}
+            selectedPairId={selectedPairId}
+            fromTranslation={fromTranslation}
+            toText={toText}
+            fromLangGreeting={fromLangGreeting}
+            toLangGreeting={toLangGreeting}
+            loading={loading}
+            error={error}
+            onSelectPair={setSelectedPairId}
+            onFromTranslationChange={setFromTranslation}
+            onToTextChange={setToText}
+            onSubmit={handleFormSubmit}
+          />
+        </AnimatedCreateContent>
+      </motion.div>
     </>
   );
 }

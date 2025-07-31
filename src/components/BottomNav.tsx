@@ -5,24 +5,24 @@ import styles from "./BottomNav.module.scss";
 import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
 
 const NAV_ITEMS = [
-  {
-    href: "/",
-    label: "Home",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M3 12L12 3l9 9" />
-        <path d="M9 21V9h6v12" />
-      </svg>
-    ),
-  },
+  // {
+  //   href: "/",
+  //   label: "Home",
+  //   icon: (
+  //     <svg
+  //       width="24"
+  //       height="24"
+  //       fill="none"
+  //       stroke="currentColor"
+  //       strokeWidth="2"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     >
+  //       <path d="M3 12L12 3l9 9" />
+  //       <path d="M9 21V9h6v12" />
+  //     </svg>
+  //   ),
+  // },
   {
     href: "/quiz",
     label: "Quiz",

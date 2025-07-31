@@ -1,6 +1,7 @@
 "use client";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "../quiz.module.scss";
+import { motion } from "framer-motion";
 
 interface QuizTabProps {
   languagePairs: any[];
@@ -20,23 +21,27 @@ export default function QuizTab({
 }: QuizTabProps) {
   return (
     <nav className={styles["quiz__tab"]}>
-      {languagePairs.map((lp) => {
+      {languagePairs.map((lp, index) => {
         const active = selectedPairId === lp.id;
         return (
-          <button
+          <motion.button
             key={lp.id}
             onClick={() => onSelectPair(lp.id)}
-            className={[
-              styles["quiz__tab__button"],
-              active ? styles["quiz__tab__button--active"] : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+            className={
+              styles["quiz__tab__button"] +
+              (active ? " " + styles["active"] : "")
+            }
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.2,
+              delay: index * 0.02,
+            }}
           >
             {getAbbr(lp.from_lang)}
             <span className={styles["quiz__tab-arrow"]}>›</span>
             {getAbbr(lp.to_lang)}
-          </button>
+          </motion.button>
         );
       })}
     </nav>
