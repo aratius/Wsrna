@@ -1,43 +1,219 @@
 [
-  { "code": "en", "label": "English", "greeting": "Hello", "abbr": "EN" },
-  { "code": "ja", "label": "日本語", "greeting": "こんにちは", "abbr": "日" },
-  { "code": "es", "label": "Español", "greeting": "Hola", "abbr": "ES" },
-  { "code": "fr", "label": "Français", "greeting": "Bonjour", "abbr": "FR" },
-  { "code": "de", "label": "Deutsch", "greeting": "Hallo", "abbr": "DE" },
-  { "code": "it", "label": "Italiano", "greeting": "Ciao", "abbr": "IT" },
-  { "code": "pt", "label": "Português", "greeting": "Olá", "abbr": "PT" },
-  { "code": "nl", "label": "Nederlands", "greeting": "Hallo", "abbr": "NL" },
+  {
+    "code": "en",
+    "label": "English",
+    "greeting": "Hello",
+    "abbr": "EN",
+    "locale": "en-US"
+  },
+  {
+    "code": "ja",
+    "label": "日本語",
+    "greeting": "こんにちは",
+    "abbr": "日",
+    "locale": "ja-JP"
+  },
+  {
+    "code": "es",
+    "label": "Español",
+    "greeting": "Hola",
+    "abbr": "ES",
+    "locale": "es-ES"
+  },
+  {
+    "code": "fr",
+    "label": "Français",
+    "greeting": "Bonjour",
+    "abbr": "FR",
+    "locale": "fr-FR"
+  },
+  {
+    "code": "de",
+    "label": "Deutsch",
+    "greeting": "Hallo",
+    "abbr": "DE",
+    "locale": "de-DE"
+  },
+  {
+    "code": "it",
+    "label": "Italiano",
+    "greeting": "Ciao",
+    "abbr": "IT",
+    "locale": "it-IT"
+  },
+  {
+    "code": "pt",
+    "label": "Português",
+    "greeting": "Olá",
+    "abbr": "PT",
+    "locale": "pt-BR"
+  },
+  {
+    "code": "nl",
+    "label": "Nederlands",
+    "greeting": "Hallo",
+    "abbr": "NL",
+    "locale": "nl-NL"
+  },
   {
     "code": "ru",
     "label": "Русский",
     "greeting": "Здравствуйте",
-    "abbr": "РУС"
+    "abbr": "РУС",
+    "locale": "ru-RU"
   },
-  { "code": "zh", "label": "中文", "greeting": "你好", "abbr": "中" },
-  { "code": "yue", "label": "粤語", "greeting": "你好", "abbr": "粵" },
-  { "code": "nan", "label": "臺語", "greeting": "你好", "abbr": "台" },
-  { "code": "th", "label": "ไทย", "greeting": "สวัสดี", "abbr": "TH" },
-  { "code": "hi", "label": "हिन्दी", "greeting": "नमस्ते", "abbr": "HI" },
-  { "code": "ko", "label": "한국어", "greeting": "안녕하세요", "abbr": "한" },
-  { "code": "ar", "label": "العربية", "greeting": "مرحبا", "abbr": "عر" },
-  { "code": "tr", "label": "Türkçe", "greeting": "Merhaba", "abbr": "TR" },
-  { "code": "vi", "label": "Tiếng Việt", "greeting": "Xin chào", "abbr": "VI" },
+  {
+    "code": "zh",
+    "label": "中文",
+    "greeting": "你好",
+    "abbr": "中",
+    "locale": "zh-CN"
+  },
+  {
+    "code": "yue",
+    "label": "粤語",
+    "greeting": "你好",
+    "abbr": "粵",
+    "locale": "zh-HK"
+  },
+  {
+    "code": "nan",
+    "label": "臺語",
+    "greeting": "你好",
+    "abbr": "台",
+    "locale": "zh-TW"
+  },
+  {
+    "code": "th",
+    "label": "ไทย",
+    "greeting": "สวัสดี",
+    "abbr": "TH",
+    "locale": "th-TH"
+  },
+  {
+    "code": "hi",
+    "label": "हिन्दी",
+    "greeting": "नमस्ते",
+    "abbr": "HI",
+    "locale": "hi-IN"
+  },
+  {
+    "code": "ko",
+    "label": "한국어",
+    "greeting": "안녕하세요",
+    "abbr": "한",
+    "locale": "ko-KR"
+  },
+  {
+    "code": "ar",
+    "label": "العربية",
+    "greeting": "مرحبا",
+    "abbr": "عر",
+    "locale": "ar-SA"
+  },
+  {
+    "code": "tr",
+    "label": "Türkçe",
+    "greeting": "Merhaba",
+    "abbr": "TR",
+    "locale": "tr-TR"
+  },
+  {
+    "code": "vi",
+    "label": "Tiếng Việt",
+    "greeting": "Xin chào",
+    "abbr": "VI",
+    "locale": "vi-VN"
+  },
   {
     "code": "id",
     "label": "Bahasa Indonesia",
     "greeting": "Halo",
-    "abbr": "ID"
+    "abbr": "ID",
+    "locale": "id-ID"
   },
-  { "code": "pl", "label": "Polski", "greeting": "Cześć", "abbr": "PL" },
-  { "code": "uk", "label": "Українська", "greeting": "Привіт", "abbr": "УКР" },
-  { "code": "el", "label": "Ελληνικά", "greeting": "Γειά σας", "abbr": "ΕΛ" },
-  { "code": "hu", "label": "Magyar", "greeting": "Helló", "abbr": "HU" },
-  { "code": "cs", "label": "Čeština", "greeting": "Ahoj", "abbr": "CS" },
-  { "code": "sv", "label": "Svenska", "greeting": "Hej", "abbr": "SV" },
-  { "code": "da", "label": "Dansk", "greeting": "Hej", "abbr": "DA" },
-  { "code": "fi", "label": "Suomi", "greeting": "Hei", "abbr": "FI" },
-  { "code": "no", "label": "Norsk", "greeting": "Hei", "abbr": "NO" },
-  { "code": "he", "label": "עברית", "greeting": "שלום", "abbr": "עב" },
-  { "code": "ro", "label": "Română", "greeting": "Salut", "abbr": "RO" },
-  { "code": "ms", "label": "Bahasa Melayu", "greeting": "Halo", "abbr": "MS" }
+  {
+    "code": "pl",
+    "label": "Polski",
+    "greeting": "Cześć",
+    "abbr": "PL",
+    "locale": "pl-PL"
+  },
+  {
+    "code": "uk",
+    "label": "Українська",
+    "greeting": "Привіт",
+    "abbr": "УКР",
+    "locale": "uk-UA"
+  },
+  {
+    "code": "el",
+    "label": "Ελληνικά",
+    "greeting": "Γειά σας",
+    "abbr": "ΕΛ",
+    "locale": "el-GR"
+  },
+  {
+    "code": "hu",
+    "label": "Magyar",
+    "greeting": "Helló",
+    "abbr": "HU",
+    "locale": "hu-HU"
+  },
+  {
+    "code": "cs",
+    "label": "Čeština",
+    "greeting": "Ahoj",
+    "abbr": "CS",
+    "locale": "cs-CZ"
+  },
+  {
+    "code": "sv",
+    "label": "Svenska",
+    "greeting": "Hej",
+    "abbr": "SV",
+    "locale": "sv-SE"
+  },
+  {
+    "code": "da",
+    "label": "Dansk",
+    "greeting": "Hej",
+    "abbr": "DA",
+    "locale": "da-DK"
+  },
+  {
+    "code": "fi",
+    "label": "Suomi",
+    "greeting": "Hei",
+    "abbr": "FI",
+    "locale": "fi-FI"
+  },
+  {
+    "code": "no",
+    "label": "Norsk",
+    "greeting": "Hei",
+    "abbr": "NO",
+    "locale": "no-NO"
+  },
+  {
+    "code": "he",
+    "label": "עברית",
+    "greeting": "שלום",
+    "abbr": "עב",
+    "locale": "he-IL"
+  },
+  {
+    "code": "ro",
+    "label": "Română",
+    "greeting": "Salut",
+    "abbr": "RO",
+    "locale": "ro-RO"
+  },
+  {
+    "code": "ms",
+    "label": "Bahasa Melayu",
+    "greeting": "Halo",
+    "abbr": "MS",
+    "locale": "ms-MY"
+  }
 ]

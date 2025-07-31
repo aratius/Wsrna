@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "../quiz.module.scss";
 import QuizHintModal from "./QuizHintModal";
 import { motion } from "framer-motion";
+import supportedLanguages from "../../../lib/supportedLanguages.json";
 
 interface QuizCardProps {
   review: any;
@@ -70,6 +71,135 @@ export default function QuizCard({
     x: 0,
     y: 0,
   });
+
+  // 言語ペアの状態を管理
+  const [languagePair, setLanguagePair] = useState<any>(null);
+
+  // 問題文読み上げ機能
+  const speakQuestion = (question: string, answer: string) => {
+    if ("speechSynthesis" in window) {
+      // 穴抜き部分を正解で埋めた完成版の問題文を作成
+      const completedQuestion = question.replace("____", answer);
+
+      const utterance = new SpeechSynthesisUtterance(completedQuestion);
+
+      // 言語設定（review.quizの言語情報から判定）
+      // reviewオブジェクトの構造を確認
+      console.log("Review object structure:", {
+        review: review,
+        reviewKeys: Object.keys(review),
+        quiz: review.quiz,
+        quizKeys: review.quiz ? Object.keys(review.quiz) : null,
+        languagePair: languagePair,
+        languagePairId: review.quiz?.language_pair_id,
+      });
+
+      // 取得した言語ペアからto_langを使用
+      const toLangCode = languagePair?.to_lang || "en";
+      const language = supportedLanguages.find(
+        (lang) => lang.code === toLangCode
+      );
+      const toLang = language?.locale || "en-US";
+      utterance.lang = toLang;
+      utterance.rate = 0.8; // 少しゆっくりめ
+      utterance.pitch = 1.0;
+      utterance.volume = 0.8;
+
+      // 音声リストの読み込みを待つ関数
+      const speakWithVoices = () => {
+        const voices = speechSynthesis.getVoices();
+
+        // デバッグ情報
+        console.log("Speech synthesis debug:", {
+          question: completedQuestion,
+          toLang: review.quiz?.toLang,
+          speechLang: toLang,
+          availableVoices: voices.length,
+          japaneseVoices: voices.filter((v) => v.lang.includes("ja")).length,
+          allVoices: voices.map((v) => `${v.name} (${v.lang})`),
+        });
+
+        // 日本語音声が利用可能かチェック
+        const japaneseVoices = voices.filter((voice) =>
+          voice.lang.includes("ja")
+        );
+
+        if (japaneseVoices.length > 0 && toLang.includes("ja")) {
+          // 日本語音声がある場合は、最適な音声を選択
+          const preferredJapaneseVoice =
+            japaneseVoices.find(
+              (voice) => voice.lang === "ja-JP" || voice.lang === "ja"
+            ) || japaneseVoices[0];
+
+          utterance.voice = preferredJapaneseVoice;
+          console.log(
+            "Selected Japanese voice:",
+            preferredJapaneseVoice.name,
+            preferredJapaneseVoice.lang
+          );
+        } else if (japaneseVoices.length === 0 && toLang.includes("ja")) {
+          console.warn(
+            "No Japanese voices available. Available voices:",
+            voices.map((v) => `${v.name} (${v.lang})`)
+          );
+          // 日本語音声がない場合は英語でフォールバック
+          utterance.lang = "en-US";
+        }
+
+        // 既存の読み上げを停止してから新しい読み上げを開始
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      };
+
+      // 音声リストが既に読み込まれているかチェック
+      if (speechSynthesis.getVoices().length > 0) {
+        speakWithVoices();
+      } else {
+        // 音声リストの読み込みを待つ
+        speechSynthesis.onvoiceschanged = speakWithVoices;
+      }
+    } else {
+      console.error("Speech synthesis not supported");
+    }
+  };
+
+  // 自動読み上げは無効化（手動再生のみ）
+  // useEffect(() => {
+  //   const isCorrect = results[review.id] === true;
+  //   const isIncorrect = results[review.id] === false;
+  //   const attemptsCount = attempts[review.id] || 0;
+  //   const isDetermined = isCorrect || (isIncorrect && attemptsCount >= 3);
+
+  //   if (isDetermined && review.quiz?.question) {
+  //     // 少し遅延させてから読み上げ（ユーザーが結果を確認してから）
+  //     const timer = setTimeout(() => {
+  //       speakQuestion(review.quiz.question, review.quiz.answer);
+  //     }, 1000);
+
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [results[review.id], attempts[review.id], review.quiz]);
+
+  // 言語ペアを取得
+  useEffect(() => {
+    const fetchLanguagePair = async () => {
+      if (!review.quiz?.language_pair_id) return;
+
+      try {
+        const res = await fetch(
+          `/api/language-pairs/${review.quiz.language_pair_id}`
+        );
+        const data = await res.json();
+        if (!data.error) {
+          setLanguagePair(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch language pair:", error);
+      }
+    };
+
+    fetchLanguagePair();
+  }, [review.quiz?.language_pair_id]);
 
   // ポップアップ外クリックで閉じる処理
   useEffect(() => {
@@ -226,9 +356,45 @@ export default function QuizCard({
 
       {/* Quiz部分 */}
       <div className={styles["quiz__section"]}>
-        <span className={styles["quiz__section__label"] + " " + styles["quiz"]}>
-          Quiz
-        </span>
+        <div className={styles["quiz__section__header"]}>
+          <div className={styles["quiz__section__label-container"]}>
+            <span
+              className={styles["quiz__section__label"] + " " + styles["quiz"]}
+            >
+              Quiz
+            </span>
+            {/* 正解/不正解確定時に再生アイコンを表示 */}
+            {(() => {
+              const isCorrect = results[review.id] === true;
+              const isIncorrect = results[review.id] === false;
+              const attemptsCount = attempts[review.id] || 0;
+              const isDetermined =
+                isCorrect || (isIncorrect && attemptsCount >= 3);
+
+              if (isDetermined && review.quiz?.question) {
+                return (
+                  <button
+                    className={styles["quiz__play-button"]}
+                    onClick={() =>
+                      speakQuestion(review.quiz.question, review.quiz.answer)
+                    }
+                    title="再生"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </button>
+                );
+              }
+              return null;
+            })()}
+          </div>
+        </div>
         <div className={styles["quiz__section__text"]}>
           {(() => {
             // review.quizがnullの場合のエラーハンドリング
@@ -402,11 +568,13 @@ export default function QuizCard({
 
       {/* Answer部分 */}
       <div className={styles["quiz__section"]}>
-        <span
-          className={styles["quiz__section__label"] + " " + styles["answer"]}
-        >
-          Answer
-        </span>
+        <div className={styles["quiz__section__header"]}>
+          <span
+            className={styles["quiz__section__label"] + " " + styles["answer"]}
+          >
+            Answer
+          </span>
+        </div>
         <form
           className={styles["quiz__form"]}
           onSubmit={(e) => {
