@@ -153,7 +153,9 @@ export default function QuizPage() {
                     <p>No quizzes to review.</p>
                     <button
                       className={styles["quiz__create-button"]}
-                      onClick={() => (window.location.href = "/create")}
+                      onClick={() =>
+                        (window.location.href = `/create?lang_pair=${selectedPairId}`)
+                      }
                     >
                       Create New Quizzes
                     </button>

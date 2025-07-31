@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
+import { useSearchParams } from "next/navigation";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 
 export function useCreateData() {
   const session = useSession();
+  const searchParams = useSearchParams();
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
   const [pairLoading, setPairLoading] = useState(false);
   const [pairError, setPairError] = useState("");
@@ -31,11 +33,27 @@ export function useCreateData() {
     fetchPairs();
   }, [session]);
 
-  // Restore last selected language pair from localStorage
+  // Set initial language pair from URL query parameter
   useEffect(() => {
-    const lastPairId = localStorage.getItem("lastSelectedPairId");
-    if (lastPairId) setSelectedPairId(lastPairId);
-  }, []);
+    const langPairParam = searchParams.get("lang_pair");
+    if (langPairParam && languagePairs.length > 0) {
+      // Check if the language pair exists in user's pairs
+      const pairExists = languagePairs.find(lp => lp.id === langPairParam);
+      if (pairExists) {
+        setSelectedPairId(langPairParam);
+        return;
+      }
+    }
+  }, [searchParams, languagePairs]);
+
+  // Restore last selected language pair from localStorage (only if no query param)
+  useEffect(() => {
+    const langPairParam = searchParams.get("lang_pair");
+    if (!langPairParam) {
+      const lastPairId = localStorage.getItem("lastSelectedPairId");
+      if (lastPairId) setSelectedPairId(lastPairId);
+    }
+  }, [searchParams]);
 
   // Save selected language pair to localStorage
   useEffect(() => {

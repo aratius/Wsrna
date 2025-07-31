@@ -1,15 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import styles from "./help.module.scss";
 import { motion } from "framer-motion";
 import { AnimatedMypageContent } from "../components/AnimatedMypageContent";
 
-export default function HelpPage({ searchParams }: { searchParams?: any }) {
+export default function HelpPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const [contentHtml, setContentHtml] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const langParam = searchParams?.lang;
+  const unwrappedSearchParams = searchParams ? use(searchParams) : {};
+  const langParam = unwrappedSearchParams?.lang;
   const lang = Array.isArray(langParam) ? langParam[0] : langParam;
   const langCode = lang === "en" ? "en" : "ja";
 
