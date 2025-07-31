@@ -4,6 +4,12 @@ import { useSession } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "./saved-idioms.module.scss";
+import { motion } from "framer-motion";
+import {
+  AnimatedMypageContent,
+  AnimatedCard,
+  AnimatedListItem,
+} from "../components/AnimatedMypageContent";
 
 export default function SavedIdiomsPage() {
   const router = useRouter();
@@ -68,14 +74,21 @@ export default function SavedIdiomsPage() {
   }
 
   return (
-    <div className={styles["saved"]}>
-      <h2 className={styles["saved__title"]}>Saved Idioms</h2>
+    <AnimatedMypageContent isLoading={loading} className={styles["saved"]}>
+      <motion.h2
+        className={styles["saved__title"]}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: 0 }}
+      >
+        Saved Idioms
+      </motion.h2>
       {/* タブUI */}
       <nav className={styles["saved__tab"]}>
-        {languagePairs.map((lp) => {
+        {languagePairs.map((lp, index) => {
           const active = selectedPairId === lp.id;
           return (
-            <button
+            <motion.button
               key={lp.id}
               onClick={() => setSelectedPairId(lp.id)}
               className={[
@@ -84,62 +97,83 @@ export default function SavedIdiomsPage() {
               ]
                 .filter(Boolean)
                 .join(" ")}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.2,
+                delay: index * 0.02,
+              }}
             >
               {getAbbr(lp.from_lang)}
               <span className={styles["saved__tab-arrow"]}>›</span>
               {getAbbr(lp.to_lang)}
-            </button>
+            </motion.button>
           );
         })}
       </nav>
-      {loading && <div className={styles["saved__status"]}>Loading...</div>}
-      {error && <div className={styles["saved__error"]}>{error}</div>}
+      {error && (
+        <motion.div
+          className={styles["saved__error"]}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {error}
+        </motion.div>
+      )}
       {filteredIdioms.length === 0 && !loading ? (
-        <div className={styles["saved__error"]}>
+        <motion.div
+          className={styles["saved__error"]}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
           No idioms saved for this language pair.
-        </div>
+        </motion.div>
       ) : (
         <ul className={styles["saved__list"]}>
           {filteredIdioms.map((idiom, idx) => (
-            <li key={idiom.id} className={styles["saved__list-item"]}>
-              <div className={styles["saved__list-item__main-word"]}>
-                {idiom.main_word}
-              </div>
-              <div className={styles["saved__list-item__translations"]}>
-                {Array.isArray(idiom.main_word_translations)
-                  ? idiom.main_word_translations.join(", ")
-                  : idiom.main_word_translations}
-              </div>
-              <button
-                type="button"
-                className={[
-                  styles["saved__list-item__explanation-btn"],
-                  explanationOpen[idiom.id]
-                    ? styles["saved__list-item__explanation-btn--open"]
-                    : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                onClick={() =>
-                  setExplanationOpen((prev) => ({
-                    ...prev,
-                    [idiom.id]: !prev[idiom.id],
-                  }))
-                }
-              >
-                {explanationOpen[idiom.id]
-                  ? "Hide Explanation"
-                  : "Show Explanation"}
-              </button>
-              {explanationOpen[idiom.id] && (
-                <div className={styles["saved__list-item__explanation-box"]}>
-                  {idiom.explanation}
+            <AnimatedListItem key={idiom.id} index={idx}>
+              <li className={styles["saved__list-item"]}>
+                <div className={styles["saved__list-item__main-word"]}>
+                  {idiom.main_word}
                 </div>
-              )}
-            </li>
+                <div className={styles["saved__list-item__translations"]}>
+                  {Array.isArray(idiom.main_word_translations)
+                    ? idiom.main_word_translations.join(", ")
+                    : idiom.main_word_translations}
+                </div>
+                <button
+                  type="button"
+                  className={[
+                    styles["saved__list-item__explanation-btn"],
+                    explanationOpen[idiom.id]
+                      ? styles["saved__list-item__explanation-btn--open"]
+                      : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() =>
+                    setExplanationOpen((prev) => ({
+                      ...prev,
+                      [idiom.id]: !prev[idiom.id],
+                    }))
+                  }
+                >
+                  {explanationOpen[idiom.id]
+                    ? "Hide Explanation"
+                    : "Show Explanation"}
+                </button>
+                {explanationOpen[idiom.id] && (
+                  <div className={styles["saved__list-item__explanation-box"]}>
+                    {idiom.explanation}
+                  </div>
+                )}
+              </li>
+            </AnimatedListItem>
           ))}
         </ul>
       )}
-    </div>
+    </AnimatedMypageContent>
   );
 }

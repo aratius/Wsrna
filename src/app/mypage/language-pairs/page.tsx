@@ -4,6 +4,12 @@ import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { useRouter } from "next/navigation";
 import styles from "./language-pairs.module.scss";
+import { motion } from "framer-motion";
+import {
+  AnimatedMypageContent,
+  AnimatedCard,
+  AnimatedFormField,
+} from "../components/AnimatedMypageContent";
 
 export default function LanguagePairsPage() {
   const router = useRouter();
@@ -112,69 +118,82 @@ export default function LanguagePairsPage() {
   if (!session) return null;
 
   return (
-    <div className={styles["lang"]}>
-      <h2 className={styles["lang__title"]}>Language Pairs</h2>
-      <form onSubmit={handleAddPair} className={styles["lang__form"]}>
-        <select
-          className={styles["lang__form__select"]}
-          value={fromLang}
-          onChange={(e) => setFromLang(e.target.value)}
-          required
-        >
-          <option value="">From</option>
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.label}
-            </option>
-          ))}
-        </select>
-        <span className={styles["lang__form__arrow"]}>›</span>
-        <select
-          className={styles["lang__form__select"]}
-          value={toLang}
-          onChange={(e) => setToLang(e.target.value)}
-          required
-        >
-          <option value="">To</option>
-          {supportedLanguages.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.label}
-            </option>
-          ))}
-        </select>
-        <button
-          className={styles["lang__form__add-btn"]}
-          type="submit"
-          disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
-        >
-          Add
-        </button>
-      </form>
+    <AnimatedMypageContent isLoading={lpLoading} className={styles["lang"]}>
+      <motion.h2
+        className={styles["lang__title"]}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        Language Pairs
+      </motion.h2>
+      <AnimatedFormField delay={0.1}>
+        <form onSubmit={handleAddPair} className={styles["lang__form"]}>
+          <select
+            className={styles["lang__form__select"]}
+            value={fromLang}
+            onChange={(e) => setFromLang(e.target.value)}
+            required
+          >
+            <option value="">From</option>
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <span className={styles["lang__form__arrow"]}>›</span>
+          <select
+            className={styles["lang__form__select"]}
+            value={toLang}
+            onChange={(e) => setToLang(e.target.value)}
+            required
+          >
+            <option value="">To</option>
+            {supportedLanguages.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.label}
+              </option>
+            ))}
+          </select>
+          <button
+            className={styles["lang__form__add-btn"]}
+            type="submit"
+            disabled={lpAdding || !fromLang || !toLang || fromLang === toLang}
+          >
+            Add
+          </button>
+        </form>
+      </AnimatedFormField>
       <ul className={styles["lang__list"]}>
         {languagePairs.map((lp, idx) => (
-          <li key={lp.id} className={styles["lang__list-item"]}>
-            <span className={styles["lang__label"]}>
-              {supportedLanguages.find((l) => l.code === lp.from_lang)?.label ||
-                lp.from_lang}
-            </span>
-            <span className={styles["lang__arrow"]}>›</span>
-            <span className={styles["lang__label"]}>
-              {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
-                lp.to_lang}
-            </span>
-            <button
-              className={styles["lang__delete-btn"]}
-              type="button"
-              onClick={() => handleDeletePair(lp.id)}
-            >
-              Delete
-            </button>
-          </li>
+          <AnimatedCard key={lp.id} delay={idx * 0.02 + 0.2}>
+            <li className={styles["lang__list-item"]}>
+              <span className={styles["lang__label"]}>
+                {supportedLanguages.find((l) => l.code === lp.from_lang)
+                  ?.label || lp.from_lang}
+              </span>
+              <span className={styles["lang__arrow"]}>›</span>
+              <span className={styles["lang__label"]}>
+                {supportedLanguages.find((l) => l.code === lp.to_lang)?.label ||
+                  lp.to_lang}
+              </span>
+              <button
+                className={styles["lang__delete-btn"]}
+                type="button"
+                onClick={() => handleDeletePair(lp.id)}
+              >
+                Delete
+              </button>
+            </li>
+          </AnimatedCard>
         ))}
         {languagePairs.length === 0 && !lpLoading && (
-          <li className={styles["lang__empty"]}>No language pairs found.</li>
+          <AnimatedCard delay={0.1}>
+            <li className={styles["lang__empty"]}>No language pairs found.</li>
+          </AnimatedCard>
         )}
       </ul>
-    </div>
+    </AnimatedMypageContent>
   );
 }
