@@ -164,7 +164,7 @@
     transition: all 0.2s;
     min-width: 80px;
 
-    &--close {
+    &.close {
       background: #f2f2f7;
       color: $color-text-primary;
 
@@ -173,7 +173,7 @@
       }
     }
 
-    &--submit {
+    &.submit {
       background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
       color: #fff;
 

@@ -16,14 +16,14 @@
   &:hover {
     background: $color-accent;
   }
-  &--secondary {
+  &.secondary {
     background: $color-secondary;
     color: #222;
   }
-  &--success {
+  &.success {
     background: $color-success;
   }
-  &--error {
+  &.error {
     background: $color-error;
   }
 }
@@ -142,7 +142,7 @@
     color: #fff;
     border-radius: 6px;
     padding: $spacing-xs $spacing-s;
-    &--answer {
+    &.answer {
       background: $color-success;
       color: #222;
       font-weight: bold;
@@ -202,7 +202,7 @@
     color: #fff;
     border-radius: 6px;
     padding: $spacing-xs $spacing-s;
-    &--answer {
+    &.answer {
       background: $color-success;
       color: #222;
       font-weight: bold;

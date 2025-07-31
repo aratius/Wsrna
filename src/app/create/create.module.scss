@@ -81,13 +81,13 @@
         box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
       }
 
-      &--input {
+      &.input {
         min-height: 44px;
         background: #fafbfc;
         color: $color-text-primary;
       }
 
-      &--select {
+      &.select {
         min-height: 44px;
         cursor: pointer;
         color: $color-text-primary;
@@ -237,13 +237,13 @@
         line-height: 1;
         padding: 0;
         margin-right: 8px;
-        &--quiz {
+        &.quiz {
           color: #7c4dff;
         }
-        &--answer {
+        &.answer {
           color: #34c759;
         }
-        &--translation {
+        &.translation {
           color: #ff9500;
         }
       }
@@ -294,7 +294,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
 
-      &--close {
+      &.close {
         background: #f8f9fa;
         color: $color-text-secondary;
         border: 1px solid #dee2e6;
@@ -304,7 +304,7 @@
         }
       }
 
-      &--submit {
+      &.submit {
         background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
         color: white;
 

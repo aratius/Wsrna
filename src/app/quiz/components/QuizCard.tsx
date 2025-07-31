@@ -67,9 +67,9 @@ export default function QuizCard({
           className={
             styles["quiz__progress__bar"] +
             (progressColorClass === "green"
-              ? " " + styles["quiz__progress__bar"] + "--green"
+              ? " " + styles["green"]
               : progressColorClass === "orange"
-              ? " " + styles["quiz__progress__bar"] + "--orange"
+              ? " " + styles["orange"]
               : "")
           }
           style={{ width: `${progressRatio * 100}%` }}
@@ -88,14 +88,7 @@ export default function QuizCard({
 
       {/* Quiz部分 */}
       <div className={styles["quiz__section"]}>
-        <span
-          className={
-            styles.quiz__section__label +
-            " " +
-            styles.quiz__section__label +
-            "--quiz"
-          }
-        >
+        <span className={styles["quiz__section__label"] + " " + styles["quiz"]}>
           Quiz
         </span>
         <div className={styles["quiz__section__text"]}>
@@ -114,9 +107,6 @@ export default function QuizCard({
             const isCorrect = results[review.id] === true;
             const isShowFullAnswer =
               isCorrect || (results[review.id] === false && attemptsCount >= 3);
-            const colorClass = isCorrect
-              ? styles["quiz__answer"] + "--correct"
-              : styles["quiz__answer"] + "--incorrect";
 
             // 正解を単語に分割し、各単語の文字数に基づいて空欄を生成
             const splitAnswerIntoWords = (answer: string) => {
@@ -225,12 +215,7 @@ export default function QuizCard({
       {/* Answer部分 */}
       <div className={styles["quiz__section"]}>
         <span
-          className={
-            styles.quiz__section__label +
-            " " +
-            styles.quiz__section__label +
-            "--answer"
-          }
+          className={styles["quiz__section__label"] + " " + styles["answer"]}
         >
           Answer
         </span>
@@ -247,12 +232,11 @@ export default function QuizCard({
             className={
               styles["quiz__form__control"] +
               " " +
-              styles["quiz__form__control"] +
-              "--flex" +
+              styles["flex"] +
               (results[review.id] === true
-                ? " " + styles["quiz__form__control"] + "--correct"
+                ? " " + styles["correct"]
                 : results[review.id] === false && (attempts[review.id] || 0) > 0
-                ? " " + styles["quiz__form__control"] + "--incorrect"
+                ? " " + styles["incorrect"]
                 : "")
             }
             type="text"
@@ -321,9 +305,7 @@ export default function QuizCard({
               <div
                 className={
                   styles["quiz__details__content"] +
-                  (detailsOpen[review.id]
-                    ? " " + styles["quiz__details__content"] + "--open"
-                    : "")
+                  (detailsOpen[review.id] ? " " + styles["open"] : "")
                 }
               >
                 {/* Main word/訳語 */}

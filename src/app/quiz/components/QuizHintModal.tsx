@@ -124,7 +124,7 @@ export default function QuizHintModal({
       <div
         className={
           styles["quiz__hint__popup"] +
-          (showHintModal[review.id] ? " " + styles["visible"] : "")
+          (showHintModal[review.id] ? " visible" : "")
         }
       >
         {review.quiz?.hint_levels && review.quiz.hint_levels.length > 0 ? (
@@ -143,9 +143,7 @@ export default function QuizHintModal({
             <button
               className={
                 styles["quiz__hint__more-button"] +
-                (isLastHint
-                  ? " " + styles["quiz__hint__more-button"] + "--close"
-                  : "")
+                (isLastHint ? " " + styles[" close"] : "")
               }
               onClick={handleMoreButtonClick}
             >

@@ -124,11 +124,11 @@
       background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
       transition: width 0.3s ease;
 
-      &--green {
+      &.green {
         background: linear-gradient(90deg, #34c759 0%, #30d158 100%);
       }
 
-      &--orange {
+      &.orange {
         background: linear-gradient(90deg, #ff9500 0%, #ff6b35 100%);
       }
     }
@@ -173,7 +173,7 @@
       }
 
       // ヒントが開いている時のアイコン色
-      &--active svg {
+      &.active svg {
         stroke: #5a3fd8;
       }
     }
@@ -255,7 +255,7 @@
       }
 
       // Closeボタンの時のスタイル
-      &--close {
+      &.close {
         background: $color-error;
         &:hover {
           background: darken($color-error, 10%);
@@ -280,13 +280,13 @@
       line-height: 1;
       padding: 0;
       margin-right: 8px;
-      &--quiz {
+      &.quiz {
         color: #7c4dff;
       }
-      &--answer {
+      &.answer {
         color: #34c759;
       }
-      &--translation {
+      &.translation {
         color: #ff9500;
       }
     }
@@ -329,17 +329,17 @@
         background: #fff;
       }
 
-      &--correct {
+      &.correct {
         border: 2px solid #34c759 !important;
         animation: correctBounce 0.3s ease-out;
       }
 
-      &--incorrect {
+      &.incorrect {
         border: 2px solid #d50000 !important;
         animation: incorrectShake 0.4s;
       }
 
-      &--flex {
+      &.flex {
         display: flex;
         gap: $spacing-s;
         align-items: center;
@@ -409,7 +409,7 @@
       opacity: 0;
       transform: translateY(-10px);
 
-      &--open {
+      &.open {
         max-height: 500px;
         margin-top: $spacing-s;
         opacity: 1;
@@ -464,12 +464,12 @@
   }
 
   &__answer {
-    &--correct {
+    &.correct {
       color: #34c759;
       font-weight: 600;
     }
 
-    &--incorrect {
+    &.incorrect {
       color: #d50000;
       font-weight: 600;
     }
@@ -495,10 +495,10 @@
     position: relative;
 
     // 状態別下線色
-    &--correct {
+    &.correct {
       border-bottom-color: #34c759;
     }
-    &--incorrect {
+    &.incorrect {
       border-bottom-color: #d50000;
     }
     // 単語の長さに応じて幅を調整
