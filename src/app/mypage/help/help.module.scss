@@ -26,14 +26,14 @@
       align-items: center;
       gap: 4px;
 
-      &__lang--active {
+      .active {
         color: $color-primary;
         font-weight: 700;
         text-decoration: underline;
         cursor: default;
       }
 
-      &__lang--inactive {
+      .inactive {
         color: #888;
         font-weight: 400;
         cursor: pointer;

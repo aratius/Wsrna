@@ -52,9 +52,7 @@ export default function HelpPage({
           <Link href="/mypage/help?lang=ja">
             <span
               className={
-                langCode === "ja"
-                  ? styles["help__header__lang-switch__lang--active"]
-                  : styles["help__header__lang-switch__lang--inactive"]
+                langCode === "ja" ? styles["active"] : styles["inactive"]
               }
             >
               日
@@ -66,9 +64,7 @@ export default function HelpPage({
           <Link href="/mypage/help?lang=en">
             <span
               className={
-                langCode === "en"
-                  ? styles["help__header__lang-switch__lang--active"]
-                  : styles["help__header__lang-switch__lang--inactive"]
+                langCode === "en" ? styles["active"] : styles["inactive"]
               }
             >
               EN
