@@ -602,7 +602,6 @@
     z-index: 1000;
     top: 100%;
     left: 50%;
-    transform: translateX(-50%);
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
@@ -621,11 +620,16 @@
       font-weight: 600;
       color: #333;
       font-size: 11px;
+      text-align: center;
+      margin-bottom: 2px;
+      display: block;
     }
 
     &__meanings {
       color: #666;
       font-size: 11px;
+      text-align: center;
+      display: block;
     }
 
     &__arrow {

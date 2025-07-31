@@ -291,18 +291,23 @@ export default function QuizCard({
                   >
                     {word}
                     {isPopupVisible && (
-                      <span className={styles["quiz__popup"]}>
+                      <motion.span
+                        className={styles["quiz__popup"]}
+                        initial={{ opacity: 0, y: 5, x: "-50%" }}
+                        animate={{ opacity: 1, y: 0, x: "-50%" }}
+                        exit={{ opacity: 0, y: 5, x: "-50%" }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                      >
                         <span className={styles["quiz__popup__content"]}>
                           <span className={styles["quiz__popup__word"]}>
                             {word}
                           </span>
-                          <br />
                           <span className={styles["quiz__popup__meanings"]}>
                             {meanings.join(", ")}
                           </span>
                         </span>
                         <span className={styles["quiz__popup__arrow"]}></span>
-                      </span>
+                      </motion.span>
                     )}
                   </span>
                 );
