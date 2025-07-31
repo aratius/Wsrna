@@ -56,6 +56,43 @@ export default function QuizCard({
     [id: string]: number[];
   }>({});
 
+  // ポップアップの状態を管理
+  const [popupState, setPopupState] = useState<{
+    isVisible: boolean;
+    word: string;
+    meanings: string[];
+    x: number;
+    y: number;
+  }>({
+    isVisible: false,
+    word: "",
+    meanings: [],
+    x: 0,
+    y: 0,
+  });
+
+  // ポップアップ外クリックで閉じる処理
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      const popupElement = target.closest(
+        `.${styles["quiz__word-with-popup"]}`
+      );
+
+      if (!popupElement && popupState.isVisible) {
+        setPopupState((prev) => ({ ...prev, isVisible: false }));
+      }
+    };
+
+    if (popupState.isVisible) {
+      document.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [popupState.isVisible, styles]);
+
   // 進捗に応じた色を決定
   let progressColorClass = "";
   const progressRatio = (currentIndex + 1) / totalCount;
@@ -214,40 +251,96 @@ export default function QuizCard({
             const answerWords = splitAnswerIntoWords(answer);
             const dictionary = review.quiz.dictionary || {};
 
-            // 単語にツールチップを追加する関数
-            const renderWordWithTooltip = (word: string, key: string) => {
+            // 単語にポップアップを追加する関数
+            const renderWordWithPopup = (
+              word: string,
+              key: string,
+              isClickable: boolean = true
+            ) => {
               const meanings = dictionary[word];
-              if (meanings && Array.isArray(meanings) && meanings.length > 0) {
+              if (
+                meanings &&
+                Array.isArray(meanings) &&
+                meanings.length > 0 &&
+                isClickable
+              ) {
+                const isPopupVisible =
+                  popupState.isVisible && popupState.word === word;
                 return (
                   <span
                     key={key}
-                    className={styles["quiz__word-with-tooltip"]}
-                    title={meanings.join(", ")}
+                    className={styles["quiz__word-with-popup"]}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (isPopupVisible) {
+                        setPopupState((prev) => ({
+                          ...prev,
+                          isVisible: false,
+                        }));
+                      } else {
+                        setPopupState({
+                          isVisible: true,
+                          word: word,
+                          meanings: meanings,
+                          x: 0,
+                          y: 0,
+                        });
+                      }
+                    }}
                   >
                     {word}
+                    {isPopupVisible && (
+                      <span className={styles["quiz__popup"]}>
+                        <span className={styles["quiz__popup__content"]}>
+                          <span className={styles["quiz__popup__word"]}>
+                            {word}
+                          </span>
+                          <br />
+                          <span className={styles["quiz__popup__meanings"]}>
+                            {meanings.join(", ")}
+                          </span>
+                        </span>
+                        <span className={styles["quiz__popup__arrow"]}></span>
+                      </span>
+                    )}
                   </span>
                 );
               }
-              return <span key={key}>{word}</span>;
+              return (
+                <span key={key} className={styles["quiz__word-normal"]}>
+                  {word}
+                </span>
+              );
             };
 
-            // テキストを単語に分割してツールチップを適用する関数
-            const renderTextWithTooltips = (text: string, baseKey: string) => {
+            // テキストを単語に分割してポップアップを適用する関数
+            const renderTextWithPopups = (text: string, baseKey: string) => {
               if (!text) return null;
 
+              // 8文字以下の単語は改行しないように、スペースで分割
               const words = text.split(/(\s+)/);
+              const usedWords = new Set<string>(); // 既に使用された単語を追跡
+
               return words.map((word, index) => {
                 const key = `${baseKey}-${index}`;
                 if (word.trim() === "") {
                   return <span key={key}>{word}</span>; // 空白文字はそのまま
                 }
-                return renderWordWithTooltip(word, key);
+
+                // 既に使用された単語かチェック
+                const isFirstOccurrence = !usedWords.has(word);
+                if (isFirstOccurrence) {
+                  usedWords.add(word);
+                }
+
+                return renderWordWithPopup(word, key, isFirstOccurrence);
               });
             };
 
             return (
               <>
-                {renderTextWithTooltips(parts[0], "part0")}
+                {renderTextWithPopups(parts[0], "part0")}
                 <span className={styles["quiz__blanks-container"]}>
                   {answerWords.map((word, index) => {
                     const style = {
@@ -290,7 +383,7 @@ export default function QuizCard({
                     );
                   })}
                 </span>
-                {renderTextWithTooltips(parts[1], "part1")}
+                {renderTextWithPopups(parts[1], "part1")}
               </>
             );
           })()}
