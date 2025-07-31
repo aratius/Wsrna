@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 export function useCreateState() {
   const session = useSession();
+  const searchParams = useSearchParams();
   const [fromTranslation, setFromTranslation] = useState("");
   const [toText, setToText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,6 +14,19 @@ export function useCreateState() {
   const [hintLevels, setHintLevels] = useState<{ [key: number]: number; }>({});
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Set initial values from URL query parameters
+  useEffect(() => {
+    const fromParam = searchParams.get("from");
+    const toParam = searchParams.get("to");
+
+    if (fromParam) {
+      setFromTranslation(decodeURIComponent(fromParam));
+    }
+    if (toParam) {
+      setToText(decodeURIComponent(toParam));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent, selectedPairId: string, languagePairs: any[]) => {
     e.preventDefault();

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "./saved-idioms.module.scss";
 import { motion } from "framer-motion";
@@ -143,30 +144,89 @@ export default function SavedIdiomsPage() {
                     ? idiom.main_word_translations.join(", ")
                     : idiom.main_word_translations}
                 </div>
-                <button
-                  type="button"
-                  className={[
-                    styles["saved__list-item__explanation-btn"],
-                    explanationOpen[idiom.id]
-                      ? styles["saved__list-item__explanation-btn--open"]
-                      : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                  onClick={() =>
-                    setExplanationOpen((prev) => ({
-                      ...prev,
-                      [idiom.id]: !prev[idiom.id],
-                    }))
-                  }
-                >
-                  {explanationOpen[idiom.id]
-                    ? "Hide Explanation"
-                    : "Show Explanation"}
-                </button>
+                <div className={styles["saved__list-item__buttons"]}>
+                  <button
+                    type="button"
+                    className={[
+                      styles["saved__list-item__explanation-btn"],
+                      explanationOpen[idiom.id] ? " " + styles["open"] : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() =>
+                      setExplanationOpen((prev) => ({
+                        ...prev,
+                        [idiom.id]: !prev[idiom.id],
+                      }))
+                    }
+                  >
+                    {explanationOpen[idiom.id]
+                      ? "- Hide Explanation!"
+                      : "+ Show Explanation!"}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles["saved__list-item__recreate-btn"]}
+                    onClick={async () => {
+                      const confirmed = window.confirm(
+                        "Would you delete this idiom and regenerate a new one?"
+                      );
+
+                      if (confirmed && session?.user?.id) {
+                        try {
+                          // idiomを削除
+                          const deleteRes = await fetch(
+                            `/api/idioms?idiom_id=${idiom.id}&user_id=${session.user.id}`,
+                            { method: "DELETE" }
+                          );
+
+                          if (deleteRes.ok) {
+                            // /createに遷移（from、to、lang_pairのクエリパラメータ付き）
+                            const fromParam = encodeURIComponent(
+                              idiom.main_word_translations || ""
+                            );
+                            const toParam = encodeURIComponent(
+                              idiom.main_word || ""
+                            );
+                            const langPairParam = encodeURIComponent(
+                              idiom.language_pair_id || ""
+                            );
+                            window.location.href = `/create?from=${fromParam}&to=${toParam}&lang_pair=${langPairParam}`;
+                          } else {
+                            alert("Failed to delete idiom. Please try again.");
+                          }
+                        } catch (error) {
+                          console.error("Error deleting idiom:", error);
+                          alert("An error occurred. Please try again.");
+                        }
+                      }
+                    }}
+                  >
+                    Weird!
+                  </button>
+                </div>
                 {explanationOpen[idiom.id] && (
                   <div className={styles["saved__list-item__explanation-box"]}>
-                    {idiom.explanation}
+                    <div className={styles["saved__list-item__explanation"]}>
+                      {idiom.explanation}
+                    </div>
+                    {idiom.example_sentence && (
+                      <div className={styles["saved__list-item__example"]}>
+                        <div
+                          className={styles["saved__list-item__example-label"]}
+                        >
+                          Example:
+                        </div>
+                        <div
+                          className={
+                            styles["saved__list-item__example-sentence"]
+                          }
+                        >
+                          {idiom.example_sentence}
+                          <br />- {idiom.sentence_translation}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </li>
