@@ -276,6 +276,12 @@ export default function QuizCard({
               className={styles["quiz__form__button"]}
               type="submit"
               disabled={updating[review.id]}
+              onClick={(e) => {
+                console.log("Answer button clicked:", {
+                  reviewId: review.id,
+                  answer: answers[review.id],
+                });
+              }}
             >
               Answer
             </button>
@@ -297,12 +303,18 @@ export default function QuizCard({
               <button
                 className={styles["quiz__details__toggle"]}
                 type="button"
-                onClick={() =>
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log("Details toggle clicked:", {
+                    reviewId: review.id,
+                    currentState: detailsOpen[review.id],
+                  });
                   onSetDetailsOpen((prev) => ({
                     ...prev,
                     [review.id]: !prev[review.id],
-                  }))
-                }
+                  }));
+                }}
               >
                 {detailsOpen[review.id] ? "− Details" : "+ Details"}
               </button>

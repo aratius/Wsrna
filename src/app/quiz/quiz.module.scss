@@ -139,7 +139,7 @@
       position: absolute;
       top: $spacing-s;
       right: $spacing-s;
-      z-index: 10;
+      z-index: 1000;
     }
 
     &__button {
@@ -196,6 +196,7 @@
       transform: translateY(-10px);
       transition: all 0.3s ease;
       border-left: 4px solid #7c4dff;
+      z-index: 1001;
 
       &--visible {
         opacity: 1;
@@ -405,10 +406,14 @@
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease;
+      opacity: 0;
+      transform: translateY(-10px);
 
       &--open {
         max-height: 500px;
         margin-top: $spacing-s;
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 

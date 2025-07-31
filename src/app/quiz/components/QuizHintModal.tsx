@@ -23,11 +23,11 @@ export default function QuizHintModal({
   onSetShowHintModal,
   onSetHintIndexes,
 }: QuizHintModalProps) {
-  // ヒントモーダル外クリックで閉じる
+  // ヒントモーダル外クリックで閉じる（モバイル対応）
   useEffect(() => {
     if (!review || !showHintModal[review.id]) return;
 
-    function handleClickOutside(e: MouseEvent) {
+    function handleClickOutside(e: MouseEvent | TouchEvent) {
       const popup = document.querySelector(`.${styles["quiz__hint__popup"]}`);
       const button = document.querySelector(`.${styles["quiz__hint__button"]}`);
 
@@ -42,9 +42,13 @@ export default function QuizHintModal({
       onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
     }
 
+    // マウスとタッチイベントの両方に対応
     document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener("touchend", handleClickOutside, true);
+
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener("touchend", handleClickOutside, true);
     };
   }, [review, showHintModal[review?.id], onSetShowHintModal]);
 
@@ -52,8 +56,14 @@ export default function QuizHintModal({
   const totalHints = review.quiz?.hint_levels?.length || 0;
   const isLastHint = currentHintIndex >= totalHints - 1;
 
-  const handleHintButtonClick = (e: React.MouseEvent) => {
+  const handleHintButtonClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
     e.stopPropagation(); // イベントの伝播を停止
+
+    console.log("Hint button clicked:", {
+      reviewId: review.id,
+      currentState: showHintModal[review.id],
+    });
 
     if (showHintModal[review.id]) {
       // ヒントが開いている場合は閉じる

@@ -47,19 +47,20 @@ export function useQuizState() {
     const userAnswer = answers[review.id]?.trim();
     if (!userAnswer) return;
 
-    // 重複回答を防ぐ
-    if (answeredQuestions.has(review.id)) {
-      console.log('Question already answered:', review.id);
+    // 重複回答を防ぐ（正解の場合のみ）
+    const isCorrect = userAnswer === quiz.answer;
+    if (isCorrect && answeredQuestions.has(review.id)) {
+      console.log('Question already answered correctly:', review.id);
       return;
     }
 
     // デバッグ: 重複呼び出しチェック
-    console.log('handleAnswer called:', { reviewId: review.id, userAnswer });
+    console.log('handleAnswer called:', { reviewId: review.id, userAnswer, isCorrect });
 
-    // 回答済みフラグを設定
-    setAnsweredQuestions(prev => new Set(prev).add(review.id));
-
-    const isCorrect = userAnswer === quiz.answer;
+    // 正解の場合のみ回答済みフラグを設定
+    if (isCorrect) {
+      setAnsweredQuestions(prev => new Set(prev).add(review.id));
+    }
     setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
     setUpdating((prev) => ({ ...prev, [review.id]: true }));
     if (!isCorrect) {
