@@ -11,8 +11,9 @@ import CreateForm from "./components/CreateForm";
 import CreatePreviewModal from "./components/CreatePreviewModal";
 import { motion } from "framer-motion";
 import { AnimatedCreateContent } from "./components/AnimatedCreateContent";
+import { Suspense } from "react";
 
-export default function CreatePage() {
+function CreatePageContent() {
   const session = useSession();
 
   const {
@@ -103,5 +104,13 @@ export default function CreatePage() {
         </AnimatedCreateContent>
       </motion.div>
     </>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense fallback={<Loading message="Loading..." />}>
+      <CreatePageContent />
+    </Suspense>
   );
 }
