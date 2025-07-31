@@ -118,12 +118,14 @@
       }
 
       &__buttons {
+        height: 32px;
         display: flex;
         gap: 8px;
         margin-top: 4px;
       }
 
       &__explanation-btn {
+        height: 100%;
         background: #7c4dff;
         color: #fff;
         border: none;
@@ -131,7 +133,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         cursor: pointer;
-        padding: 5px 14px;
+        padding: 0 14px;
         text-align: center;
         letter-spacing: 0.03em;
         box-shadow: 0 2px 8px rgba(0, 114, 255, 0.07),
@@ -163,6 +165,7 @@
       }
 
       &__recreate-btn {
+        height: 100%;
         background: #d50000;
         color: #fff;
         border: none;
@@ -170,7 +173,7 @@
         font-size: 0.95rem;
         font-weight: 700;
         cursor: pointer;
-        padding: 5px 14px;
+        padding: 0 14px;
         text-align: center;
         letter-spacing: 0.03em;
         text-decoration: none;
