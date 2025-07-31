@@ -630,6 +630,9 @@
       font-size: 11px;
       text-align: center;
       display: block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.4;
     }
 
     &__arrow {
