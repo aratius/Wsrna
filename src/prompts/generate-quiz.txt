@@ -94,14 +94,21 @@ Each question must include:
 - The main word, idiom, or grammar point being tested (main_word)
 - 1 to 3 minimal translations of main_word in {{fromLang}} (main_word_translations: array)
 - 2 to 3 example sentences (in {{toLang}}) using the main_word naturally, with their translations in {{fromLang}} (example_sentences: array of objects with 'sentence' and 'translation')
-- An explanation (in {{fromLang}}) about the main word/idiom/grammar point (explanation). The explanation MUST be written in {{fromLang}} only, and should be concise, ideally no more than 3 lines.
+- An explanation (in {{fromLang}}) about the main word/idiom/grammar point (explanation). The explanation MUST be written in {{fromLang}} only, and should be concise, ideally no more than 3 lines. CRITICAL: Never write explanations in any other language - ONLY {{fromLang}}.
 - A sentence-level translation into {{fromLang}} for comprehension
 - A dictionary object with every word in the sentence and ideally 2 to 6 possible meanings (as an array) in {{fromLang}}. If a word has only one common meaning, return it as a single-element array.
 - 4-step progressive hints (hint_levels), ALL written in {{fromLang}} only:
   1. Sentence meaning in {{fromLang}}
-  2. Grammatical clue (tense, part of speech, etc.)
-  3. Explanation of the answer word
-  4. Partial word clue (e.g. first few letters)
+  2. Grammatical clue (tense, part of speech, etc.) in {{fromLang}}
+  3. Explanation of the answer word in {{fromLang}}
+  4. Partial word clue (e.g. first few letters) in {{fromLang}}
+
+CRITICAL LANGUAGE REQUIREMENTS:
+- ALL explanations MUST be written in {{fromLang}} only
+- ALL hint_levels MUST be written in {{fromLang}} only
+- ALL translations MUST be written in {{fromLang}} only
+- NEVER use English or any other language for explanations, hints, or translations
+- If you cannot write in {{fromLang}}, return an error instead of using English
 
 Return ONLY a strict JSON object with a key "questions" whose value is an array of exactly 5 question objects, no more, no less. Do not return a top-level array. Do not return a single object. Do not return any text outside the JSON object. Do not include markdown or code block formatting. If you cannot generate exactly 5 questions, return {"error": "Could not generate 5 questions"}.
 
