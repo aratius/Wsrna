@@ -124,9 +124,7 @@ export default function QuizHintModal({
       <div
         className={
           styles["quiz__hint__popup"] +
-          (showHintModal[review.id]
-            ? " " + styles["quiz__hint__popup"] + "--visible"
-            : "")
+          (showHintModal[review.id] ? " " + styles["visible"] : "")
         }
       >
         {review.quiz?.hint_levels && review.quiz.hint_levels.length > 0 ? (

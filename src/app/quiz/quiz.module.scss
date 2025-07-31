@@ -198,7 +198,7 @@
       border-left: 4px solid #7c4dff;
       z-index: 1001;
 
-      &--visible {
+      &.visible {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
