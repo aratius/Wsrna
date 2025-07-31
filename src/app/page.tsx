@@ -71,7 +71,10 @@ export default function Home() {
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <h1>Welcome to WSRNA</h1>
-            <p>Learn languages with AI-powered quizzes</p>
+            <p>
+              Learn 30+ languages <br />
+              with AI-powered quizzes
+            </p>
           </div>
           <div className={styles.cardBody}>
             <button

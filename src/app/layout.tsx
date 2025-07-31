@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.scss";
 import "../styles/index.scss";
 import SupabaseProvider from "@/components/SupabaseProvider";
+import AuthGuard from "@/components/AuthGuard";
 import BottomNav from "@/components/BottomNav";
 import {
   poppins,
@@ -44,9 +45,11 @@ export default function RootLayout({
         <AppHeightSetter />
         <div className="main_wrapper">
           <SupabaseProvider>
-            <PwaInstallPrompt />
-            <main className="main">{children}</main>
-            <BottomNav />
+            <AuthGuard>
+              <PwaInstallPrompt />
+              <main className="main">{children}</main>
+              <BottomNav />
+            </AuthGuard>
           </SupabaseProvider>
         </div>
       </body>
