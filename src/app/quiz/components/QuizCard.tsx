@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../quiz.module.scss";
 import QuizHintModal from "./QuizHintModal";
 import { motion } from "framer-motion";
@@ -51,6 +51,11 @@ export default function QuizCard({
   onNext,
   onSetHintIndexes,
 }: QuizCardProps) {
+  // 部分正解の状態を管理
+  const [partialCorrectIndexes, setPartialCorrectIndexes] = useState<{
+    [id: string]: number[];
+  }>({});
+
   // 進捗に応じた色を決定
   let progressColorClass = "";
   const progressRatio = (currentIndex + 1) / totalCount;
@@ -59,6 +64,96 @@ export default function QuizCard({
   } else if (progressRatio >= 0.7) {
     progressColorClass = "orange";
   }
+
+  // 部分正解の判定ロジック
+  const getPartialCorrectIndexes = (
+    userAnswer: string,
+    correctAnswer: string
+  ): number[] => {
+    if (!userAnswer || !correctAnswer) return [];
+
+    const userWords = userAnswer.trim().split(/\s+/);
+    const correctWords = correctAnswer.trim().split(/\s+/);
+    const indexes: number[] = [];
+
+    // 頭から一致している単語のインデックスを収集
+    for (let i = 0; i < Math.min(userWords.length, correctWords.length); i++) {
+      if (userWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
+        indexes.push(i);
+      } else {
+        // 一致しない単語が見つかったら終了
+        break;
+      }
+    }
+
+    return indexes;
+  };
+
+  // inputのchangeイベント（部分正解の計算は行わない）
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const userAnswer = e.target.value;
+
+    // 既存のonSetAnswersを呼び出し
+    onSetAnswers((a) => ({
+      ...a,
+      [review.id]: userAnswer,
+    }));
+  };
+
+  // 正解を単語に分割し、各単語の文字数に基づいて空欄を生成
+  const splitAnswerIntoWords = (answer: string) => {
+    return answer.split(/\s+/).filter((word) => word.length > 0);
+  };
+
+  // 文字の表示状態を決定する関数
+  const shouldShowChar = (
+    wordIndex: number,
+    charIndex: number,
+    word: string
+  ) => {
+    const isCorrect = results[review.id] === true;
+    const isIncorrect = results[review.id] === false;
+    const attemptsCount = attempts[review.id] || 0;
+    const isShowFullAnswer = isCorrect || (isIncorrect && attemptsCount >= 3);
+
+    // 正解/不正解確定時は全文字表示
+    if (isShowFullAnswer) {
+      return true;
+    }
+
+    // 部分正解の判定
+    const partialIndexes = partialCorrectIndexes[review.id] || [];
+    if (partialIndexes.includes(wordIndex)) {
+      return true;
+    }
+
+    // それ以外は透明（文字は配置されているが非表示）
+    return false;
+  };
+
+  // 文字の色を決定する関数
+  const getCharColorClass = (wordIndex: number) => {
+    const isCorrect = results[review.id] === true;
+    const isIncorrect = results[review.id] === false;
+    const attemptsCount = attempts[review.id] || 0;
+    const isShowFullAnswer = isCorrect || (isIncorrect && attemptsCount >= 3);
+
+    if (isShowFullAnswer) {
+      if (isCorrect) {
+        return styles["quiz__word-blank__char--correct"];
+      } else if (isIncorrect) {
+        return styles["quiz__word-blank__char--incorrect"];
+      }
+    }
+
+    // 部分正解時は青色で表示
+    const partialIndexes = partialCorrectIndexes[review.id] || [];
+    if (partialIndexes.includes(wordIndex)) {
+      return styles["quiz__word-blank__char--partial"];
+    }
+
+    return "";
+  };
 
   return (
     <motion.div
@@ -114,11 +209,6 @@ export default function QuizCard({
             const isShowFullAnswer =
               isCorrect || (results[review.id] === false && attemptsCount >= 3);
 
-            // 正解を単語に分割し、各単語の文字数に基づいて空欄を生成
-            const splitAnswerIntoWords = (answer: string) => {
-              return answer.split(/\s+/).filter((word) => word.length > 0);
-            };
-
             // 1つのテンプレートにまとめ、if分岐で内容を切り替える
             const parts = review.quiz.question.split("____");
             const answerWords = splitAnswerIntoWords(answer);
@@ -128,82 +218,44 @@ export default function QuizCard({
                 {parts[0]}
                 <span className={styles["quiz__blanks-container"]}>
                   {answerWords.map((word, index) => {
-                    // isShowFullAnswer: 正解表示時（緑色で文字表示）
-                    // 共通化: word blankの描画を1つの関数でまとめる
-                    const renderWordBlank = ({
-                      word,
-                      index,
-                      showFullAnswer,
-                      isCorrect,
-                      isIncorrect,
-                    }: {
-                      word: string;
-                      index: number;
-                      showFullAnswer: boolean;
-                      isCorrect: boolean;
-                      isIncorrect: boolean;
-                    }) => {
-                      const style = {
-                        "--word-length": word.length,
-                        "--min-width": `${Math.max(word.length * 0.6, 1)}em`,
-                      } as React.CSSProperties;
-                      let blankClass = styles["quiz__word-blank"];
-                      if (isCorrect)
-                        blankClass += " " + styles["quiz__word-blank--correct"];
-                      if (isIncorrect)
-                        blankClass +=
-                          " " + styles["quiz__word-blank--incorrect"];
+                    const style = {
+                      "--word-length": word.length,
+                      "--min-width": `${Math.max(word.length * 0.6, 1)}em`,
+                    } as React.CSSProperties;
 
-                      if (showFullAnswer) {
-                        // 正解時: 全文字を緑色で表示
-                        return (
-                          <span
-                            key={index}
-                            className={blankClass}
-                            style={style}
-                          >
-                            {word.split("").map((char, charIndex) => (
-                              <span
-                                key={charIndex}
-                                className={
-                                  styles["quiz__word-blank__char"] +
-                                  " " +
-                                  styles["quiz__word-blank__char--correct"]
-                                }
-                              >
-                                {char}
-                              </span>
-                            ))}
-                          </span>
-                        );
-                      } else {
-                        // 通常時: 下線のみ
-                        return (
-                          <span
-                            key={index}
-                            className={blankClass}
-                            style={style}
-                          >
-                            {word.split("").map((_, charIndex) => (
-                              <span
-                                key={charIndex}
-                                className={styles["quiz__word-blank__char"]}
-                              ></span>
-                            ))}
-                          </span>
-                        );
-                      }
-                    };
+                    let blankClass = styles["quiz__word-blank"];
+                    if (isCorrect)
+                      blankClass += " " + styles["quiz__word-blank--correct"];
+                    if (results[review.id] === false && attemptsCount >= 3)
+                      blankClass += " " + styles["quiz__word-blank--incorrect"];
 
-                    return renderWordBlank({
-                      word,
-                      index,
-                      showFullAnswer: isShowFullAnswer,
-                      isCorrect:
-                        isShowFullAnswer && results[review.id] === true,
-                      isIncorrect:
-                        isShowFullAnswer && results[review.id] === false,
-                    });
+                    return (
+                      <span key={index} className={blankClass} style={style}>
+                        {word.split("").map((char, charIndex) => {
+                          const showChar = shouldShowChar(
+                            index,
+                            charIndex,
+                            word
+                          );
+                          const colorClass = getCharColorClass(index);
+
+                          return (
+                            <span
+                              key={charIndex}
+                              className={`${
+                                styles["quiz__word-blank__char"]
+                              } ${colorClass} ${
+                                showChar
+                                  ? styles["quiz__word-blank__char--visible"]
+                                  : styles["quiz__word-blank__char--hidden"]
+                              }`}
+                            >
+                              {char}
+                            </span>
+                          );
+                        })}
+                      </span>
+                    );
                   })}
                 </span>
                 {parts[1]}
@@ -248,12 +300,7 @@ export default function QuizCard({
             type="text"
             placeholder="Answer"
             value={answers[review.id] || ""}
-            onChange={(e) =>
-              onSetAnswers((a) => ({
-                ...a,
-                [review.id]: e.target.value,
-              }))
-            }
+            onChange={handleInputChange}
             disabled={
               results[review.id] === true ||
               (results[review.id] === false && (attempts[review.id] || 0) >= 3)
@@ -267,9 +314,22 @@ export default function QuizCard({
               type="submit"
               disabled={updating[review.id]}
               onClick={(e) => {
+                // Answerボタンクリック時に部分正解を計算
+                const userAnswer = answers[review.id] || "";
+                const correctAnswer = review.quiz.answer;
+                const partialIndexes = getPartialCorrectIndexes(
+                  userAnswer,
+                  correctAnswer
+                );
+                setPartialCorrectIndexes((prev) => ({
+                  ...prev,
+                  [review.id]: partialIndexes,
+                }));
+
                 console.log("Answer button clicked:", {
                   reviewId: review.id,
                   answer: answers[review.id],
+                  partialIndexes,
                 });
               }}
             >

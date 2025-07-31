@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-// 忘却曲線間隔（例: 1, 3, 7, 14, 30日...）
-const intervals = [1, 3, 7, 14, 30, 60, 120];
+// 連続記録ベースの間隔設定（連続正解回数に応じて間隔を延長）
+const getIntervalDays = (consecutiveCorrect: number): number => {
+  if (consecutiveCorrect === 0) return 1; // 不正解時は翌日
+  if (consecutiveCorrect === 1) return 1; // 1回正解: 翌日
+  if (consecutiveCorrect === 2) return 3; // 2回連続正解: 3日後
+  if (consecutiveCorrect === 3) return 7; // 3回連続正解: 7日後
+  if (consecutiveCorrect === 4) return 14; // 4回連続正解: 14日後
+  if (consecutiveCorrect === 5) return 30; // 5回連続正解: 30日後
+  if (consecutiveCorrect === 6) return 60; // 6回連続正解: 60日後
+  return 120; // 7回以上連続正解: 120日後
+};
 
 export async function POST(req: NextRequest) {
   const { user_id, quiz_id, correct } = await req.json();
@@ -36,58 +45,41 @@ export async function POST(req: NextRequest) {
   let correct_streak = 0;
 
   if (review) {
-    correct_streak = correct ? (review.correct_streak || 0) + 1 : 0;
-    interval_days = correct ? intervals[Math.min(correct_streak, intervals.length - 1)] : 1;
+    // 連続記録ベースの計算
+    const previousStreak = review.correct_streak || 0;
+    correct_streak = correct ? previousStreak + 1 : 0;
+    interval_days = getIntervalDays(correct_streak);
+
+    console.log('Review update - existing record:', {
+      user_id,
+      quiz_id,
+      correct,
+      previousStreak,
+      newCorrectStreak: correct_streak,
+      interval_days,
+      review: review
+    });
   } else {
     correct_streak = correct ? 1 : 0;
-    interval_days = 1;
+    interval_days = getIntervalDays(correct_streak);
+
+    console.log('Review update - new record:', {
+      user_id,
+      quiz_id,
+      correct,
+      correct_streak,
+      interval_days
+    });
   }
+  console.log("correct_streak", correct_streak);
+  console.log("interval_days", interval_days);
 
   const today = new Date();
   const next_review = new Date(today);
   next_review.setDate(today.getDate() + interval_days);
 
-    // 問題を解いた時（正解・不正解問わず）、同じイディオムセット内の他の問題からランダム選択
-  // 同じidiom_idを持つ他のクイズを取得
-  const { data: sameIdiomQuizzes, error: idiomError } = await supabase
-    .from('quizzes')
-    .select('id')
-    .eq('idiom_id', currentQuiz.idiom_id)
-    .neq('id', quiz_id); // 現在の問題以外
-
-  if (!idiomError && sameIdiomQuizzes && sameIdiomQuizzes.length > 0) {
-    // ランダムに1問を選択
-    const randomQuiz = sameIdiomQuizzes[Math.floor(Math.random() * sameIdiomQuizzes.length)];
-
-    // 選択された問題の復習レコードを作成/更新
-    const { data: randomQuizReviews, error: randomQuizError } = await supabase
-      .from('quiz_reviews')
-      .select('*')
-      .eq('user_id', user_id)
-      .eq('quiz_id', randomQuiz.id)
-      .limit(1);
-
-    const randomQuizReview = randomQuizReviews?.[0];
-    const randomQuizUpsertData = {
-      user_id,
-      quiz_id: randomQuiz.id,
-      last_reviewed_at: today.toISOString(),
-      next_review_at: today.toISOString().slice(0, 10), // 今日
-      interval_days: 1,
-      correct_streak: 0,
-    };
-
-    if (randomQuizReview) {
-      await supabase
-        .from('quiz_reviews')
-        .update(randomQuizUpsertData)
-        .eq('id', randomQuizReview.id);
-    } else {
-      await supabase
-        .from('quiz_reviews')
-        .insert([{ ...randomQuizUpsertData, created_at: today.toISOString() }]);
-    }
-  }
+  // 同一イディオムの即座追加を削除（重複出題を防ぐため）
+  // 代わりに、適切な間隔で他の問題が自然に出題されるようにする
 
   // レコードがあればupdate、なければinsert
   let upsertData: any = {
@@ -115,7 +107,14 @@ export async function POST(req: NextRequest) {
     result = { data, error };
   }
   if (result.error) {
+    console.error('Database operation failed:', result.error);
     return NextResponse.json({ error: result.error.message }, { status: 500 });
   }
+
+  console.log('Database operation successful:', {
+    operation: review ? 'update' : 'insert',
+    result: result.data
+  });
+
   return NextResponse.json(result.data);
 }

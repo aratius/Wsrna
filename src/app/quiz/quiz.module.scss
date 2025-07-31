@@ -52,7 +52,7 @@
       padding: 0 8px;
       border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s, border 0.2s;
+      transition: background 0.1s, color 0.1s, border 0.1s;
 
       &.active {
         color: #5856d6;
@@ -87,7 +87,7 @@
       border-radius: 8px;
       min-height: 40px;
       box-shadow: 0 2px 6px rgba(88, 86, 214, 0.08);
-      transition: background 0.2s;
+      transition: background 0.1s;
     }
     &::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(135deg, #bdbdfc 0%, #5856d6 100%);
@@ -150,7 +150,7 @@
       border-radius: 50%;
       padding: 8px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.1s;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -167,7 +167,7 @@
         stroke-width: 2;
         stroke-linecap: round;
         stroke-linejoin: round;
-        transition: stroke 0.2s;
+        transition: stroke 0.1s;
       }
 
       &:hover svg {
@@ -242,7 +242,7 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.1s;
       display: inline-block;
       text-align: center;
 
@@ -321,7 +321,7 @@
       background: #fafbfc;
       color: $color-text-primary;
       outline: none;
-      transition: border 0.2s;
+      transition: border 0.1s;
       width: 100%;
       appearance: none;
       padding-right: 40px;
@@ -357,7 +357,7 @@
       background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
       color: #fff;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.1s;
       width: 100%;
 
       &:hover:not(:disabled) {
@@ -397,7 +397,7 @@
       cursor: pointer;
       padding: 0;
       text-decoration: underline;
-      transition: color 0.2s;
+      transition: color 0.1s;
 
       &:hover {
         color: darken($color-primary, 10%);
@@ -547,17 +547,35 @@
 
   // 空欄の各文字
   &__word-blank__char {
-    color: #5856d6;
+    color: transparent; // 基本状態では完全に透明
     font-weight: 600;
     // font-family: "Courier New", monospace;
     letter-spacing: 0.05em;
-    animation: blankPulse 2s ease-in-out infinite;
+    transition: color 0.1s ease;
+  }
+
+  // 文字の表示/非表示状態
+  &__word-blank__char--visible {
+    color: inherit; // 親要素の色を継承
+  }
+
+  &__word-blank__char--hidden {
+    color: transparent; // 完全に透明
   }
 
   // 正解時の文字（緑色）
   &__word-blank__char--correct {
-    color: #34c759;
-    animation: none;
+    color: #34c759 !important;
+  }
+
+  // 不正解時の文字（赤色）
+  &__word-blank__char--incorrect {
+    color: #d50000 !important;
+  }
+
+  // 部分正解時の文字（青色）
+  &__word-blank__char--partial {
+    color: #007aff !important;
   }
 
   // 空欄のパルスアニメーション
@@ -628,7 +646,7 @@
     font-weight: 600;
     cursor: pointer;
     margin-top: $spacing-s;
-    transition: background-color 0.2s;
+    transition: background-color 0.1s;
 
     &:hover {
       background: #28a745;
@@ -650,7 +668,7 @@
     font-weight: 600;
     cursor: pointer;
     margin-top: $spacing-s;
-    transition: background 0.2s;
+    transition: background 0.1s;
 
     &:hover {
       background: linear-gradient(90deg, #4b3bbd 0%, #5e35b1 100%);
