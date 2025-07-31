@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 
 export function useCreateData() {
   const session = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
   const [pairLoading, setPairLoading] = useState(false);
   const [pairError, setPairError] = useState("");
@@ -41,10 +42,12 @@ export function useCreateData() {
       const pairExists = languagePairs.find(lp => lp.id === langPairParam);
       if (pairExists) {
         setSelectedPairId(langPairParam);
+        // クエリストリングを削除
+        router.replace("/create");
         return;
       }
     }
-  }, [searchParams, languagePairs]);
+  }, [searchParams, languagePairs, router]);
 
   // Restore last selected language pair from localStorage (only if no query param)
   useEffect(() => {
