@@ -93,7 +93,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                           className={
                             styles["create__preview__quiz__label"] +
                             " " +
-                            styles["create__preview__quiz__label--quiz"]
+                            styles["quiz"]
                           }
                         >
                           Quiz
@@ -108,7 +108,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                           className={
                             styles["create__preview__quiz__label"] +
                             " " +
-                            styles["create__preview__quiz__label--answer"]
+                            styles["answer"]
                           }
                         >
                           Answer
@@ -123,7 +123,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                           className={
                             styles["create__preview__quiz__label"] +
                             " " +
-                            styles["create__preview__quiz__label--translation"]
+                            styles["translation"]
                           }
                         >
                           Translation
@@ -156,9 +156,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
               <div className={styles["create__preview__footer__buttons"]}>
                 <button
                   className={
-                    styles["create__preview__button"] +
-                    " " +
-                    styles["create__preview__button--close"]
+                    styles["create__preview__button"] + " " + styles["close"]
                   }
                   onClick={onClose}
                 >
@@ -166,9 +164,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                 </button>
                 <button
                   className={
-                    styles["create__preview__button"] +
-                    " " +
-                    styles["create__preview__button--submit"]
+                    styles["create__preview__button"] + " " + styles["submit"]
                   }
                   onClick={onSubmit}
                   disabled={submitting}

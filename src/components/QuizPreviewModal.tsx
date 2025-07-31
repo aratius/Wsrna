@@ -100,9 +100,7 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
           <div className={styles["quiz-preview-modal__footer__buttons"]}>
             <button
               className={
-                styles["quiz-preview-modal__button"] +
-                " " +
-                styles["quiz-preview-modal__button--close"]
+                styles["quiz-preview-modal__button"] + " " + styles["close"]
               }
               onClick={onClose}
             >
@@ -110,9 +108,7 @@ const QuizPreviewModal: React.FC<QuizPreviewModalProps> = ({
             </button>
             <button
               className={
-                styles["quiz-preview-modal__button"] +
-                " " +
-                styles["quiz-preview-modal__button--submit"]
+                styles["quiz-preview-modal__button"] + " " + styles["submit"]
               }
               onClick={onSubmit}
               disabled={submitting}
