@@ -212,10 +212,42 @@ export default function QuizCard({
             // 1つのテンプレートにまとめ、if分岐で内容を切り替える
             const parts = review.quiz.question.split("____");
             const answerWords = splitAnswerIntoWords(answer);
+            const dictionary = review.quiz.dictionary || {};
+
+            // 単語にツールチップを追加する関数
+            const renderWordWithTooltip = (word: string, key: string) => {
+              const meanings = dictionary[word];
+              if (meanings && Array.isArray(meanings) && meanings.length > 0) {
+                return (
+                  <span
+                    key={key}
+                    className={styles["quiz__word-with-tooltip"]}
+                    title={meanings.join(", ")}
+                  >
+                    {word}
+                  </span>
+                );
+              }
+              return <span key={key}>{word}</span>;
+            };
+
+            // テキストを単語に分割してツールチップを適用する関数
+            const renderTextWithTooltips = (text: string, baseKey: string) => {
+              if (!text) return null;
+
+              const words = text.split(/(\s+)/);
+              return words.map((word, index) => {
+                const key = `${baseKey}-${index}`;
+                if (word.trim() === "") {
+                  return <span key={key}>{word}</span>; // 空白文字はそのまま
+                }
+                return renderWordWithTooltip(word, key);
+              });
+            };
 
             return (
               <>
-                {parts[0]}
+                {renderTextWithTooltips(parts[0], "part0")}
                 <span className={styles["quiz__blanks-container"]}>
                   {answerWords.map((word, index) => {
                     const style = {
@@ -258,7 +290,7 @@ export default function QuizCard({
                     );
                   })}
                 </span>
-                {parts[1]}
+                {renderTextWithTooltips(parts[1], "part1")}
               </>
             );
           })()}

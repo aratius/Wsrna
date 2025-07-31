@@ -155,6 +155,7 @@ export function useCreateState() {
           sentence_translation: q.sentence_translation,
           explanation: q.explanation,
           hint_levels: q.hint_levels, // hint_levelsを追加
+          dictionary: q.dictionary, // dictionaryを追加
           // topic: q.topic || topic, // topic消す
           created_at: new Date().toISOString(),
           language_pair_id: selectedPairId,

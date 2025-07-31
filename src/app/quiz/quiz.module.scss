@@ -72,7 +72,6 @@
 
   &__content {
     flex: 1 1 0%;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: $spacing-m;
@@ -576,6 +575,17 @@
   // 部分正解時の文字（青色）
   &__word-blank__char--partial {
     color: #007aff !important;
+  }
+
+  // ツールチップ付き単語
+  &__word-with-tooltip {
+    cursor: help;
+    border-bottom: 1px dotted #5856d6;
+    transition: border-bottom-color 0.2s ease;
+
+    &:hover {
+      border-bottom-color: #007aff;
+    }
   }
 
   // 空欄のパルスアニメーション
