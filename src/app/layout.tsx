@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   description: "カラフルで遊び心のある復習アプリ",
   manifest: "/manifest.json",
   icons: [
-    { rel: "icon", url: "/icons/icon-192x192.png" },
-    { rel: "apple-touch-icon", url: "/icons/icon-192x192.png" },
+    { rel: "icon", url: "/icon.png" },
+    { rel: "apple-touch-icon", url: "/icon.png" },
   ],
 };
 
