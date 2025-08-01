@@ -4,7 +4,7 @@ import styles from "./mypage.module.scss";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatedMenuItem } from "./components/AnimatedMypageContent";
-import PwaInstallButton from "@/components/PwaInstallButton";
+import AddToHomeScreen from "@/components/AddToHomeScreen";
 
 const menuItems = [
   { label: "Account Info", href: "/mypage/account" },
@@ -41,10 +41,10 @@ export default function MyPage() {
         </AnimatedMenuItem>
       ))}
 
-      {/* PWA Install Button */}
+      {/* Add to Home Screen */}
       <AnimatedMenuItem index={menuItems.length + 1}>
         <li className={styles["mypage__menu-item"]}>
-          <PwaInstallButton />
+          <AddToHomeScreen />
         </li>
       </AnimatedMenuItem>
     </motion.ul>

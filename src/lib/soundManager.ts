@@ -97,6 +97,16 @@ class SoundManager {
    * タイプ音を再生
    */
   public playType(): void {
+    // モバイル端末の場合はタイプ音を鳴らさない
+    if (typeof window !== "undefined") {
+      const ua = window.navigator.userAgent;
+      const isMobile =
+        /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      if (isMobile) {
+        return;
+      }
+    }
+
     this.playSound(Snd.SOUNDS.TYPE);
   }
 
