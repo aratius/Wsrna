@@ -13,7 +13,6 @@ import {
   notoSans,
 } from "@/styles/fonts";
 import AppHeightSetter from "@/components/AppHeightSetter";
-import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import SoundInitializer from "@/components/SoundInitializer";
 
 export const metadata: Metadata = {
@@ -48,7 +47,6 @@ export default function RootLayout({
         <div className="main_wrapper">
           <SupabaseProvider>
             <AuthGuard>
-              <PwaInstallPrompt />
               <main className="main">{children}</main>
               <BottomNav />
             </AuthGuard>

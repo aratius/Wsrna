@@ -4,11 +4,13 @@ import styles from "./mypage.module.scss";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatedMenuItem } from "./components/AnimatedMypageContent";
+import PwaInstallButton from "@/components/PwaInstallButton";
 
 const menuItems = [
   { label: "Account Info", href: "/mypage/account" },
   { label: "Language Pairs", href: "/mypage/language-pairs" },
   { label: "Saved Idioms", href: "/mypage/saved-idioms" },
+  { label: "Help", href: "/mypage/help" },
   // 必要に応じて他のメニューも追加
 ];
 
@@ -38,12 +40,11 @@ export default function MyPage() {
           </li>
         </AnimatedMenuItem>
       ))}
-      <AnimatedMenuItem index={menuItems.length}>
+
+      {/* PWA Install Button */}
+      <AnimatedMenuItem index={menuItems.length + 1}>
         <li className={styles["mypage__menu-item"]}>
-          <Link href="/mypage/help" className={styles["mypage__menu-link"]}>
-            Help
-            <span className={styles["mypage__arrow"]}>&gt;</span>
-          </Link>
+          <PwaInstallButton />
         </li>
       </AnimatedMenuItem>
     </motion.ul>
