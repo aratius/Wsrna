@@ -39,19 +39,96 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    openai
-    const completion = await openai.chat.completions.create({
-      // model: 'gpt-3.5-turbo-1106',
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: 'You are a helpful multilingual language teacher AI.' },
-        { role: 'user', content: prompt },
+    // The error message indicates that the correct parameter is 'response_format: { type: "json_schema", schema: ... }'
+    // and that 'name' is not a valid property. Remove 'name' and ensure the schema is under 'json_schema'.
+    const response = await openai.responses.create({
+      model: "gpt-4o",
+      input: [
+        { role: "system", content: "You are a helpful multilingual language teacher AI." },
+        { role: "user", content: prompt }
       ],
       temperature: 0.7,
-      max_tokens: 2048 * 2,
-      response_format: { type: 'json_object' }, // JSONモードを有効化
+      text: {
+        format: {
+          type: "json_schema",
+          name: "quiz_questions",
+          schema: {
+            type: "object",
+            properties: {
+              questions: {
+                type: "array",
+                minItems: 3,
+                maxItems: 5,
+                items: {
+                  type: "object",
+                  properties: {
+                    question: { type: "string" },
+                    answer: { type: "string" },
+                    main_word: { type: "string" },
+                    main_word_translations: {
+                      type: "array",
+                      minItems: 1,
+                      items: { type: "string" }
+                    },
+                    explanation: { type: "string" },
+                    sentence_translation: { type: "string" },
+                    fromLang: { type: "string" },
+                    toLang: { type: "string" },
+                    dictionary: {
+                      type: "object",
+                      additionalProperties: {
+                        type: "array",
+                        minItems: 0,
+                        maxItems: 3,
+                        items: { type: "string" }
+                      }
+                    },
+                    hint_levels: {
+                      type: "array",
+                      minItems: 3,
+                      maxItems: 4,
+                      items: { type: "string" }
+                    },
+                    example_sentences: {
+                      type: "array",
+                      minItems: 2,
+                      maxItems: 3,
+                      items: {
+                        type: "object",
+                        properties: {
+                          sentence: { type: "string" },
+                          translation: { type: "string" }
+                        },
+                        required: ["sentence", "translation"],
+                        additionalProperties: false
+                      }
+                    }
+                  },
+                  required: [
+                    "question",
+                    "answer",
+                    "main_word",
+                    "main_word_translations",
+                    "explanation",
+                    "sentence_translation",
+                    "fromLang",
+                    "toLang",
+                    "hint_levels",
+                    "example_sentences"
+                  ],
+                  additionalProperties: false
+                }
+              }
+            },
+            required: ["questions"],
+            additionalProperties: false
+          },
+          strict: true
+        }
+      }
     });
-    const text = completion.choices[0].message.content?.trim() || '';
+
+    const text = response.output_text;
     let data;
     try {
       data = JSON.parse(text);
@@ -60,6 +137,13 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(data);
   } catch (e: any) {
+    // If the error is specifically about missing 'response_format.json_schema', return a clear error message
+    if (
+      typeof e?.message === "string" &&
+      e.message.includes("Missing required parameter: 'response_format.json_schema'")
+    ) {
+      return NextResponse.json({ error: "400 Missing required parameter: 'response_format.json_schema'." }, { status: 400 });
+    }
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
