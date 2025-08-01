@@ -9,7 +9,7 @@ const PwaInstallButton: React.FC = () => {
     if (typeof window === "undefined") return;
 
     const handler = (e: any) => {
-      e.preventDefault();
+      // e.preventDefault();
       setDeferredPrompt(e);
       setShow(true);
     };
