@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../create.module.scss";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedQuizItem } from "./AnimatedCreateContent";
+import {
+  playButtonClick,
+  playTransition,
+  startProgressLoop,
+} from "@/lib/soundManager";
 
 export interface CreatePreviewModalProps {
   open: boolean;
@@ -18,6 +23,10 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
   onSubmit,
   submitting,
 }) => {
+  useEffect(() => {
+    playTransition(open);
+  }, [open]);
+
   return (
     <AnimatePresence>
       {open && (
@@ -158,7 +167,10 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                   className={
                     styles["create__preview__button"] + " " + styles["close"]
                   }
-                  onClick={onClose}
+                  onClick={(e) => {
+                    playButtonClick();
+                    onClose();
+                  }}
                 >
                   Close
                 </button>
@@ -166,7 +178,10 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
                   className={
                     styles["create__preview__button"] + " " + styles["submit"]
                   }
-                  onClick={onSubmit}
+                  onClick={(e) => {
+                    playButtonClick();
+                    onSubmit();
+                  }}
                   disabled={submitting}
                 >
                   {submitting ? "Submitting..." : "Submit"}

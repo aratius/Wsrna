@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "@supabase/auth-helpers-react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import { playSuccess } from "@/lib/soundManager";
 
 export function useCreateState() {
   const session = useSession();
@@ -201,6 +202,7 @@ export function useCreateState() {
           }
           await supabase.from("quiz_reviews").insert(reviewPayload);
         }
+        playSuccess();
         alert("Quizzes saved!");
         setShowModal(false);
         setToText("");
