@@ -24,7 +24,7 @@ const CreatePreviewModal: React.FC<CreatePreviewModalProps> = ({
   submitting,
 }) => {
   useEffect(() => {
-    playTransition(open);
+    if (open) playTransition(open);
   }, [open]);
 
   return (

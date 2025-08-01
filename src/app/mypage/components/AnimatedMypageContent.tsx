@@ -30,7 +30,7 @@ export const AnimatedMypageContent = ({
             minHeight: "200px",
           }}
         >
-          <LoadingWithSound />
+          <LoadingWithSound enableSound={false} />
         </motion.div>
       ) : (
         <motion.div

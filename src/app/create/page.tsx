@@ -113,7 +113,9 @@ function CreatePageContent() {
 
 export default function CreatePage() {
   return (
-    <Suspense fallback={<LoadingWithSound message="Loading..." />}>
+    <Suspense
+      fallback={<LoadingWithSound message="Loading..." enableSound={false} />}
+    >
       <CreatePageContent />
     </Suspense>
   );

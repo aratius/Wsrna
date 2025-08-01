@@ -116,9 +116,10 @@ class SoundManager {
 
   /**
    * プログレスループ音を開始
+   * 正しくループする音はループ再生する
    */
   public startProgressLoop(): void {
-    this.playSound(Snd.SOUNDS.PROGRESS_LOOP);
+    this.playSound(Snd.SOUNDS.PROGRESS_LOOP, { loop: true });
   }
 
   /**
@@ -132,9 +133,10 @@ class SoundManager {
 
   /**
    * 着信音ループを開始
+   * 正しくループする音はループ再生する
    */
   public startRingtoneLoop(): void {
-    this.playSound(Snd.SOUNDS.RINGTONE_LOOP);
+    this.playSound(Snd.SOUNDS.RINGTONE_LOOP, { loop: true });
   }
 
   /**
@@ -149,8 +151,8 @@ class SoundManager {
   /**
    * カスタムサウンドを再生
    */
-  public playCustomSound(soundType: string): void {
-    this.playSound(soundType);
+  public playCustomSound(soundType: string, options?: { loop?: boolean }): void {
+    this.playSound(soundType, options);
   }
 
   /**
@@ -203,15 +205,20 @@ class SoundManager {
 
   /**
    * 内部的なサウンド再生処理
+   * optionsでloop再生等を指定可能
    */
-  private playSound(soundType: string): void {
+  private playSound(soundType: string, options?: { loop?: boolean }): void {
     if (!this.isInitialized || !this.snd) {
       console.warn('SoundManager is not initialized');
       return;
     }
 
     try {
-      this.snd.play(soundType);
+      if (options && options.loop) {
+        this.snd.play(soundType, { loop: true });
+      } else {
+        this.snd.play(soundType);
+      }
     } catch (error) {
       console.error(`Failed to play sound ${soundType}:`, error);
     }

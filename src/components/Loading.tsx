@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import styles from "./Loading.module.scss";
-import { startProgressLoop, stopProgressLoop } from "../lib/soundManager";
 
 interface LoadingProps {
   message?: string;
@@ -17,16 +16,7 @@ export default function Loading({
   spinnerColor = "#3d7fff",
   spinnerSize = 48,
 }: LoadingProps) {
-  // ローディング開始時にProgress音を開始
-  useEffect(() => {
-    startProgressLoop();
-
-    // コンポーネントがアンマウントされる時にProgress音を停止
-    return () => {
-      stopProgressLoop();
-    };
-  }, []);
-
+  // このローディングコンポーネントは一瞬なので音鳴らないで良い
   return (
     <div
       role="status"

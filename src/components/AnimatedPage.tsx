@@ -24,7 +24,7 @@ export const AnimatedPage = ({
           transition={{ duration: 0.2 }}
           className={className}
         >
-          <LoadingWithSound />
+          <LoadingWithSound enableSound={false} />
         </motion.div>
       ) : (
         <motion.div

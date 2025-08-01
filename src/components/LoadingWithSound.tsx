@@ -25,6 +25,8 @@ export default function LoadingWithSound({
 }: LoadingWithSoundProps) {
   // サウンド制御
   useEffect(() => {
+    console.log("LoadingWithSound - show:", show);
+    console.log("LoadingWithSound - enableSound:", enableSound);
     if (show && enableSound) {
       startProgressLoop();
     } else if (enableSound) {

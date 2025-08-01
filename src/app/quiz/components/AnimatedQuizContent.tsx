@@ -30,7 +30,7 @@ export const AnimatedQuizContent = ({
             minHeight: "200px",
           }}
         >
-          <LoadingWithSound />
+          <LoadingWithSound enableSound={false} />
         </motion.div>
       ) : (
         <motion.div
