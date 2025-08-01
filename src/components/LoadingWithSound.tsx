@@ -25,8 +25,6 @@ export default function LoadingWithSound({
 }: LoadingWithSoundProps) {
   // サウンド制御
   useEffect(() => {
-    console.log("LoadingWithSound - show:", show);
-    console.log("LoadingWithSound - enableSound:", enableSound);
     if (show && enableSound) {
       startProgressLoop();
     } else if (enableSound) {
@@ -35,9 +33,7 @@ export default function LoadingWithSound({
 
     // コンポーネントがアンマウントされる時にProgress音を停止
     return () => {
-      if (enableSound) {
-        stopProgressLoop();
-      }
+      stopProgressLoop();
     };
   }, [show, enableSound]);
 
