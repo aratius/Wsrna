@@ -2,29 +2,29 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { useSession } from "@supabase/auth-helpers-react";
 import "@/styles/components/_button.scss";
 import "@/styles/components/_card.scss";
 import styles from "./page.module.scss";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function Home() {
-  const session = useSession();
+  const { user, isInitialized } = useAppSelector((state) => state.auth);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // セッションが読み込まれたらローディングを終了
-    if (session !== undefined) {
+    // 認証状態が初期化されたらローディングを終了
+    if (isInitialized) {
       setLoading(false);
     }
-  }, [session]);
+  }, [isInitialized]);
 
   useEffect(() => {
     // ログイン済みの場合は/quizへリダイレクト
-    if (session && !loading) {
+    if (user && !loading) {
       router.push("/quiz");
     }
-  }, [session, loading, router]);
+  }, [user, loading, router]);
 
   const handleSignIn = async () => {
     // 現在のホスト名とポートを取得してリダイレクト先を決定
@@ -60,7 +60,7 @@ export default function Home() {
   }
 
   // ログイン済みの場合は何も表示しない（リダイレクト中）
-  if (session) {
+  if (user) {
     return null;
   }
 

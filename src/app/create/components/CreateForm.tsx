@@ -12,8 +12,8 @@ interface CreateFormProps {
   selectedPairId: string;
   fromTranslation: string;
   toText: string;
-  fromLangGreeting: string;
-  toLangGreeting: string;
+  fromLangGreeting: string | null;
+  toLangGreeting: string | null;
   loading: boolean;
   error: string;
   onSelectPair: (pairId: string) => void;

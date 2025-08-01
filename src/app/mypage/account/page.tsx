@@ -1,23 +1,21 @@
 "use client";
 import { useRouter } from "next/navigation";
 import styles from "./account.module.scss";
-import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 import {
   AnimatedMypageContent,
   AnimatedCard,
 } from "../components/AnimatedMypageContent";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function AccountInfoPage() {
   const router = useRouter();
-  const session = useSession();
-  const email = session?.user?.email;
+  const { user } = useAppSelector((state) => state.auth);
+  const email = user?.email;
   const name =
-    session?.user?.user_metadata?.name ||
-    session?.user?.user_metadata?.full_name ||
-    "-";
-  const avatarUrl = session?.user?.user_metadata?.avatar_url;
+    user?.user_metadata?.name || user?.user_metadata?.full_name || "-";
+  const avatarUrl = user?.user_metadata?.avatar_url;
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

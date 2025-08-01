@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "@supabase/auth-helpers-react";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { useRouter } from "next/navigation";
 import styles from "./language-pairs.module.scss";
@@ -10,89 +9,72 @@ import {
   AnimatedCard,
   AnimatedFormField,
 } from "../components/AnimatedMypageContent";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
+import {
+  addLanguagePair,
+  deleteLanguagePair,
+  setError,
+} from "@/lib/slices/languagePairsSlice";
+
+interface LanguagePair {
+  id: string;
+  user_id: string;
+  from_lang: string;
+  to_lang: string;
+  created_at: string;
+}
 
 export default function LanguagePairsPage() {
   const router = useRouter();
-  const session = useSession();
-  const [languagePairs, setLanguagePairs] = useState<any[]>([]);
-  const [lpLoading, setLpLoading] = useState(false);
-  const [lpError, setLpError] = useState("");
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+  const {
+    pairs: languagePairs,
+    isLoading: lpLoading,
+    error: lpError,
+  } = useAppSelector((state) => state.languagePairs) as {
+    pairs: LanguagePair[];
+    isLoading: boolean;
+    error: string | null;
+  };
   const [fromLang, setFromLang] = useState("");
   const [toLang, setToLang] = useState("");
   const [lpAdding, setLpAdding] = useState(false);
 
-  useEffect(() => {
-    const fetchLanguagePairs = async () => {
-      if (!session?.user?.id) return;
-      setLpLoading(true);
-      setLpError("");
-      try {
-        const res = await fetch(
-          `/api/language-pairs?user_id=${session.user.id}`
-        );
-        const data = await res.json();
-        if (data.error) setLpError(data.error);
-        else {
-          const newPairs = Array.isArray(data) ? data : [data];
-          setLanguagePairs(newPairs);
-          setFromLang("");
-          setToLang("");
-        }
-      } catch (e: any) {
-        setLpError(e.message);
-      } finally {
-        setLpLoading(false);
-      }
-    };
-    fetchLanguagePairs();
-  }, [session]);
+  // Reduxストアからlanguage_pairsが自動的に取得されるため、useEffectは不要
 
   const handleAddPair = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session || !fromLang || !toLang || fromLang === toLang) return;
+    if (!user?.id || !fromLang || !toLang || fromLang === toLang) return;
+
     const exists = languagePairs.some(
-      (lp) =>
+      (lp: LanguagePair) =>
         lp.from_lang === fromLang &&
         lp.to_lang === toLang &&
-        lp.user_id === session.user.id
+        lp.user_id === user.id
     );
+
     if (exists) {
-      setLpError("This language pair already exists.");
+      dispatch(setError("This language pair already exists."));
       return;
     }
+
     setLpAdding(true);
-    setLpError("");
+    dispatch(setError(null));
+
     try {
-      const res = await fetch("/api/language-pairs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: session.user.id,
+      await dispatch(
+        addLanguagePair({
+          user_id: user.id,
           from_lang: fromLang,
           to_lang: toLang,
-        }),
-      });
-      const data = await res.json();
-      if (data.error) setLpError(data.error);
-      else {
-        const newPairs = Array.isArray(data) ? data : [data];
-        setLanguagePairs((prev) => {
-          const merged = [...prev, ...newPairs];
-          return merged.filter(
-            (pair, idx, arr) =>
-              arr.findIndex(
-                (p) =>
-                  p.from_lang === pair.from_lang &&
-                  p.to_lang === pair.to_lang &&
-                  p.user_id === pair.user_id
-              ) === idx
-          );
-        });
-        setFromLang("");
-        setToLang("");
-      }
+        })
+      ).unwrap();
+
+      setFromLang("");
+      setToLang("");
     } catch (e: any) {
-      setLpError(e.message);
+      dispatch(setError(e.message));
     } finally {
       setLpAdding(false);
     }
@@ -100,22 +82,16 @@ export default function LanguagePairsPage() {
 
   const handleDeletePair = async (id: string) => {
     if (!confirm("Delete this language pair?")) return;
-    setLpError("");
+    dispatch(setError(null));
+
     try {
-      const res = await fetch("/api/language-pairs", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      const data = await res.json();
-      if (data.error) setLpError(data.error);
-      else setLanguagePairs((prev) => prev.filter((lp) => lp.id !== id));
+      await dispatch(deleteLanguagePair(id)).unwrap();
     } catch (e: any) {
-      setLpError(e.message);
+      dispatch(setError(e.message));
     }
   };
 
-  if (!session) return null;
+  if (!user) return null;
 
   return (
     <AnimatedMypageContent isLoading={lpLoading} className={styles["lang"]}>
@@ -166,7 +142,7 @@ export default function LanguagePairsPage() {
         </form>
       </AnimatedFormField>
       <ul className={styles["lang__list"]}>
-        {languagePairs.map((lp, idx) => (
+        {languagePairs.map((lp: LanguagePair, idx: number) => (
           <AnimatedCard key={lp.id} delay={idx * 0.02 + 0.2}>
             <li className={styles["lang__list-item"]}>
               <span className={styles["lang__label"]}>

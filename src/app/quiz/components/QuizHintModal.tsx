@@ -150,7 +150,7 @@ export default function QuizHintModal({
             <button
               className={
                 styles["quiz__hint__more-button"] +
-                (isLastHint ? " " + styles[" close"] : "")
+                (isLastHint ? " " + styles["close"] : "")
               }
               onClick={handleMoreButtonClick}
             >

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.scss";
 import "../styles/index.scss";
 import SupabaseProvider from "@/components/SupabaseProvider";
+import ReduxProvider from "@/components/ReduxProvider";
 import AuthGuard from "@/components/AuthGuard";
+import AuthSync from "@/components/AuthSync";
 import BottomNav from "@/components/BottomNav";
 import {
   poppins,
@@ -46,12 +48,15 @@ export default function RootLayout({
         <AppHeightSetter />
         <SoundInitializer />
         <div className="main_wrapper">
-          <SupabaseProvider>
-            <AuthGuard>
-              <main className="main">{children}</main>
-              <BottomNav />
-            </AuthGuard>
-          </SupabaseProvider>
+          <ReduxProvider>
+            <SupabaseProvider>
+              <AuthSync />
+              <AuthGuard>
+                <main className="main">{children}</main>
+                <BottomNav />
+              </AuthGuard>
+            </SupabaseProvider>
+          </ReduxProvider>
         </div>
       </body>
     </html>

@@ -2,7 +2,6 @@
 import "@/styles/components/_button.scss";
 import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
-import { useSession } from "@supabase/auth-helpers-react";
 import LoadingWithSound from "@/components/LoadingWithSound";
 import styles from "./create.module.scss";
 import { useCreateData } from "./hooks/useCreateData";
@@ -12,9 +11,10 @@ import CreatePreviewModal from "./components/CreatePreviewModal";
 import { motion } from "framer-motion";
 import { AnimatedCreateContent } from "./components/AnimatedCreateContent";
 import { Suspense } from "react";
+import { useAppSelector } from "@/lib/hooks";
 
 function CreatePageContent() {
-  const session = useSession();
+  const { user } = useAppSelector((state) => state.auth);
 
   const {
     languagePairs,
@@ -41,9 +41,9 @@ function CreatePageContent() {
     handleSubmitQuizzes,
   } = useCreateState();
 
-  console.log("CreatePage - session:", session);
-  if (!session) {
-    console.log("CreatePage - session is null, returning null");
+  console.log("CreatePage - user:", user);
+  if (!user) {
+    console.log("CreatePage - user is null, returning null");
     return null;
   }
 
@@ -96,8 +96,8 @@ function CreatePageContent() {
             selectedPairId={selectedPairId}
             fromTranslation={fromTranslation}
             toText={toText}
-            fromLangGreeting={fromLangGreeting}
-            toLangGreeting={toLangGreeting}
+            fromLangGreeting={fromLangGreeting || ""}
+            toLangGreeting={toLangGreeting || ""}
             loading={loading}
             error={error}
             onSelectPair={setSelectedPairId}

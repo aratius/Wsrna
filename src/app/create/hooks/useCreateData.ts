@@ -1,45 +1,35 @@
 import { useEffect, useState } from "react";
-import { useSession } from "@supabase/auth-helpers-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import supportedLanguages from "@/lib/supportedLanguages.json";
+import { useAppSelector } from "@/lib/hooks";
+
+interface LanguagePair {
+  id: string;
+  user_id: string;
+  from_lang: string;
+  to_lang: string;
+  created_at: string;
+}
 
 export function useCreateData() {
-  const session = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [languagePairs, setLanguagePairs] = useState<any[]>([]);
-  const [pairLoading, setPairLoading] = useState(false);
-  const [pairError, setPairError] = useState("");
+  const { user } = useAppSelector((state) => state.auth);
+  const { pairs: languagePairs, isLoading: pairLoading, error: pairError } = useAppSelector((state) => state.languagePairs) as {
+    pairs: LanguagePair[];
+    isLoading: boolean;
+    error: string | null;
+  };
   const [selectedPairId, setSelectedPairId] = useState("");
 
-  // Fetch language pairs for the user
-  useEffect(() => {
-    const fetchPairs = async () => {
-      if (!session?.user?.id) return;
-      setPairLoading(true);
-      setPairError("");
-      try {
-        const res = await fetch(
-          `/api/language-pairs?user_id=${session.user.id}`
-        );
-        const data = await res.json();
-        if (data.error) setPairError(data.error);
-        else setLanguagePairs(Array.isArray(data) ? data : [data]);
-      } catch (e: any) {
-        setPairError(e.message);
-      } finally {
-        setPairLoading(false);
-      }
-    };
-    fetchPairs();
-  }, [session]);
+  // Reduxストアからlanguage_pairsが自動的に取得されるため、useEffectは不要
 
   // Set initial language pair from URL query parameter
   useEffect(() => {
     const langPairParam = searchParams.get("lang_pair");
     if (langPairParam && languagePairs.length > 0) {
       // Check if the language pair exists in user's pairs
-      const pairExists = languagePairs.find(lp => lp.id === langPairParam);
+      const pairExists = languagePairs.find((lp: LanguagePair) => lp.id === langPairParam);
       if (pairExists) {
         setSelectedPairId(langPairParam);
         // クエリストリングを削除
@@ -66,7 +56,7 @@ export function useCreateData() {
   }, [selectedPairId]);
 
   // 選択中の言語ペアのラベル取得
-  const selectedPair = languagePairs.find((lp) => lp.id === selectedPairId);
+  const selectedPair = languagePairs.find((lp: LanguagePair) => lp.id === selectedPairId);
   const fromLangLabel = selectedPair
     ? supportedLanguages.find((l) => l.code === selectedPair.from_lang)
       ?.label || selectedPair.from_lang
