@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { playNotification, playError } from "../../../lib/soundManager";
 
 export function useQuizState() {
   const [answers, setAnswers] = useState<{ [id: string]: string; }>({});
@@ -60,6 +61,11 @@ export function useQuizState() {
     // 正解の場合のみ回答済みフラグを設定
     if (isCorrect) {
       setAnsweredQuestions(prev => new Set(prev).add(review.id));
+      // 正解時にNotification音を再生
+      playNotification();
+    } else {
+      // 不正解時にCaution音を再生
+      playError();
     }
     setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
     setUpdating((prev) => ({ ...prev, [review.id]: true }));

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
-import Loading from "./Loading";
+import LoadingWithSound from "./LoadingWithSound";
 
 interface AnimatedPageProps {
   children: ReactNode;
@@ -24,7 +24,7 @@ export const AnimatedPage = ({
           transition={{ duration: 0.2 }}
           className={className}
         >
-          <Loading />
+          <LoadingWithSound />
         </motion.div>
       ) : (
         <motion.div

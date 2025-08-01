@@ -2,7 +2,7 @@
 import { useSession } from "@supabase/auth-helpers-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "./Loading";
+import LoadingWithSound from "./LoadingWithSound";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -38,13 +38,13 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   // セッションの初期化中はローディング表示
   if (isLoading) {
-    return <Loading message="Loading..." />;
+    return <LoadingWithSound message="Loading..." />;
   }
 
   // セッションがnull（未ログイン）で、トップページ以外にいる場合はローディング表示
   if (session === null && pathname !== "/") {
     console.log("AuthGuard - showing redirect loading");
-    return <Loading message="Redirecting..." />;
+    return <LoadingWithSound message="Redirecting..." />;
   }
 
   return <>{children}</>;

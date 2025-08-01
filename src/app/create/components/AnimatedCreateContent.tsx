@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
-import Loading from "@/components/Loading";
+import LoadingWithSound from "@/components/LoadingWithSound";
 
 interface AnimatedCreateContentProps {
   children: ReactNode;
@@ -30,7 +30,7 @@ export const AnimatedCreateContent = ({
             minHeight: "200px",
           }}
         >
-          <Loading />
+          <LoadingWithSound />
         </motion.div>
       ) : (
         <motion.div

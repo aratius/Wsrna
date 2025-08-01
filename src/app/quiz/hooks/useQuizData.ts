@@ -5,20 +5,24 @@ export function useQuizData() {
   const session = useSession();
   const [reviews, setReviews] = useState<any[]>([]);
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
+  const [selectedPairId, setSelectedPairIdState] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // localStorage key
   const LS_KEY = "quiz_selectedPairId";
 
-  // localStorageから直接値を取得する関数
-  const getSelectedPairId = (): string => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem(LS_KEY) || "";
-  };
+  // 初期化時にlocalStorageからselectedPairIdを取得
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(LS_KEY);
+      if (stored) setSelectedPairIdState(stored);
+    }
+  }, []);
 
   // localStorageに直接値を設定する関数
   const setSelectedPairId = (id: string) => {
+    setSelectedPairIdState(id);
     if (typeof window !== "undefined") {
       localStorage.setItem(LS_KEY, id);
     }
@@ -31,7 +35,7 @@ export function useQuizData() {
       setLoading(true);
       setError("");
       try {
-        const selectedPairId = getSelectedPairId();
+        const currentSelectedPairId = selectedPairId;
         const res = await fetch("/api/review-list", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -58,7 +62,7 @@ export function useQuizData() {
       }
     };
     fetchReviews();
-  }, [session, languagePairs]);
+  }, [session, languagePairs, selectedPairId]);
 
   // Language Pair取得
   useEffect(() => {
@@ -72,17 +76,20 @@ export function useQuizData() {
         if (Array.isArray(data)) {
           setLanguagePairs(data);
 
-          // localStorageに保存された値がある場合、その値が有効な言語ペアIDかチェック
-          const currentSelectedPairId = getSelectedPairId();
-          if (currentSelectedPairId) {
-            const isValidPair = data.some(pair => pair.id === currentSelectedPairId);
-            if (!isValidPair && data.length > 0) {
-              // localStorageの値が無効な場合、最初のペアを選択
+          // 初回読み込み時のみ初期化処理を行う
+          if (data.length > 0 && !selectedPairId) {
+            // localStorageに保存された値がある場合、その値が有効な言語ペアIDかチェック
+            const stored = localStorage.getItem(LS_KEY);
+            if (stored) {
+              const isValidPair = data.some(pair => pair.id === stored);
+              if (isValidPair) {
+                setSelectedPairId(stored);
+              } else {
+                setSelectedPairId(data[0].id);
+              }
+            } else {
               setSelectedPairId(data[0].id);
             }
-          } else if (data.length > 0) {
-            // localStorageに値がない場合、最初のペアを選択
-            setSelectedPairId(data[0].id);
           }
         }
       } catch { }
@@ -93,7 +100,7 @@ export function useQuizData() {
   return {
     reviews,
     languagePairs,
-    selectedPairId: getSelectedPairId(),
+    selectedPairId,
     setSelectedPairId,
     loading,
     error,

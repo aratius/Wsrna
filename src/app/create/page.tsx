@@ -3,7 +3,7 @@ import "@/styles/components/_button.scss";
 import "@/styles/components/_form.scss";
 import "@/styles/components/_card.scss";
 import { useSession } from "@supabase/auth-helpers-react";
-import Loading from "@/components/Loading";
+import LoadingWithSound from "@/components/LoadingWithSound";
 import styles from "./create.module.scss";
 import { useCreateData } from "./hooks/useCreateData";
 import { useCreateState } from "./hooks/useCreateState";
@@ -61,7 +61,7 @@ function CreatePageContent() {
   return (
     <>
       {loading && (
-        <Loading
+        <LoadingWithSound
           message="Generating quiz..."
           subMessage="This may take up to 30 seconds."
           fullscreen
@@ -113,7 +113,7 @@ function CreatePageContent() {
 
 export default function CreatePage() {
   return (
-    <Suspense fallback={<Loading message="Loading..." />}>
+    <Suspense fallback={<LoadingWithSound message="Loading..." />}>
       <CreatePageContent />
     </Suspense>
   );

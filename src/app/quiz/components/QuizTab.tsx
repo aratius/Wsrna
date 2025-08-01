@@ -2,6 +2,7 @@
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import styles from "../quiz.module.scss";
 import { motion } from "framer-motion";
+import { playButtonClick } from "@/lib/soundManager";
 
 interface QuizTabProps {
   languagePairs: any[];
@@ -26,7 +27,10 @@ export default function QuizTab({
         return (
           <motion.button
             key={lp.id}
-            onClick={() => onSelectPair(lp.id)}
+            onClick={() => {
+              onSelectPair(lp.id);
+              playButtonClick();
+            }}
             className={
               styles["quiz__tab__button"] +
               (active ? " " + styles["active"] : "")

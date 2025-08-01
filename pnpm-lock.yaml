@@ -41,6 +41,9 @@ dependencies:
   sass:
     specifier: ^1.89.2
     version: 1.89.2
+  snd-lib:
+    specifier: ^1.2.3
+    version: 1.2.3
 
 devDependencies:
   '@types/node':
@@ -4511,6 +4514,12 @@ packages:
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
+    dev: false
+
+  /snd-lib@1.2.3:
+    resolution: {integrity: sha512-yk/GjGMEfAkHPwIIuGBXoEN+m359XIa2tA5zXXIIDGgHT75JB1N83aXGGTIxtF+57hTWqZFkp+QLkCTHO9jGrw==}
+    dependencies:
+      events: 3.3.0
     dev: false
 
   /source-list-map@2.0.1:

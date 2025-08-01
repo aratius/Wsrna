@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./BottomNav.module.scss";
 import { useSession, useSessionContext } from "@supabase/auth-helpers-react";
+import { playButtonClick } from "../lib/soundManager";
 
 const NAV_ITEMS = [
   // {
@@ -84,7 +85,8 @@ export default function BottomNav() {
   return (
     <nav className={styles.bottomNav}>
       {NAV_ITEMS.map((item) => {
-        const active = pathname === item.href;
+        // const active = pathname === item.href;
+        const active = pathname.includes(item.href);
         // My Pageアイコンだけ動的に差し替え
         if (item.href === "/mypage") {
           return (
@@ -92,8 +94,11 @@ export default function BottomNav() {
               href={item.href}
               key={item.href}
               className={
-                styles.bottomNavItem + (active ? " " + styles.isActive : "")
+                styles.bottomNavItem +
+                (active ? " " + styles.isActive : "") +
+                " snd__tap"
               }
+              onClick={() => playButtonClick()}
             >
               <span className={styles.bottomNavIcon}>
                 {avatarUrl ? (
@@ -119,6 +124,7 @@ export default function BottomNav() {
             className={
               styles.bottomNavItem + (active ? " " + styles.isActive : "")
             }
+            onClick={() => playButtonClick()}
           >
             <span className={styles.bottomNavIcon}>{item.icon}</span>
             <span className={styles.bottomNavLabel}>{item.label}</span>

@@ -1,31 +1,48 @@
+"use client";
+
 import React, { useEffect } from "react";
 import styles from "./Loading.module.scss";
 import { startProgressLoop, stopProgressLoop } from "../lib/soundManager";
 
-interface LoadingProps {
+interface LoadingWithSoundProps {
   message?: string;
   subMessage?: string;
   fullscreen?: boolean;
   spinnerColor?: string;
   spinnerSize?: number;
+  enableSound?: boolean;
+  show?: boolean; // 表示/非表示を制御
 }
 
-export default function Loading({
+export default function LoadingWithSound({
   message = "Loading...",
   subMessage,
   fullscreen = true,
   spinnerColor = "#3d7fff",
   spinnerSize = 48,
-}: LoadingProps) {
-  // ローディング開始時にProgress音を開始
+  enableSound = true,
+  show = true,
+}: LoadingWithSoundProps) {
+  // サウンド制御
   useEffect(() => {
-    startProgressLoop();
+    if (show && enableSound) {
+      startProgressLoop();
+    } else if (enableSound) {
+      stopProgressLoop();
+    }
 
     // コンポーネントがアンマウントされる時にProgress音を停止
     return () => {
-      stopProgressLoop();
+      if (enableSound) {
+        stopProgressLoop();
+      }
     };
-  }, []);
+  }, [show, enableSound]);
+
+  // 表示されない場合は何もレンダリングしない
+  if (!show) {
+    return null;
+  }
 
   return (
     <div

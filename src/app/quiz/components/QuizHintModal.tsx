@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import styles from "../quiz.module.scss";
+import { playButtonClick } from "../../../lib/soundManager";
 
 interface QuizHintModalProps {
   review: any;
@@ -60,6 +61,9 @@ export default function QuizHintModal({
     e.preventDefault();
     e.stopPropagation(); // イベントの伝播を停止
 
+    // ボタンクリック音を再生
+    playButtonClick();
+
     console.log("Hint button clicked:", {
       reviewId: review.id,
       currentState: showHintModal[review.id],
@@ -77,6 +81,9 @@ export default function QuizHintModal({
 
   const handleMoreButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // イベントの伝播を停止
+
+    // ボタンクリック音を再生
+    playButtonClick();
 
     console.log("More button clicked:", {
       currentHintIndex,

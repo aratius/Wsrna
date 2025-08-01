@@ -3,6 +3,7 @@ import styles from "../create.module.scss";
 import supportedLanguages from "@/lib/supportedLanguages.json";
 import { motion } from "framer-motion";
 import { AnimatedFormField } from "./AnimatedCreateContent";
+import { playType } from "@/lib/soundManager";
 
 interface CreateFormProps {
   languagePairs: any[];
@@ -112,7 +113,10 @@ export default function CreateForm({
                 type="text"
                 placeholder={`ex: ${fromLangGreeting}`}
                 value={fromTranslation}
-                onChange={(e) => onFromTranslationChange(e.target.value)}
+                onChange={(e) => {
+                  onFromTranslationChange(e.target.value);
+                  playType();
+                }}
               />
             </div>
           </AnimatedFormField>
@@ -135,7 +139,10 @@ export default function CreateForm({
                 type="text"
                 placeholder={`ex: ${toLangGreeting}`}
                 value={toText}
-                onChange={(e) => onToTextChange(e.target.value)}
+                onChange={(e) => {
+                  onToTextChange(e.target.value);
+                  playType();
+                }}
                 required
               />
             </div>

@@ -14,6 +14,7 @@ import {
 } from "@/styles/fonts";
 import AppHeightSetter from "@/components/AppHeightSetter";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
+import SoundInitializer from "@/components/SoundInitializer";
 
 export const metadata: Metadata = {
   title: "wsrna",
@@ -43,6 +44,7 @@ export default function RootLayout({
       </head>
       <body>
         <AppHeightSetter />
+        <SoundInitializer />
         <div className="main_wrapper">
           <SupabaseProvider>
             {/* <AuthGuard> */}

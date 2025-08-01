@@ -4,6 +4,11 @@ import styles from "../quiz.module.scss";
 import QuizHintModal from "./QuizHintModal";
 import { motion } from "framer-motion";
 import supportedLanguages from "../../../lib/supportedLanguages.json";
+import {
+  playButtonClick,
+  playTransition,
+  playType,
+} from "../../../lib/soundManager";
 
 interface QuizCardProps {
   review: any;
@@ -258,6 +263,7 @@ export default function QuizCard({
 
   // inputのchangeイベント（部分正解の計算は行わない）
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    playType();
     const userAnswer = e.target.value;
 
     // 既存のonSetAnswersを呼び出し
@@ -393,9 +399,9 @@ export default function QuizCard({
                 return (
                   <button
                     className={styles["quiz__play-button"]}
-                    onClick={() =>
-                      speakQuestion(review.quiz.question, review.quiz.answer)
-                    }
+                    onClick={() => {
+                      speakQuestion(review.quiz.question, review.quiz.answer);
+                    }}
                     title="再生"
                   >
                     <svg
@@ -804,7 +810,10 @@ export default function QuizCard({
             <button
               className={styles["quiz__form__button"]}
               type="button"
-              onClick={onNext}
+              onClick={() => {
+                playButtonClick();
+                onNext();
+              }}
             >
               Next
             </button>
@@ -821,6 +830,10 @@ export default function QuizCard({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+
+                  // ボタンクリック音を再生
+                  playTransition(!detailsOpen[review.id]);
+
                   console.log("Details toggle clicked:", {
                     reviewId: review.id,
                     currentState: detailsOpen[review.id],

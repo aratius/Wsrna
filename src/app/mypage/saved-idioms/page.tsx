@@ -11,6 +11,7 @@ import {
   AnimatedCard,
   AnimatedListItem,
 } from "../components/AnimatedMypageContent";
+import { playButtonClick, playTransition } from "@/lib/soundManager";
 
 export default function SavedIdiomsPage() {
   const router = useRouter();
@@ -22,18 +23,22 @@ export default function SavedIdiomsPage() {
   const [explanationOpen, setExplanationOpen] = useState<{
     [id: string]: boolean;
   }>({});
+  const [selectedPairId, setSelectedPairIdState] = useState<string>("");
 
   // localStorage key for saved-idioms
   const LS_KEY = "saved-idioms_selectedPairId";
 
-  // localStorageから直接値を取得する関数
-  const getSelectedPairId = (): string => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem(LS_KEY) || "";
-  };
+  // 初期化時にlocalStorageからselectedPairIdを取得
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(LS_KEY);
+      if (stored) setSelectedPairIdState(stored);
+    }
+  }, []);
 
   // localStorageに直接値を設定する関数
   const setSelectedPairId = (id: string) => {
+    setSelectedPairIdState(id);
     if (typeof window !== "undefined") {
       localStorage.setItem(LS_KEY, id);
     }
@@ -71,18 +76,20 @@ export default function SavedIdiomsPage() {
         if (Array.isArray(data)) {
           setLanguagePairs(data);
 
-          // localStorageに保存された値がある場合、その値が有効な言語ペアIDかチェック
-          if (getSelectedPairId()) {
-            const isValidPair = data.some(
-              (pair) => pair.id === getSelectedPairId()
-            );
-            if (!isValidPair && data.length > 0) {
-              // localStorageの値が無効な場合、最初のペアを選択
+          // 初回読み込み時のみ初期化処理を行う
+          if (data.length > 0 && !selectedPairId) {
+            // localStorageに保存された値がある場合、その値が有効な言語ペアIDかチェック
+            const stored = localStorage.getItem(LS_KEY);
+            if (stored) {
+              const isValidPair = data.some((pair) => pair.id === stored);
+              if (isValidPair) {
+                setSelectedPairId(stored);
+              } else {
+                setSelectedPairId(data[0].id);
+              }
+            } else {
               setSelectedPairId(data[0].id);
             }
-          } else if (data.length > 0) {
-            // localStorageに値がない場合、最初のペアを選択
-            setSelectedPairId(data[0].id);
           }
         }
       } catch {}
@@ -93,8 +100,8 @@ export default function SavedIdiomsPage() {
   if (!session) return null;
 
   // 選択中のLanguage Pairのidiomsのみ表示
-  const filteredIdioms = getSelectedPairId()
-    ? idioms.filter((i) => i.language_pair_id === getSelectedPairId())
+  const filteredIdioms = selectedPairId
+    ? idioms.filter((i) => i.language_pair_id === selectedPairId)
     : idioms;
 
   function getAbbr(code: string) {
@@ -115,11 +122,14 @@ export default function SavedIdiomsPage() {
       {/* タブUI */}
       <nav className={styles["saved__tab"]}>
         {languagePairs.map((lp, index) => {
-          const active = getSelectedPairId() === lp.id;
+          const active = selectedPairId === lp.id;
           return (
             <motion.button
               key={lp.id}
-              onClick={() => setSelectedPairId(lp.id)}
+              onClick={() => {
+                setSelectedPairId(lp.id);
+                playButtonClick();
+              }}
               className={[
                 styles["saved__tab__button"],
                 active ? styles["saved__tab__button--active"] : "",
@@ -181,12 +191,13 @@ export default function SavedIdiomsPage() {
                     ]
                       .filter(Boolean)
                       .join(" ")}
-                    onClick={() =>
+                    onClick={() => {
+                      playTransition(!explanationOpen[idiom.id]);
                       setExplanationOpen((prev) => ({
                         ...prev,
                         [idiom.id]: !prev[idiom.id],
-                      }))
-                    }
+                      }));
+                    }}
                   >
                     {explanationOpen[idiom.id]
                       ? "- Hide Explanation!"

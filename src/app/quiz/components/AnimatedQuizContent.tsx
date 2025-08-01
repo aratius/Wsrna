@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
-import Loading from "@/components/Loading";
+import LoadingWithSound from "@/components/LoadingWithSound";
 
 interface AnimatedQuizContentProps {
   children: ReactNode;
@@ -30,7 +30,7 @@ export const AnimatedQuizContent = ({
             minHeight: "200px",
           }}
         >
-          <Loading />
+          <LoadingWithSound />
         </motion.div>
       ) : (
         <motion.div
