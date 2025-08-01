@@ -232,23 +232,23 @@ export default function QuizCard({
     progressColorClass = "orange";
   }
 
-  // 部分正解の判定ロジック
+  // 文字単位での部分正解判定
   const getPartialCorrectIndexes = (
     userAnswer: string,
     correctAnswer: string
   ): number[] => {
     if (!userAnswer || !correctAnswer) return [];
 
-    const userWords = userAnswer.trim().split(/\s+/);
-    const correctWords = correctAnswer.trim().split(/\s+/);
+    const userChars = userAnswer.trim().split("");
+    const correctChars = correctAnswer.trim().split("");
     const indexes: number[] = [];
 
-    // 頭から一致している単語のインデックスを収集
-    for (let i = 0; i < Math.min(userWords.length, correctWords.length); i++) {
-      if (userWords[i].toLowerCase() === correctWords[i].toLowerCase()) {
+    // 頭から一致している文字のインデックスを収集
+    for (let i = 0; i < Math.min(userChars.length, correctChars.length); i++) {
+      if (userChars[i].toLowerCase() === correctChars[i].toLowerCase()) {
         indexes.push(i);
       } else {
-        // 一致しない単語が見つかったら終了
+        // 一致しない文字が見つかったら終了
         break;
       }
     }
@@ -288,9 +288,18 @@ export default function QuizCard({
       return true;
     }
 
-    // 部分正解の判定
+    // 部分正解の判定（文字単位）
     const partialIndexes = partialCorrectIndexes[review.id] || [];
-    if (partialIndexes.includes(wordIndex)) {
+    const answerWords = splitAnswerIntoWords(review.quiz.answer);
+
+    // 現在の文字の全体インデックスを計算
+    let globalCharIndex = 0;
+    for (let i = 0; i < wordIndex; i++) {
+      globalCharIndex += answerWords[i].length;
+    }
+    globalCharIndex += charIndex;
+
+    if (partialIndexes.includes(globalCharIndex)) {
       return true;
     }
 
@@ -299,7 +308,7 @@ export default function QuizCard({
   };
 
   // 文字の色を決定する関数
-  const getCharColorClass = (wordIndex: number) => {
+  const getCharColorClass = (wordIndex: number, charIndex: number) => {
     const isCorrect = results[review.id] === true;
     const isIncorrect = results[review.id] === false;
     const attemptsCount = attempts[review.id] || 0;
@@ -313,9 +322,18 @@ export default function QuizCard({
       }
     }
 
-    // 部分正解時は青色で表示
+    // 部分正解時は青色で表示（文字単位）
     const partialIndexes = partialCorrectIndexes[review.id] || [];
-    if (partialIndexes.includes(wordIndex)) {
+    const answerWords = splitAnswerIntoWords(review.quiz.answer);
+
+    // 現在の文字の全体インデックスを計算
+    let globalCharIndex = 0;
+    for (let i = 0; i < wordIndex; i++) {
+      globalCharIndex += answerWords[i].length;
+    }
+    globalCharIndex += charIndex;
+
+    if (partialIndexes.includes(globalCharIndex)) {
       return styles["quiz__word-blank__char--partial"];
     }
 
@@ -679,7 +697,10 @@ export default function QuizCard({
                             charIndex,
                             word
                           );
-                          const colorClass = getCharColorClass(index);
+                          const colorClass = getCharColorClass(
+                            index,
+                            charIndex
+                          );
 
                           return (
                             <span
