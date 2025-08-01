@@ -8,7 +8,7 @@ import { playType } from "@/lib/soundManager";
 interface CreateFormProps {
   languagePairs: any[];
   pairLoading: boolean;
-  pairError: string;
+  pairError: string | null;
   selectedPairId: string;
   fromTranslation: string;
   toText: string;
