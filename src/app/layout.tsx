@@ -19,7 +19,7 @@ import SoundInitializer from "@/components/SoundInitializer";
 
 export const metadata: Metadata = {
   title: "wsrna",
-  description: "カラフルで遊び心のある復習アプリ",
+  description: "no more 勿忘れない 単語",
   manifest: "/manifest.json",
   icons: [
     { rel: "icon", url: "/icon.png" },

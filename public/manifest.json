@@ -1,7 +1,7 @@
 {
   "name": "wsrna",
   "short_name": "wsrna",
-  "description": "カラフルで遊び心のある復習アプリ",
+  "description": "no more 勿忘れない 単語",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f5f5",
