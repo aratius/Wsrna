@@ -1,32 +1,28 @@
-You are a master multilingual language teacher AI. Create exactly 5 fill-in-the-blank questions for "{{main_word}}" ({{main_word_translations}}), translating from "{{fromLang}}" to "{{toLang}}". If you cannot generate 5 high-quality questions, generate as many as you can (minimum 3).
+Create exactly 5 fill-in-the-blank questions for "{{main_word}}" ({{main_word_translations}}), translating from "{{fromLang}}" to "{{toLang}}". If you cannot generate 5 high-quality questions, generate as many as you can (minimum 3).
 
 CRITICAL: Use Chain-of-Thought process:
 
 STEP 1: CONTEXTUAL ANALYSIS & SYNTAX PLANNING
 - Analyze word/idiom/syntax meaning and identify its complete structure
-- Preserve the full {{main_word}} content exactly as provided - only minor corrections (typos, punctuation) allowed
-- Preserve {{main_word_translations}} exactly as provided if available
+- Preserve {{main_word}} and {{main_word_translations}} exactly as provided (only minor corrections allowed)
 - Plan natural sentence structures where the target concept serves as the grammatical backbone
 - Design scenarios where the target concept naturally anchors the sentence structure
-- Consider how the target concept connects with other elements in natural speech
 
 STEP 2: CREATE SYNTAX-ANCHORED SENTENCES
-- Build sentences where the target word/idiom is the structural core
-- Ensure the word/idiom naturally connects multiple sentence elements
-- Create sentences where removing the target word/idiom would break the grammatical flow
-- Focus on sentences where the word/idiom serves as a bridge, connector, or structural pivot
+- Build sentences where the target concept is the structural core
+- Ensure the concept naturally connects multiple sentence elements
+- Create sentences where removing the target concept would break the grammatical flow
+- Focus on sentences where the concept serves as a bridge, connector, or structural pivot
 
 STEP 3: STRATEGIC CORE MASKING
-- Identify the 1-3 word core of the target concept that maintains syntactic integrity
+- Identify the 1-3 word core that maintains syntactic integrity
 - Mask only the essential grammatical core, not peripheral elements
 - Ensure the blank represents the structural heart of the sentence
 - Create blanks that test understanding of the target concept's grammatical role
-- IMPORTANT: The main_word field must contain the exact original {{main_word}} content (with only minor corrections)
-- IMPORTANT: The main_word_translations field must contain the exact original {{main_word_translations}} if provided
 
 STEP 4: SYNTAX VALIDATION
 - Verify the sentence remains grammatically coherent without the masked core
-- Ensure the blank position tests the word's syntactic function
+- Ensure the blank position tests the target concept's syntactic function
 - Validate that the answer requires understanding of grammatical structure
 - Confirm the sentence flows naturally when the core is filled in
 
@@ -40,10 +36,10 @@ STEP 5: RECURSIVE SELF-REVIEW (2-3 iterations)
 ADVANCED GUIDELINES:
 
 **SYNTACTIC ANCHORING:**
-- Target word/idiom must serve as the grammatical backbone of the sentence
-- Create sentences where the word/idiom connects or bridges multiple elements
+- Target concept must serve as the grammatical backbone of the sentence
+- Create sentences where the concept connects or bridges multiple elements
 - Focus on structural relationships rather than simple vocabulary replacement
-- Ensure the word/idiom is the syntactic pivot that holds the sentence together
+- Ensure the concept is the syntactic pivot that holds the sentence together
 
 **CONTEXTUAL DIVERSITY:**
 1. Daily Life: Routine activities, personal habits
@@ -60,10 +56,12 @@ ADVANCED GUIDELINES:
 - Q5: Complex syntactic relationships with nuanced meaning
 
 **CORE MASKING STRATEGY:**
-- Mask only the 1-3 word grammatical core of the target word/idiom
+- Mask only the 1-3 word grammatical core of the target concept
 - Ensure the blank represents the structural heart, not peripheral elements
 - Create blanks that test syntactic understanding, not just vocabulary
 - Focus on grammatical relationships and structural connections
+- For verb patterns, mask the specific conjugation that fits the context
+- Distinguish between wildcard elements (can be any appropriate form) and fixed elements (must be specific)
 
 **CULTURAL SENSITIVITY:**
 - Incorporate cultural context specific to target language
@@ -72,43 +70,68 @@ ADVANCED GUIDELINES:
 - Avoid cultural stereotypes
 
 **GRAMMATICAL FLEXIBILITY:**
-- Adapt word/idiom to serve as syntactic anchor within each sentence
+- Adapt target concept to serve as syntactic anchor within each sentence
 - Use appropriate verb forms, tenses, grammatical structures
 - Consider regional variations if applicable
 - Ensure native-like flow with structural integrity
+
+**VERB CONJUGATION & WILDCARD RULES:**
+- Distinguish between verb forms: present (do), past (did), past participle (done)
+- Identify wildcard vs fixed usage patterns:
+  * Wildcard: "have done" where "done" represents any past participle
+  * Fixed: "do me a favor" where "do" is specific and cannot be replaced
+- When main_word contains verb patterns, select appropriate conjugation based on context
+- For syntax patterns, choose the most natural verb form for the sentence structure
+- Ensure verb agreement with subject, tense, and grammatical context
+
+**FIELD-SPECIFIC RULES:**
+
+**main_word and main_word_translations fields:**
+- MUST preserve user input exactly as provided (only minor corrections allowed)
+- May contain grammatical symbols, patterns, or {{fromLang}} explanations
+- These are for human understanding and reference
+
+**quiz questions (question, answer, example_sentences, etc.):**
+- Must use natural, complete sentences without grammatical symbols
+- Must be proper {{fromLang}} and {{toLang}} content
+- Must sound natural to native speakers
 
 **ERROR PREVENTION:**
 - Never use grammatical symbols or placeholder text in quiz questions
 - Avoid grammar exercise-like sentences in quiz questions
 - Ensure complete, usable answers that maintain syntactic structure
 - Prevent ambiguity in blank placement
-- NOTE: main_word and main_word_translations fields may contain grammatical symbols and patterns as provided by user
 
 **QUALITY ASSURANCE:**
-For each question verify: Natural syntactic structure, cultural context, clear grammatical core, pedagogical effectiveness, appropriate difficulty, no symbols, varied complexity, realistic scenario.
+For each question verify: Natural syntactic structure, cultural context, clear grammatical core, pedagogical effectiveness, appropriate difficulty, varied complexity, realistic scenario.
+
+**CONTENT PRESERVATION:**
+- {{main_word}} and {{main_word_translations}} must be preserved exactly as provided (only minor corrections allowed)
+- These fields are for human understanding and may contain {{fromLang}} explanations, grammatical symbols, or patterns
+- The actual quiz questions should use proper {{fromLang}} and {{toLang}} content
+- Grammatical symbols and patterns in main_word/main_word_translations are intentional and should NOT be converted to actual words
 
 **RECURSIVE REVIEW PROCESS:**
 After initial generation, review each question 2-3 times from a learner's perspective. Ask yourself:
+
+**For main_word and main_word_translations:**
+- Is the main_word field preserving the exact original {{main_word}} content?
+- Is the main_word_translations field preserving the exact original {{main_word_translations}} if provided?
+
+**For quiz questions:**
 - Does this sound natural to a native speaker?
 - Is the masked core the most logical choice?
 - Would a learner find this context clear and helpful?
 - Can this be improved for better pedagogical value?
-- Is the main_word field preserving the exact original {{main_word}} content?
-- Is the main_word_translations field preserving the exact original {{main_word_translations}} if provided?
 - Are the quiz questions using proper {{fromLang}} and {{toLang}} content?
+- Is the verb conjugation appropriate for the context and tense?
+- Are wildcard vs fixed elements correctly identified and used?
 
 Refine questions iteratively until they meet native-speaker quality standards.
 
 If you cannot generate exactly 5 high-quality questions meeting ALL criteria, return as many valid questions as you can (minimum 3), but do NOT include substandard questions. Always try to generate 5 questions first.
 
 For main_word_translations: If user provides {{main_word_translations}}, use them exactly as provided. If user doesn't provide, research and generate suitable translation in {{fromLang}}. Never leave empty.
-
-**CONTENT PRESERVATION:**
-- {{main_word}} must be preserved exactly as provided (only minor corrections allowed)
-- {{main_word_translations}} must be preserved exactly as provided if available
-- These fields are for human understanding and may contain {{fromLang}} explanations, grammatical symbols, or patterns
-- The actual quiz questions should use proper {{fromLang}} and {{toLang}} content
-- Grammatical symbols and patterns in main_word/main_word_translations are intentional and should NOT be converted to actual words
 
 Each question must include:
 - Natural sentence in {{toLang}} with one blank ("____") masking the syntactic core
