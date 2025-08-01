@@ -7,16 +7,56 @@ const LOCALSTORAGE_KEY = "pwa-install-dismissed";
 const PwaInstallPrompt: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [show, setShow] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (localStorage.getItem(LOCALSTORAGE_KEY) === "1") return;
+
+    // デバッグ情報を出力
+    console.log("PWA Install Prompt Debug:", {
+      isSecure:
+        window.location.protocol === "https:" ||
+        window.location.hostname === "localhost",
+      hasServiceWorker: "serviceWorker" in navigator,
+      hasManifest: !!document.querySelector('link[rel="manifest"]'),
+      isStandalone: window.matchMedia("(display-mode: standalone)").matches,
+      supportsBeforeInstallPrompt: "beforeinstallprompt" in window,
+      isDismissed: localStorage.getItem(LOCALSTORAGE_KEY) === "1",
+      userAgent: navigator.userAgent,
+    });
+
+    if (localStorage.getItem(LOCALSTORAGE_KEY) === "1") {
+      console.log("PWA Install Prompt: Already dismissed");
+      return;
+    }
+
     const handler = (e: any) => {
+      console.log("PWA Install Prompt: beforeinstallprompt event fired");
       e.preventDefault();
       setDeferredPrompt(e);
       setShow(true);
     };
-    window.addEventListener("beforeinstallprompt", handler);
+
+    // iOS Safariの検出
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isSafari =
+      /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+
+    if (isIOSDevice && isSafari) {
+      setIsIOS(true);
+      console.log("PWA Install Prompt: iOS Safari detected");
+
+      // iOS Safariの場合は手動でインストールガイドを表示
+      if (!localStorage.getItem(LOCALSTORAGE_KEY)) {
+        setTimeout(() => {
+          setShow(true);
+        }, 2000); // 2秒後に表示
+      }
+    } else {
+      window.addEventListener("beforeinstallprompt", handler);
+      console.log("PWA Install Prompt: Event listener added");
+    }
+
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
@@ -94,7 +134,7 @@ const PwaInstallPrompt: React.FC = () => {
             lineHeight: "1.3",
           }}
         >
-          Install as App
+          {isIOS ? "Add to Home Screen" : "Install as App"}
         </h3>
 
         <p
@@ -105,12 +145,14 @@ const PwaInstallPrompt: React.FC = () => {
             lineHeight: "1.5",
           }}
         >
-          Add to your home screen for a better experience
+          {isIOS
+            ? "Tap the share button and select 'Add to Home Screen'"
+            : "Add to your home screen for a better experience"}
         </p>
 
         <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
           <button
-            onClick={handleInstall}
+            onClick={isIOS ? handleClose : handleInstall}
             style={{
               background: "linear-gradient(135deg, #5856d6, #7c4dff)",
               color: "#fff",
@@ -134,7 +176,7 @@ const PwaInstallPrompt: React.FC = () => {
               e.currentTarget.style.boxShadow = "none";
             }}
           >
-            Install
+            {isIOS ? "Got it" : "Install"}
           </button>
 
           <button
