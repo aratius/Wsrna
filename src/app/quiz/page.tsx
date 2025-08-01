@@ -42,6 +42,7 @@ export default function QuizPage() {
     setDetailsOpen,
     dailyProgress,
     getDailyProgress,
+    getDailyQuizLimit,
     handleAnswer,
     handleShowHint,
     handleNext,
@@ -53,11 +54,14 @@ export default function QuizPage() {
   // 1問ずつ表示するロジック
   const review = filteredReviews[currentIndex];
 
-  // 10問制限の確認（localStorageの解答数に基づく）
+  // 動的なクイズ制限の確認（localStorageの解答数に基づく）
   const currentDailyProgress = selectedPairId
     ? getDailyProgress(selectedPairId)
     : 0;
-  const isDailyLimitReached = currentDailyProgress >= 10;
+  const dailyQuizLimit = selectedPairId
+    ? getDailyQuizLimit(selectedPairId, filteredReviews.length)
+    : 10;
+  const isDailyLimitReached = currentDailyProgress >= dailyQuizLimit;
 
   // 終了条件: 問題がない OR 全問完了 OR 10問制限到達
   const isFinished =
@@ -102,7 +106,10 @@ export default function QuizPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2, delay: 0.2 }}
           >
-            <span>Today's Progress: {currentDailyProgress}/10 questions</span>
+            <span>
+              Today's Progress: {currentDailyProgress}/{dailyQuizLimit}{" "}
+              questions
+            </span>
             {isDailyLimitReached && (
               <span
                 style={{
@@ -127,7 +134,9 @@ export default function QuizPage() {
                 {isDailyLimitReached ? (
                   <div>
                     <h3>🎉 Today's Learning Complete!</h3>
-                    <p>You've completed 10 questions. Great job!</p>
+                    <p>
+                      You've completed {dailyQuizLimit} questions. Great job!
+                    </p>
                     <p>Keep up the good work tomorrow!</p>
                     <button
                       className={styles["quiz__reset-button"]}
@@ -177,6 +186,8 @@ export default function QuizPage() {
                   hintIndexes={hintIndexes}
                   showHintModal={showHintModal}
                   detailsOpen={detailsOpen}
+                  dailyProgress={currentDailyProgress}
+                  dailyQuizLimit={dailyQuizLimit}
                   onAnswer={(review) => handleAnswer(review, selectedPairId)}
                   onShowHint={handleShowHint}
                   onSetShowHintModal={setShowHintModal}

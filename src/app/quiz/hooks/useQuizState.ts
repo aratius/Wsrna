@@ -35,6 +35,11 @@ export function useQuizState() {
     return stored ? parseInt(stored, 10) : 0;
   };
 
+  // その日の利用可能なクイズ数を取得（最大10問、実際のクイズ数が少ない場合はその数）
+  const getDailyQuizLimit = (languagePairId: string, availableQuizzes: number) => {
+    return Math.min(10, availableQuizzes);
+  };
+
   // localStorageに解答数を保存
   const saveDailyProgress = (languagePairId: string, count: number) => {
     if (typeof window === "undefined") return;
@@ -112,15 +117,15 @@ export function useQuizState() {
 
     setUpdating((prev) => ({ ...prev, [review.id]: false }));
 
-    // 解答数を更新（正解の場合のみ）
-    if (isCorrect) {
+    // 解答数を更新（正解の場合、または不正解確定時のみ）
+    if (isCorrect || attemptsCount >= 3) {
       const currentProgress = getDailyProgress(languagePairId);
       const newProgress = currentProgress + 1;
-      console.log('Progress update (correct answer):', { languagePairId, currentProgress, newProgress });
+      console.log('Progress update:', { languagePairId, currentProgress, newProgress, isCorrect, attemptsCount });
       saveDailyProgress(languagePairId, newProgress);
       setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
     } else {
-      console.log('Progress not updated (incorrect answer):', { languagePairId, isCorrect });
+      console.log('Progress not updated (not determined yet):', { languagePairId, isCorrect, attemptsCount });
     }
   };
 
@@ -189,6 +194,7 @@ export function useQuizState() {
     setDetailsOpen,
     dailyProgress,
     getDailyProgress,
+    getDailyQuizLimit,
     handleAnswer,
     handleShowHint,
     handleNext,

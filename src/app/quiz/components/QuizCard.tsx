@@ -21,6 +21,8 @@ interface QuizCardProps {
   hintIndexes: { [id: string]: number };
   showHintModal: { [id: string]: boolean };
   detailsOpen: { [id: string]: boolean };
+  dailyProgress: number;
+  dailyQuizLimit: number;
   onAnswer: (review: any) => void;
   onShowHint: (id: string, quiz: any) => void;
   onSetShowHintModal: (
@@ -49,6 +51,8 @@ export default function QuizCard({
   hintIndexes,
   showHintModal,
   detailsOpen,
+  dailyProgress,
+  dailyQuizLimit,
   onAnswer,
   onShowHint,
   onSetShowHintModal,
@@ -230,7 +234,7 @@ export default function QuizCard({
 
   // 進捗に応じた色を決定
   let progressColorClass = "";
-  const progressRatio = (currentIndex + 1) / totalCount;
+  const progressRatio = dailyProgress / dailyQuizLimit; // 動的な制限に基づく
   if (progressRatio >= 0.99) {
     progressColorClass = "green";
   } else if (progressRatio >= 0.7) {
