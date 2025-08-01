@@ -71,7 +71,7 @@ export function useCreateState() {
           "An error occurred while generating the quiz. Please try again."
         );
         return;
-      } else if (Array.isArray(data.questions)) {
+      } else if (data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
         // main_wordの最頻値でフィルタ
         const freq: Record<string, number> = {};
         data.questions.forEach((q: any) => {
@@ -84,7 +84,14 @@ export function useCreateState() {
           (q: any) => q.main_word === mostFreq
         );
         setQuizzes(filtered);
-      } else setError("API response is invalid: " + JSON.stringify(data));
+
+        // 5つ未満の場合は警告を表示
+        if (filtered.length < 5) {
+          console.warn(`Generated ${filtered.length} questions instead of 5`);
+        }
+      } else {
+        setError("API response is invalid: " + JSON.stringify(data));
+      }
     } catch (e: any) {
       console.error("Quiz generation fetch error:", e);
       setError("A network or server error occurred. Please try again.");
