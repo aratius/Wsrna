@@ -54,10 +54,7 @@ export default function LoadingWithSound({
       className={styles.overlay}
       style={{
         position: fullscreen ? "fixed" : "absolute",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "calc(var(--vh) * 100)",
+        inset: 0,
         background: "rgba(255,255,255,0.85)",
         zIndex: 2000,
         display: "flex",

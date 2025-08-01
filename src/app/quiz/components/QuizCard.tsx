@@ -509,68 +509,62 @@ export default function QuizCard({
               );
             };
 
-            // テキストを単語に分割してポップアップを適用する関数
-            const renderTextWithPopups = (text: string, baseKey: string) => {
-              if (!text) return null;
+            // dictionaryのキーを長い順にソート（最長一致を優先）
+            const dictionaryKeys = Object.keys(dictionary).sort(
+              (a, b) => b.length - a.length
+            );
 
-              // dictionaryのキーを長い順にソート（最長一致を優先）
-              const dictionaryKeys = Object.keys(dictionary).sort(
-                (a, b) => b.length - a.length
-              );
-
-              // テキスト内でdictionaryに含まれる単語を検索する関数
-              const findDictionaryWords = (
-                text: string
-              ): Array<{
+            // テキスト内でdictionaryに含まれる単語を検索する関数
+            const findDictionaryWords = (
+              text: string
+            ): Array<{
+              word: string;
+              startIndex: number;
+              endIndex: number;
+              meanings: string[];
+            }> => {
+              const foundWords: Array<{
                 word: string;
                 startIndex: number;
                 endIndex: number;
                 meanings: string[];
-              }> => {
-                const foundWords: Array<{
-                  word: string;
-                  startIndex: number;
-                  endIndex: number;
-                  meanings: string[];
-                }> = [];
+              }> = [];
 
-                // 各dictionaryキーについて、テキスト内で検索
-                for (const key of dictionaryKeys) {
-                  const meanings = dictionary[key];
-                  if (!Array.isArray(meanings) || meanings.length === 0)
-                    continue;
+              // 各dictionaryキーについて、テキスト内で最初の一語のみ検索
+              for (const key of dictionaryKeys) {
+                const meanings = dictionary[key];
+                if (!Array.isArray(meanings) || meanings.length === 0) continue;
 
-                  let startIndex = 0;
-                  while (true) {
-                    const index = text.indexOf(key, startIndex);
-                    if (index === -1) break;
+                const index = text.indexOf(key);
+                if (index === -1) continue;
 
-                    // 既に他の単語でカバーされている範囲かチェック
-                    const isOverlapping = foundWords.some(
-                      (found) =>
-                        (index >= found.startIndex && index < found.endIndex) ||
-                        (index + key.length > found.startIndex &&
-                          index + key.length <= found.endIndex) ||
-                        (index <= found.startIndex &&
-                          index + key.length >= found.endIndex)
-                    );
+                // 既に他の単語でカバーされている範囲かチェック
+                const isOverlapping = foundWords.some(
+                  (found) =>
+                    (index >= found.startIndex && index < found.endIndex) ||
+                    (index + key.length > found.startIndex &&
+                      index + key.length <= found.endIndex) ||
+                    (index <= found.startIndex &&
+                      index + key.length >= found.endIndex)
+                );
 
-                    if (!isOverlapping) {
-                      foundWords.push({
-                        word: key,
-                        startIndex: index,
-                        endIndex: index + key.length,
-                        meanings: meanings,
-                      });
-                    }
-
-                    startIndex = index + 1;
-                  }
+                if (!isOverlapping) {
+                  foundWords.push({
+                    word: key,
+                    startIndex: index,
+                    endIndex: index + key.length,
+                    meanings: meanings,
+                  });
                 }
+              }
 
-                // 開始位置でソート
-                return foundWords.sort((a, b) => a.startIndex - b.startIndex);
-              };
+              // 開始位置でソート
+              return foundWords.sort((a, b) => a.startIndex - b.startIndex);
+            };
+
+            // テキストを単語に分割してポップアップを適用する関数
+            const renderTextWithPopups = (text: string, baseKey: string) => {
+              if (!text) return null;
 
               // テキスト内のdictionary単語を検索
               const foundWords = findDictionaryWords(text);
@@ -681,56 +675,185 @@ export default function QuizCard({
               });
             };
 
-            return (
-              <>
-                {renderTextWithPopups(parts[0], "part0")}
-                <span className={styles["quiz__blanks-container"]}>
-                  {answerWords.map((word, index) => {
-                    const style = {
-                      "--word-length": word.length,
-                      "--min-width": `${Math.max(word.length * 0.6, 1)}em`,
-                    } as React.CSSProperties;
+            // 全体のテキストを一度に処理する関数
+            const renderFullTextWithBlanks = () => {
+              const fullText = review.quiz.question;
+              const blankIndex = fullText.indexOf("____");
 
-                    let blankClass = styles["quiz__word-blank"];
-                    if (isCorrect) blankClass += " " + styles["correct"];
-                    if (results[review.id] === false && attemptsCount >= 3)
-                      blankClass += " " + styles["incorrect"];
+              if (blankIndex === -1) {
+                // 穴埋めがない場合は通常の処理
+                return renderTextWithPopups(fullText, "full");
+              }
 
-                    return (
-                      <span key={index} className={blankClass} style={style}>
-                        {word.split("").map((char, charIndex) => {
-                          const showChar = shouldShowChar(
-                            index,
-                            charIndex,
-                            word
-                          );
-                          const colorClass = getCharColorClass(
-                            index,
-                            charIndex
-                          );
+              // 全体のテキストでdictionary単語を検索
+              const foundWords = findDictionaryWords(fullText);
 
-                          return (
-                            <span
-                              key={charIndex}
-                              className={`${
-                                styles["quiz__word-blank__char"]
-                              } ${colorClass} ${
-                                showChar
-                                  ? styles["quiz__word-blank__char--visible"]
-                                  : styles["quiz__word-blank__char--hidden"]
-                              }`}
-                            >
-                              {char}
-                            </span>
-                          );
-                        })}
-                      </span>
-                    );
-                  })}
-                </span>
-                {renderTextWithPopups(parts[1], "part1")}
-              </>
-            );
+              // テキストをセグメントに分割（穴埋め部分を含む）
+              const segments: Array<{
+                text: string;
+                isDictionaryWord: boolean;
+                isBlank: boolean;
+                word?: string;
+                meanings?: string[];
+              }> = [];
+
+              let lastIndex = 0;
+              for (const found of foundWords) {
+                // 穴埋め部分より前のdictionary単語
+                if (found.startIndex < blankIndex) {
+                  // dictionary単語の前のテキスト
+                  if (found.startIndex > lastIndex) {
+                    segments.push({
+                      text: fullText.slice(lastIndex, found.startIndex),
+                      isDictionaryWord: false,
+                      isBlank: false,
+                    });
+                  }
+
+                  // dictionary単語
+                  segments.push({
+                    text: found.word,
+                    isDictionaryWord: true,
+                    isBlank: false,
+                    word: found.word,
+                    meanings: found.meanings,
+                  });
+
+                  lastIndex = found.endIndex;
+                }
+              }
+
+              // 穴埋め前の残りのテキスト
+              if (lastIndex < blankIndex) {
+                segments.push({
+                  text: fullText.slice(lastIndex, blankIndex),
+                  isDictionaryWord: false,
+                  isBlank: false,
+                });
+              }
+
+              // 穴埋め部分
+              segments.push({
+                text: "____",
+                isDictionaryWord: false,
+                isBlank: true,
+              });
+
+              // 穴埋め後のdictionary単語を検索
+              lastIndex = blankIndex + 4;
+              for (const found of foundWords) {
+                if (found.startIndex >= blankIndex + 4) {
+                  // dictionary単語の前のテキスト
+                  if (found.startIndex > lastIndex) {
+                    segments.push({
+                      text: fullText.slice(lastIndex, found.startIndex),
+                      isDictionaryWord: false,
+                      isBlank: false,
+                    });
+                  }
+
+                  // dictionary単語
+                  segments.push({
+                    text: found.word,
+                    isDictionaryWord: true,
+                    isBlank: false,
+                    word: found.word,
+                    meanings: found.meanings,
+                  });
+
+                  lastIndex = found.endIndex;
+                }
+              }
+
+              // 残りのテキスト
+              if (lastIndex < fullText.length) {
+                segments.push({
+                  text: fullText.slice(lastIndex),
+                  isDictionaryWord: false,
+                  isBlank: false,
+                });
+              }
+
+              // セグメントをレンダリング
+              return segments.map((segment, index) => {
+                const key = `segment-${index}`;
+
+                if (segment.isBlank) {
+                  // 穴埋め部分
+                  return (
+                    <span
+                      key={key}
+                      className={styles["quiz__blanks-container"]}
+                    >
+                      {answerWords.map((word, wordIndex) => {
+                        const style = {
+                          "--word-length": word.length,
+                          "--min-width": `${Math.max(word.length * 0.6, 1)}em`,
+                        } as React.CSSProperties;
+
+                        let blankClass = styles["quiz__word-blank"];
+                        if (isCorrect) blankClass += " " + styles["correct"];
+                        if (results[review.id] === false && attemptsCount >= 3)
+                          blankClass += " " + styles["incorrect"];
+
+                        return (
+                          <span
+                            key={wordIndex}
+                            className={blankClass}
+                            style={style}
+                          >
+                            {word.split("").map((char, charIndex) => {
+                              const showChar = shouldShowChar(
+                                wordIndex,
+                                charIndex,
+                                word
+                              );
+                              const colorClass = getCharColorClass(
+                                wordIndex,
+                                charIndex
+                              );
+
+                              return (
+                                <span
+                                  key={charIndex}
+                                  className={`${
+                                    styles["quiz__word-blank__char"]
+                                  } ${colorClass} ${
+                                    showChar
+                                      ? styles[
+                                          "quiz__word-blank__char--visible"
+                                        ]
+                                      : styles["quiz__word-blank__char--hidden"]
+                                  }`}
+                                >
+                                  {char}
+                                </span>
+                              );
+                            })}
+                          </span>
+                        );
+                      })}
+                    </span>
+                  );
+                } else if (
+                  segment.isDictionaryWord &&
+                  segment.word &&
+                  segment.meanings
+                ) {
+                  // dictionary単語の場合
+                  return renderWordWithPopup(segment.word, key);
+                } else {
+                  // 通常のテキストの場合
+                  return (
+                    <span key={key} className={styles["quiz__word-normal"]}>
+                      {segment.text}
+                    </span>
+                  );
+                }
+              });
+            };
+
+            return renderFullTextWithBlanks();
           })()}
         </div>
         {review.quiz?.sentence_translation && (
