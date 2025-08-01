@@ -99,7 +99,7 @@ export default function QuizPage() {
         </AnimatedQuizTab>
 
         {/* 今日の進捗表示 */}
-        {selectedPairId && (
+        {selectedPairId && dailyQuizLimit > 0 && (
           <motion.div
             className={styles["quiz__progress"]}
             initial={{ opacity: 0 }}
@@ -131,7 +131,7 @@ export default function QuizPage() {
           {(filteredReviews.length === 0 && !loading) || isFinished ? (
             <AnimatedCompletionMessage>
               <div className={styles["quiz__no-quizzes"]}>
-                {isDailyLimitReached ? (
+                {isDailyLimitReached && dailyQuizLimit > 0 ? (
                   <div>
                     <h3>🎉 Today's Learning Complete!</h3>
                     <p>

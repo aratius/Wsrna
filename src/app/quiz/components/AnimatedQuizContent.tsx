@@ -102,10 +102,6 @@ export const AnimatedCompletionMessage = ({
     transition={{
       duration: 0.3,
     }}
-    style={{
-      textAlign: "center",
-      padding: "2rem",
-    }}
   >
     {children}
   </motion.div>
