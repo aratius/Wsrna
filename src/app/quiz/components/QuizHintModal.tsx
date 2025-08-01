@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import styles from "../quiz.module.scss";
-import { playButtonClick } from "../../../lib/soundManager";
+import { playButtonClick, playTransition } from "../../../lib/soundManager";
 
 interface QuizHintModalProps {
   review: any;
@@ -62,7 +62,7 @@ export default function QuizHintModal({
     e.stopPropagation(); // イベントの伝播を停止
 
     // ボタンクリック音を再生
-    playButtonClick();
+    playTransition(!showHintModal[review.id]);
 
     console.log("Hint button clicked:", {
       reviewId: review.id,

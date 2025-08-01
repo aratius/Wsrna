@@ -629,6 +629,7 @@ export default function QuizCard({
                       key={key}
                       className={styles["quiz__word-with-popup"]}
                       onClick={(e) => {
+                        playButtonClick();
                         e.preventDefault();
                         e.stopPropagation();
                         if (isPopupVisible) {
