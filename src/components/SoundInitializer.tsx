@@ -18,7 +18,8 @@ export default function SoundInitializer() {
       }
     };
 
-    initializeSound();
+    window.addEventListener("click", initializeSound, { once: true });
+    window.addEventListener("touchstart", initializeSound, { once: true });
   }, []);
 
   // このコンポーネントは何もレンダリングしない
