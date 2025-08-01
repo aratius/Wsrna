@@ -44,14 +44,17 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     }
   }, [session, hasInitialized, isLoading]);
 
+  // 認証不要なパスのリスト
+  const publicPaths = ["/", "/mypage/help"];
+
   // リダイレクト処理を別のuseEffectで管理
   useEffect(() => {
     if (!hasInitialized) return; // 初期化完了前は何もしない
 
     // 少し待ってからリダイレクト処理を実行（セッションの安定化を待つ）
     const timeoutId = setTimeout(() => {
-      // セッションがnull（未ログイン）で、トップページ以外にいる場合
-      if (session === null && pathname !== "/") {
+      // セッションがnull（未ログイン）で、認証不要なパス以外にいる場合
+      if (session === null && !publicPaths.includes(pathname)) {
         console.log("AuthGuard - redirecting to / because session is null");
         router.push("/");
         return;
@@ -85,7 +88,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }
 
   // セッションがnullで初期化済みの場合のみリダイレクト
-  if (session === null && pathname !== "/") {
+  if (session === null && !publicPaths.includes(pathname)) {
     return <LoadingWithSound message="Redirecting..." />;
   }
 
