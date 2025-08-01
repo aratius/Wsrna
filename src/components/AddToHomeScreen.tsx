@@ -52,7 +52,7 @@ export default function AddToHomeScreen() {
   return (
     <div style={{ marginTop: "16px" }}>
       <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "12px" }}>
-        📱 Add to Home Screen
+        📱 Install as an App
       </h3>
 
       {isIOS ? (
