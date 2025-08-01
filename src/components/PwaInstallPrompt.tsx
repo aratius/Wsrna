@@ -12,7 +12,15 @@ const PwaInstallPrompt: React.FC = () => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // デバッグ用: 古いキーをクリア
+    const oldKey = "pwa-before-prompt";
+    if (localStorage.getItem(oldKey)) {
+      console.log("PWA Install Prompt: Clearing old localStorage key:", oldKey);
+      localStorage.removeItem(oldKey);
+    }
+
     // デバッグ情報を出力
+    const dismissedValue = localStorage.getItem(LOCALSTORAGE_KEY);
     console.log("PWA Install Prompt Debug:", {
       isSecure:
         window.location.protocol === "https:" ||
@@ -21,12 +29,14 @@ const PwaInstallPrompt: React.FC = () => {
       hasManifest: !!document.querySelector('link[rel="manifest"]'),
       isStandalone: window.matchMedia("(display-mode: standalone)").matches,
       supportsBeforeInstallPrompt: "beforeinstallprompt" in window,
-      isDismissed: localStorage.getItem(LOCALSTORAGE_KEY) === "1",
+      isDismissed: dismissedValue === "1",
+      dismissedValue: dismissedValue,
+      localStorageKey: LOCALSTORAGE_KEY,
       userAgent: navigator.userAgent,
     });
 
-    if (localStorage.getItem(LOCALSTORAGE_KEY) === "1") {
-      console.log("PWA Install Prompt: Already dismissed");
+    if (dismissedValue === "1") {
+      console.log("PWA Install Prompt: Already dismissed, not showing");
       return;
     }
 
@@ -47,7 +57,7 @@ const PwaInstallPrompt: React.FC = () => {
       console.log("PWA Install Prompt: iOS Safari detected");
 
       // iOS Safariの場合は手動でインストールガイドを表示
-      if (!localStorage.getItem(LOCALSTORAGE_KEY)) {
+      if (dismissedValue !== "1") {
         setTimeout(() => {
           setShow(true);
         }, 2000); // 2秒後に表示
@@ -69,6 +79,7 @@ const PwaInstallPrompt: React.FC = () => {
     setDeferredPrompt(null);
     if (outcome === "dismissed") {
       localStorage.setItem(LOCALSTORAGE_KEY, "1");
+      console.log("PWA Install Prompt: User dismissed, localStorage set to 1");
     }
   };
 
@@ -76,6 +87,7 @@ const PwaInstallPrompt: React.FC = () => {
     playButtonClick();
     setShow(false);
     localStorage.setItem(LOCALSTORAGE_KEY, "1");
+    console.log("PWA Install Prompt: Dismissed, localStorage set to 1");
   };
 
   if (!show) return null;
