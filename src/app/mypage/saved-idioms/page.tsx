@@ -111,168 +111,191 @@ export default function SavedIdiomsPage() {
 
   return (
     <AnimatedMypageContent isLoading={loading} className={styles["saved"]}>
-      <motion.h2
-        className={styles["saved__title"]}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.2, delay: 0 }}
-      >
-        Saved Idioms
-      </motion.h2>
-      {/* タブUI */}
-      <nav className={styles["saved__tab"]}>
-        {languagePairs.map((lp, index) => {
-          const active = selectedPairId === lp.id;
-          return (
-            <motion.button
-              key={lp.id}
-              onClick={() => {
-                setSelectedPairId(lp.id);
-                playButtonClick();
-              }}
-              className={[
-                styles["saved__tab__button"],
-                active ? styles["saved__tab__button--active"] : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: 0.2,
-                delay: index * 0.02,
-              }}
+      <div className={styles["saved__container"]}>
+        <motion.h2
+          className={styles["saved__title"]}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0 }}
+        >
+          Saved Idioms
+        </motion.h2>
+        {/* タブUI */}
+        <nav className={styles["saved__tab"]}>
+          {languagePairs.map((lp, index) => {
+            const active = selectedPairId === lp.id;
+            return (
+              <motion.button
+                key={lp.id}
+                onClick={() => {
+                  setSelectedPairId(lp.id);
+                  playButtonClick();
+                }}
+                className={[
+                  styles["saved__tab__button"],
+                  active ? styles["active"] : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  duration: 0.2,
+                  delay: index * 0.02,
+                }}
+              >
+                {getAbbr(lp.from_lang)}
+                <span className={styles["saved__tab-arrow"]}>›</span>
+                {getAbbr(lp.to_lang)}
+              </motion.button>
+            );
+          })}
+        </nav>
+        <div className={styles["saved__content"]}>
+          {error && (
+            <motion.div
+              className={styles["saved__error"]}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
             >
-              {getAbbr(lp.from_lang)}
-              <span className={styles["saved__tab-arrow"]}>›</span>
-              {getAbbr(lp.to_lang)}
-            </motion.button>
-          );
-        })}
-      </nav>
-      {error && (
-        <motion.div
-          className={styles["saved__error"]}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {error}
-        </motion.div>
-      )}
-      {filteredIdioms.length === 0 && !loading ? (
-        <motion.div
-          className={styles["saved__error"]}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          No idioms saved for this language pair.
-        </motion.div>
-      ) : (
-        <ul className={styles["saved__list"]}>
-          {filteredIdioms.map((idiom, idx) => (
-            <AnimatedListItem key={idiom.id} index={idx}>
-              <li className={styles["saved__list-item"]}>
-                <div className={styles["saved__list-item__main-word"]}>
-                  {idiom.main_word}
-                </div>
-                <div className={styles["saved__list-item__translations"]}>
-                  {Array.isArray(idiom.main_word_translations)
-                    ? idiom.main_word_translations.join(", ")
-                    : idiom.main_word_translations}
-                </div>
-                <div className={styles["saved__list-item__buttons"]}>
-                  <button
-                    type="button"
-                    className={[
-                      styles["saved__list-item__explanation-btn"],
-                      explanationOpen[idiom.id] ? " " + styles["open"] : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    onClick={() => {
-                      playTransition(!explanationOpen[idiom.id]);
-                      setExplanationOpen((prev) => ({
-                        ...prev,
-                        [idiom.id]: !prev[idiom.id],
-                      }));
-                    }}
-                  >
-                    {explanationOpen[idiom.id]
-                      ? "- Hide Explanation!"
-                      : "+ Show Explanation!"}
-                  </button>
-                  <button
-                    type="button"
-                    className={styles["saved__list-item__recreate-btn"]}
-                    onClick={async () => {
-                      const confirmed = window.confirm(
-                        "Would you delete this idiom and regenerate a new one?"
-                      );
-
-                      if (confirmed && session?.user?.id) {
-                        try {
-                          // idiomを削除
-                          const deleteRes = await fetch(
-                            `/api/idioms?idiom_id=${idiom.id}&user_id=${session.user.id}`,
-                            { method: "DELETE" }
+              {error}
+            </motion.div>
+          )}
+          {filteredIdioms.length === 0 && !loading ? (
+            <motion.div
+              className={styles["saved__no-idioms"]}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div>
+                <p>No idioms saved for this language pair.</p>
+                <button
+                  className={styles["saved__create-button"]}
+                  onClick={() => {
+                    playButtonClick();
+                    window.location.href = `/create?lang_pair=${selectedPairId}`;
+                  }}
+                >
+                  Create New Idioms
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            <ul className={styles["saved__list"]}>
+              {filteredIdioms.map((idiom, idx) => (
+                <AnimatedListItem key={idiom.id} index={idx}>
+                  <li className={styles["saved__list-item"]}>
+                    <div className={styles["saved__list-item__main-word"]}>
+                      {idiom.main_word}
+                    </div>
+                    <div className={styles["saved__list-item__translations"]}>
+                      {Array.isArray(idiom.main_word_translations)
+                        ? idiom.main_word_translations.join(", ")
+                        : idiom.main_word_translations}
+                    </div>
+                    <div className={styles["saved__list-item__buttons"]}>
+                      <button
+                        type="button"
+                        className={[
+                          styles["saved__list-item__explanation-btn"],
+                          explanationOpen[idiom.id] ? " " + styles["open"] : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        onClick={() => {
+                          playTransition(!explanationOpen[idiom.id]);
+                          setExplanationOpen((prev) => ({
+                            ...prev,
+                            [idiom.id]: !prev[idiom.id],
+                          }));
+                        }}
+                      >
+                        {explanationOpen[idiom.id]
+                          ? "- Hide Explanation!"
+                          : "+ Show Explanation!"}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles["saved__list-item__recreate-btn"]}
+                        onClick={async () => {
+                          const confirmed = window.confirm(
+                            "Would you delete this idiom and regenerate a new one?"
                           );
 
-                          if (deleteRes.ok) {
-                            // /createに遷移（from、to、lang_pairのクエリパラメータ付き）
-                            const fromParam = encodeURIComponent(
-                              idiom.main_word_translations || ""
-                            );
-                            const toParam = encodeURIComponent(
-                              idiom.main_word || ""
-                            );
-                            const langPairParam = encodeURIComponent(
-                              idiom.language_pair_id || ""
-                            );
-                            window.location.href = `/create?from=${fromParam}&to=${toParam}&lang_pair=${langPairParam}`;
-                          } else {
-                            alert("Failed to delete idiom. Please try again.");
+                          if (confirmed && session?.user?.id) {
+                            try {
+                              // idiomを削除
+                              const deleteRes = await fetch(
+                                `/api/idioms?idiom_id=${idiom.id}&user_id=${session.user.id}`,
+                                { method: "DELETE" }
+                              );
+
+                              if (deleteRes.ok) {
+                                // /createに遷移（from、to、lang_pairのクエリパラメータ付き）
+                                const fromParam = encodeURIComponent(
+                                  idiom.main_word_translations || ""
+                                );
+                                const toParam = encodeURIComponent(
+                                  idiom.main_word || ""
+                                );
+                                const langPairParam = encodeURIComponent(
+                                  idiom.language_pair_id || ""
+                                );
+                                window.location.href = `/create?from=${fromParam}&to=${toParam}&lang_pair=${langPairParam}`;
+                              } else {
+                                alert(
+                                  "Failed to delete idiom. Please try again."
+                                );
+                              }
+                            } catch (error) {
+                              console.error("Error deleting idiom:", error);
+                              alert("An error occurred. Please try again.");
+                            }
                           }
-                        } catch (error) {
-                          console.error("Error deleting idiom:", error);
-                          alert("An error occurred. Please try again.");
-                        }
-                      }
-                    }}
-                  >
-                    Weird!
-                  </button>
-                </div>
-                {explanationOpen[idiom.id] && (
-                  <div className={styles["saved__list-item__explanation-box"]}>
-                    <div className={styles["saved__list-item__explanation"]}>
-                      {idiom.explanation}
+                        }}
+                      >
+                        Weird!
+                      </button>
                     </div>
-                    {idiom.example_sentence && (
-                      <div className={styles["saved__list-item__example"]}>
+                    {explanationOpen[idiom.id] && (
+                      <div
+                        className={styles["saved__list-item__explanation-box"]}
+                      >
                         <div
-                          className={styles["saved__list-item__example-label"]}
+                          className={styles["saved__list-item__explanation"]}
                         >
-                          Example:
+                          {idiom.explanation}
                         </div>
-                        <div
-                          className={
-                            styles["saved__list-item__example-sentence"]
-                          }
-                        >
-                          {idiom.example_sentence}
-                          <br />- {idiom.sentence_translation}
-                        </div>
+                        {idiom.example_sentence && (
+                          <div className={styles["saved__list-item__example"]}>
+                            <div
+                              className={
+                                styles["saved__list-item__example-label"]
+                              }
+                            >
+                              Example:
+                            </div>
+                            <div
+                              className={
+                                styles["saved__list-item__example-sentence"]
+                              }
+                            >
+                              {idiom.example_sentence}
+                              <br />- {idiom.sentence_translation}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
-              </li>
-            </AnimatedListItem>
-          ))}
-        </ul>
-      )}
+                  </li>
+                </AnimatedListItem>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </AnimatedMypageContent>
   );
 }

@@ -1,22 +1,58 @@
 @import "@/styles/_variables.scss";
 
 .saved {
-  flex: 1 1 0%;
-  min-height: 0;
-  max-height: 100%;
-  padding: $spacing-s 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  width: 100%;
+  padding: $spacing-s;
+
+  &__container {
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+  }
 
   &__title {
-    font-size: $font-size-base;
-    margin-bottom: $spacing-s;
+    @include gradient_title();
+    padding-bottom: $spacing-s;
+  }
+
+  &__content {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-m;
+
+    // スクロールバースタイル
+    &::-webkit-scrollbar {
+      width: 8px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #e0e0ff 0%, #bdbdfc 100%);
+      border-radius: 8px;
+      min-height: 40px;
+      box-shadow: 0 2px 6px rgba(88, 86, 214, 0.08);
+      transition: background 0.1s;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #bdbdfc 0%, #5856d6 100%);
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 8px;
+    }
+    scrollbar-width: thin;
+    scrollbar-color: #bdbdfc transparent;
   }
 
   &__tab {
     width: 100%;
+    height: 37px;
     display: flex;
     gap: 8px;
     margin-bottom: 20px;
@@ -41,17 +77,18 @@
       color: #222;
       font-size: 15px;
       font-weight: 400;
-      padding: 7px 16px;
+      height: 100%;
+      padding: 0 8px;
       border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s, border 0.2s;
-    }
+      transition: background 0.1s, color 0.1s, border 0.1s;
 
-    &__button--active {
-      color: #5856d6;
-      font-weight: 700;
-      span {
+      &.active {
         color: #5856d6;
+        font-weight: 700;
+        span {
+          color: #5856d6;
+        }
       }
     }
 
@@ -72,6 +109,38 @@
     color: $color-error;
     text-align: center;
     padding: 16px 0;
+  }
+
+  &__no-idioms {
+    text-align: center;
+    margin-top: $spacing-m;
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+  }
+
+  &__create-button {
+    background: linear-gradient(90deg, #5856d6 0%, #7c4dff 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: $spacing-s;
+    transition: background 0.1s;
+
+    &:hover {
+      background: linear-gradient(90deg, #4b3bbd 0%, #5e35b1 100%);
+    }
+
+    &:active {
+      background: linear-gradient(90deg, #3a2a8c 0%, #4527a0 100%);
+    }
   }
 
   &__list {
