@@ -1,4 +1,4 @@
-@import "@/styles/_variables.scss";
+@use "@/styles/_variables.scss" as *;
 
 .saved {
   width: 100%;
@@ -164,7 +164,7 @@
     &-item {
       display: flex;
       flex-direction: column;
-      align-items: start;
+      align-items: flex-start;
       gap: 8px;
       margin-bottom: 16px;
       border-bottom: 1px solid #e0e0e0;

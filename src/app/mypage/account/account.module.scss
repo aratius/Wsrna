@@ -1,4 +1,5 @@
-@import "@/styles/_variables.scss";
+@use "@/styles/_variables.scss" as *;
+@use "sass:color";
 
 .account {
   width: 100%;
@@ -57,7 +58,7 @@
     cursor: pointer;
     transition: background 0.2s;
     &:hover {
-      background: darken($color-error, 10%);
+      background: color.adjust($color-error, $lightness: -10%);
     }
   }
 }

@@ -4,9 +4,9 @@ import { supabase } from '@/lib/supabaseClient';
 // GET: 特定の言語ペアを取得
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json({ error: 'id is required' }, { status: 400 });

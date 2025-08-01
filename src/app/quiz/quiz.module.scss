@@ -1,4 +1,5 @@
-@import "@/styles/_variables.scss";
+@use "@/styles/_variables.scss" as *;
+@use "sass:color";
 
 .quiz {
   width: 100%;
@@ -259,7 +260,7 @@
       &.close {
         background: $color-error;
         &:hover {
-          background: darken($color-error, 10%);
+          background: color.adjust($color-error, $lightness: -10%);
           box-shadow: 0 4px 12px rgba(213, 0, 0, 0.3);
         }
       }
@@ -411,7 +412,7 @@
       transition: color 0.1s;
 
       &:hover {
-        color: darken($color-primary, 10%);
+        color: color.adjust($color-primary, $lightness: -10%);
       }
     }
 

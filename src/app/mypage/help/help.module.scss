@@ -1,4 +1,5 @@
-@import "@/styles/_variables.scss";
+@use "@/styles/_variables.scss" as *;
+@use "sass:color";
 
 .help {
   flex: 1 1 0%;
@@ -7,7 +8,7 @@
   padding: $spacing-s 0;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
   height: 100%;
@@ -150,7 +151,7 @@
       font-size: 0.8rem;
 
       &:hover {
-        color: darken($color-primary, 10%);
+        color: color.adjust($color-primary, $lightness: -10%);
         text-decoration: underline;
       }
     }
