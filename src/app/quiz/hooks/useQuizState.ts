@@ -117,16 +117,7 @@ export function useQuizState() {
 
     setUpdating((prev) => ({ ...prev, [review.id]: false }));
 
-    // 解答数を更新（正解の場合、または不正解確定時のみ）
-    if (isCorrect || attemptsCount >= 3) {
-      const currentProgress = getDailyProgress(languagePairId);
-      const newProgress = currentProgress + 1;
-      console.log('Progress update:', { languagePairId, currentProgress, newProgress, isCorrect, attemptsCount });
-      saveDailyProgress(languagePairId, newProgress);
-      setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
-    } else {
-      console.log('Progress not updated (not determined yet):', { languagePairId, isCorrect, attemptsCount });
-    }
+    // カウントアップはNextボタン押下時に行うため、ここでは行わない
   };
 
   const handleShowHint = (id: string, quiz: any) => {
@@ -149,7 +140,15 @@ export function useQuizState() {
     });
   };
 
-  const handleNext = () => {
+  const handleNext = (languagePairId?: string) => {
+    // Nextボタン押下時にカウントアップ
+    if (languagePairId) {
+      const currentProgress = getDailyProgress(languagePairId);
+      const newProgress = currentProgress + 1;
+      saveDailyProgress(languagePairId, newProgress);
+      setDailyProgress((prev) => ({ ...prev, [languagePairId]: newProgress }));
+    }
+
     setCurrentIndex((idx) => idx + 1);
   };
 

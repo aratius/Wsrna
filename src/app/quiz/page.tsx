@@ -193,7 +193,7 @@ export default function QuizPage() {
                   onSetShowHintModal={setShowHintModal}
                   onSetDetailsOpen={setDetailsOpen}
                   onSetAnswers={setAnswers}
-                  onNext={handleNext}
+                  onNext={() => handleNext(selectedPairId)}
                   onSetHintIndexes={setHintIndexes}
                 />
               </AnimatedQuizCard>
