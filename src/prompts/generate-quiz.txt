@@ -21,10 +21,12 @@ Create 5 completely natural, contextually rich sentences that native speakers wo
 
 STEP 3: STRATEGIC BLANK PLACEMENT
 After creating natural sentences, strategically place blanks:
-- Identify the most pedagogically effective position for each blank
-- Ensure the blank maintains the sentence's natural flow and meaning
-- Choose positions that test different aspects of the word/idiom
+- Randomly place blanks in positions related to the target vocabulary across the 5 questions
+- Ensure each blank position is pedagogically effective and tests different aspects of the word/idiom
+- Vary blank positions to include: the target word itself, related vocabulary, supporting words, or contextual elements
+- Maintain natural sentence flow and meaning while creating diverse blank placements
 - Avoid creating awkward or artificial sentence structures
+- Ensure blank positions provide appropriate challenge and learning value
 
 STEP 4: QUALITY VALIDATION
 Validate each question through multiple quality checks:
@@ -49,6 +51,12 @@ ADVANCED GUIDELINES:
 - Question 3: Intermediate complexity with cultural elements
 - Question 4: Advanced usage in professional/academic setting
 - Question 5: Complex usage with nuanced meaning
+
+**BLANK POSITION DIVERSITY:**
+- Vary blank positions across all 5 questions to include different types of vocabulary
+- Include blanks for: target vocabulary, related words, supporting vocabulary, contextual elements
+- Ensure each question tests different aspects of language learning
+- Create a balanced mix of blank positions that challenge various language skills
 
 **CULTURAL SENSITIVITY & APPROPRIATENESS:**
 - Research and incorporate cultural context specific to the target language
@@ -93,15 +101,40 @@ Each question must include:
 - The correct answer to fill the blank (MUST be a natural, usable word/phrase)
 - The main word, idiom, or grammar point being tested (main_word)
 - 1 to 3 minimal translations of main_word in {{fromLang}} (main_word_translations: array)
-- 2 to 3 example sentences (in {{toLang}}) using the main_word naturally, with their translations in {{fromLang}} (example_sentences: array of objects with 'sentence' and 'translation')
+- 2 to 3 practical example sentences (in {{toLang}}) using the main_word naturally, with their translations in {{fromLang}} (example_sentences: array of objects with 'sentence' and 'translation'). These should include real-world vocabulary and situations that students would encounter in daily life, academic settings, or cultural contexts.
 - An explanation (in {{fromLang}}) about the main word/idiom/grammar point (explanation). The explanation MUST be written in {{fromLang}} only, and should be concise, ideally no more than 3 lines. CRITICAL: Never write explanations in any other language - ONLY {{fromLang}}.
 - A sentence-level translation into {{fromLang}} for comprehension
-- A dictionary object with every word in the sentence and ideally 2 to 6 possible meanings (as an array) in {{fromLang}}. If a word has only one common meaning, return it as a single-element array.
+- A dictionary object containing a maximum of 2 words per sentence, with each word assigned 2 to 6 possible meanings (as an array) in {{fromLang}}, focusing strictly on advanced vocabulary (upper-intermediate to advanced level). Prioritize sophisticated vocabulary, academic terms, idiomatic expressions, and complex proper nouns that enhance advanced communication skills. Exclude intermediate-level words and ensure all entries are at advanced level or higher. If a word has only one common meaning, return it as a single-element array.
 - 4-step progressive hints (hint_levels), ALL written in {{fromLang}} only:
   1. Sentence meaning in {{fromLang}}
   2. Grammatical clue (tense, part of speech, etc.) in {{fromLang}}
   3. Explanation of the answer word in {{fromLang}}
   4. Partial word clue (e.g. first few letters) in {{fromLang}}
+
+**DICTIONARY VOCABULARY LEVEL REQUIREMENTS:**
+- Focus on advanced vocabulary appropriate for upper-intermediate to advanced learners
+- Exclude intermediate-level vocabulary and focus on sophisticated, academic, and specialized terms
+- Include advanced vocabulary that appears in academic texts, professional literature, and complex media
+- Prioritize sophisticated vocabulary, academic terms, idiomatic expressions, and complex proper nouns
+- Include advanced verbs, adjectives, and expressions that enhance professional and academic communication
+- Limit dictionary entries to maximum 2 words per sentence for focused learning
+
+**PRACTICAL EXAMPLE SENTENCES:**
+- Create example sentences that reflect real-world usage scenarios
+- Include practical vocabulary and expressions commonly used in daily life
+- Incorporate cultural context and situational appropriateness
+- Use vocabulary that students would encounter in authentic materials
+- Include useful proper nouns, place names, and cultural references when relevant
+- Ensure examples demonstrate natural, native-like language use
+
+**DICTIONARY CONTENT GUIDELINES:**
+- Include only advanced vocabulary that enhances sophisticated communication skills
+- Add complex proper nouns, academic terms, and specialized vocabulary when contextually appropriate
+- Include advanced verbs, adjectives, and expressions for professional and academic contexts
+- Focus on vocabulary that appears in academic texts, professional literature, and complex authentic materials
+- Exclude intermediate-level vocabulary and focus on upper-intermediate to advanced terms
+- Limit to maximum 2 dictionary entries per sentence for focused, high-value learning
+- Ensure dictionary entries provide advanced learning value and challenge
 
 CRITICAL LANGUAGE REQUIREMENTS:
 - ALL explanations MUST be written in {{fromLang}} only

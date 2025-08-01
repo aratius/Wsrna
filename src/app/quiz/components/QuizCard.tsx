@@ -489,23 +489,170 @@ export default function QuizCard({
             const renderTextWithPopups = (text: string, baseKey: string) => {
               if (!text) return null;
 
-              // 8文字以下の単語は改行しないように、スペースで分割
-              const words = text.split(/(\s+)/);
-              const usedWords = new Set<string>(); // 既に使用された単語を追跡
+              // dictionaryのキーを長い順にソート（最長一致を優先）
+              const dictionaryKeys = Object.keys(dictionary).sort(
+                (a, b) => b.length - a.length
+              );
 
-              return words.map((word, index) => {
+              // テキスト内でdictionaryに含まれる単語を検索する関数
+              const findDictionaryWords = (
+                text: string
+              ): Array<{
+                word: string;
+                startIndex: number;
+                endIndex: number;
+                meanings: string[];
+              }> => {
+                const foundWords: Array<{
+                  word: string;
+                  startIndex: number;
+                  endIndex: number;
+                  meanings: string[];
+                }> = [];
+
+                // 各dictionaryキーについて、テキスト内で検索
+                for (const key of dictionaryKeys) {
+                  const meanings = dictionary[key];
+                  if (!Array.isArray(meanings) || meanings.length === 0)
+                    continue;
+
+                  let startIndex = 0;
+                  while (true) {
+                    const index = text.indexOf(key, startIndex);
+                    if (index === -1) break;
+
+                    // 既に他の単語でカバーされている範囲かチェック
+                    const isOverlapping = foundWords.some(
+                      (found) =>
+                        (index >= found.startIndex && index < found.endIndex) ||
+                        (index + key.length > found.startIndex &&
+                          index + key.length <= found.endIndex) ||
+                        (index <= found.startIndex &&
+                          index + key.length >= found.endIndex)
+                    );
+
+                    if (!isOverlapping) {
+                      foundWords.push({
+                        word: key,
+                        startIndex: index,
+                        endIndex: index + key.length,
+                        meanings: meanings,
+                      });
+                    }
+
+                    startIndex = index + 1;
+                  }
+                }
+
+                // 開始位置でソート
+                return foundWords.sort((a, b) => a.startIndex - b.startIndex);
+              };
+
+              // テキスト内のdictionary単語を検索
+              const foundWords = findDictionaryWords(text);
+
+              // テキストをdictionary単語とそれ以外の部分に分割
+              const segments: Array<{
+                text: string;
+                isDictionaryWord: boolean;
+                word?: string;
+                meanings?: string[];
+              }> = [];
+
+              let lastIndex = 0;
+              for (const found of foundWords) {
+                // dictionary単語の前のテキスト
+                if (found.startIndex > lastIndex) {
+                  segments.push({
+                    text: text.slice(lastIndex, found.startIndex),
+                    isDictionaryWord: false,
+                  });
+                }
+
+                // dictionary単語
+                segments.push({
+                  text: found.word,
+                  isDictionaryWord: true,
+                  word: found.word,
+                  meanings: found.meanings,
+                });
+
+                lastIndex = found.endIndex;
+              }
+
+              // 残りのテキスト
+              if (lastIndex < text.length) {
+                segments.push({
+                  text: text.slice(lastIndex),
+                  isDictionaryWord: false,
+                });
+              }
+
+              // セグメントをレンダリング
+              return segments.map((segment, index) => {
                 const key = `${baseKey}-${index}`;
-                if (word.trim() === "") {
-                  return <span key={key}>{word}</span>; // 空白文字はそのまま
-                }
 
-                // 既に使用された単語かチェック
-                const isFirstOccurrence = !usedWords.has(word);
-                if (isFirstOccurrence) {
-                  usedWords.add(word);
+                if (
+                  segment.isDictionaryWord &&
+                  segment.word &&
+                  segment.meanings
+                ) {
+                  // dictionary単語の場合
+                  const isPopupVisible =
+                    popupState.isVisible && popupState.word === segment.word;
+                  return (
+                    <span
+                      key={key}
+                      className={styles["quiz__word-with-popup"]}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (isPopupVisible) {
+                          setPopupState((prev) => ({
+                            ...prev,
+                            isVisible: false,
+                          }));
+                        } else {
+                          setPopupState({
+                            isVisible: true,
+                            word: segment.word!,
+                            meanings: segment.meanings!,
+                            x: 0,
+                            y: 0,
+                          });
+                        }
+                      }}
+                    >
+                      {segment.text}
+                      {isPopupVisible && (
+                        <motion.span
+                          className={styles["quiz__popup"]}
+                          initial={{ opacity: 0, y: 5, x: "-50%" }}
+                          animate={{ opacity: 1, y: 0, x: "-50%" }}
+                          exit={{ opacity: 0, y: 5, x: "-50%" }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                        >
+                          <span className={styles["quiz__popup__content"]}>
+                            <span className={styles["quiz__popup__word"]}>
+                              {segment.word}
+                            </span>
+                            <span className={styles["quiz__popup__meanings"]}>
+                              {segment.meanings.join(", ")}
+                            </span>
+                          </span>
+                          <span className={styles["quiz__popup__arrow"]}></span>
+                        </motion.span>
+                      )}
+                    </span>
+                  );
+                } else {
+                  // 通常のテキストの場合
+                  return (
+                    <span key={key} className={styles["quiz__word-normal"]}>
+                      {segment.text}
+                    </span>
+                  );
                 }
-
-                return renderWordWithPopup(word, key, isFirstOccurrence);
               });
             };
 
@@ -520,10 +667,9 @@ export default function QuizCard({
                     } as React.CSSProperties;
 
                     let blankClass = styles["quiz__word-blank"];
-                    if (isCorrect)
-                      blankClass += " " + styles["quiz__word-blank--correct"];
+                    if (isCorrect) blankClass += " " + styles["correct"];
                     if (results[review.id] === false && attemptsCount >= 3)
-                      blankClass += " " + styles["quiz__word-blank--incorrect"];
+                      blankClass += " " + styles["incorrect"];
 
                     return (
                       <span key={index} className={blankClass} style={style}>

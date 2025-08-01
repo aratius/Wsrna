@@ -22,7 +22,22 @@ export default function SavedIdiomsPage() {
   const [explanationOpen, setExplanationOpen] = useState<{
     [id: string]: boolean;
   }>({});
-  const [selectedPairId, setSelectedPairId] = useState<string>("");
+
+  // localStorage key for saved-idioms
+  const LS_KEY = "saved-idioms_selectedPairId";
+
+  // localStorageから直接値を取得する関数
+  const getSelectedPairId = (): string => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem(LS_KEY) || "";
+  };
+
+  // localStorageに直接値を設定する関数
+  const setSelectedPairId = (id: string) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LS_KEY, id);
+    }
+  };
 
   // idioms取得
   useEffect(() => {
@@ -55,7 +70,20 @@ export default function SavedIdiomsPage() {
         const data = await res.json();
         if (Array.isArray(data)) {
           setLanguagePairs(data);
-          if (!selectedPairId && data.length > 0) setSelectedPairId(data[0].id);
+
+          // localStorageに保存された値がある場合、その値が有効な言語ペアIDかチェック
+          if (getSelectedPairId()) {
+            const isValidPair = data.some(
+              (pair) => pair.id === getSelectedPairId()
+            );
+            if (!isValidPair && data.length > 0) {
+              // localStorageの値が無効な場合、最初のペアを選択
+              setSelectedPairId(data[0].id);
+            }
+          } else if (data.length > 0) {
+            // localStorageに値がない場合、最初のペアを選択
+            setSelectedPairId(data[0].id);
+          }
         }
       } catch {}
     };
@@ -65,8 +93,8 @@ export default function SavedIdiomsPage() {
   if (!session) return null;
 
   // 選択中のLanguage Pairのidiomsのみ表示
-  const filteredIdioms = selectedPairId
-    ? idioms.filter((i) => i.language_pair_id === selectedPairId)
+  const filteredIdioms = getSelectedPairId()
+    ? idioms.filter((i) => i.language_pair_id === getSelectedPairId())
     : idioms;
 
   function getAbbr(code: string) {
@@ -87,7 +115,7 @@ export default function SavedIdiomsPage() {
       {/* タブUI */}
       <nav className={styles["saved__tab"]}>
         {languagePairs.map((lp, index) => {
-          const active = selectedPairId === lp.id;
+          const active = getSelectedPairId() === lp.id;
           return (
             <motion.button
               key={lp.id}
