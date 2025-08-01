@@ -76,6 +76,22 @@
       transform: none;
     }
   }
+
+  .helpLink {
+    margin-top: $spacing-m;
+    text-align: center;
+
+    .helpLinkText {
+      font-size: 14px;
+      color: #999;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #5856d6;
+      }
+    }
+  }
 }
 
 .loading {

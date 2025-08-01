@@ -84,6 +84,11 @@ export default function Home() {
             >
               {loading ? "Loading..." : "Sign in with Google"}
             </button>
+            <div className={styles.helpLink}>
+              <a href="/mypage/help" className={styles.helpLinkText}>
+                View Help
+              </a>
+            </div>
           </div>
         </div>
       </div>
