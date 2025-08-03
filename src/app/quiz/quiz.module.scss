@@ -7,12 +7,14 @@
   display: flex;
   flex-direction: column;
   padding: $spacing-s;
+  overflow-y: auto;
 
   &__container {
     width: 100%;
     max-width: 390px;
     margin: 0 auto;
     flex: 1 1 0%;
+    height: 0;
     display: flex;
     flex-direction: column;
   }
@@ -653,7 +655,6 @@
     &__content {
       text-align: center;
       display: block;
-      width: 100%;
     }
 
     &__word {
@@ -670,12 +671,12 @@
       font-size: 11px;
       text-align: center;
       line-height: 1.4;
-      overflow-wrap: break-word;
-      word-break: normal;
-      white-space: normal;
-      hyphens: auto;
       display: block;
       max-width: 180px;
+      width: 100%;
+      word-break: break-word;
+      hyphens: auto;
+      white-space: normal;
     }
 
     &__arrow {
