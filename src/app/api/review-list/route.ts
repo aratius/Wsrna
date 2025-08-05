@@ -12,13 +12,16 @@ export async function POST(req: NextRequest) {
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
   // 1. 今日復習予定のクイズを取得（next_review_atで古い順に並べ替え）
+  // correct_streakが0のものを優先し、その後next_review_atで昇順ソート
   const { data: todayReviews, error: todayError } = await supabase
     .from('quiz_reviews')
     .select('*, quiz:quizzes(*)')
     .eq('user_id', user_id)
     .lte('next_review_at', today)
     .eq('quiz.language_pair_id', language_pair_id)
+    .order('correct_streak', { ascending: true })
     .order('next_review_at', { ascending: true });
+  console.log(todayReviews?.filter(r => r.quiz != null).map(r => r.quiz.main_word));
 
   if (todayError) {
     if (todayError.message && todayError.message.includes('relation') && todayError.message.includes('does not exist')) {
