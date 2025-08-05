@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
     .eq('quiz.language_pair_id', language_pair_id)
     .order('correct_streak', { ascending: true })
     .order('next_review_at', { ascending: true });
-  console.log(todayReviews?.filter(r => r.quiz != null).map(r => r.quiz.main_word));
 
   if (todayError) {
     if (todayError.message && todayError.message.includes('relation') && todayError.message.includes('does not exist')) {
