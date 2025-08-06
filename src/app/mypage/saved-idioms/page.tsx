@@ -283,7 +283,10 @@ export default function SavedIdiomsPage() {
                               }
                             >
                               {idiom.example_sentence}
-                              <br />- {idiom.sentence_translation}
+                              <br />
+                              <span className={styles["translation"]}>
+                                -{idiom.sentence_translation}
+                              </span>
                             </div>
                           </div>
                         )}
