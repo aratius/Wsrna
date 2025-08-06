@@ -66,6 +66,9 @@ export default function QuizCard({
     [id: string]: number[];
   }>({});
 
+  console.log("idiom.quiz", idiom.quiz.main_word);
+  console.log("idiom.quiz", idiom.quiz.sentence_translation);
+
   // ポップアップの状態を管理
   const [popupState, setPopupState] = useState<{
     isVisible: boolean;
@@ -160,23 +163,6 @@ export default function QuizCard({
       console.error("Speech synthesis not supported");
     }
   };
-
-  // 自動読み上げは無効化（手動再生のみ）
-  // useEffect(() => {
-  //   const isCorrect = results[idiom.id] === true;
-  //   const isIncorrect = results[idiom.id] === false;
-  //   const attemptsCount = attempts[idiom.id] || 0;
-  //   const isDetermined = isCorrect || (isIncorrect && attemptsCount >= 3);
-
-  //   if (isDetermined && idiom.quiz?.question) {
-  //     // 少し遅延させてから読み上げ（ユーザーが結果を確認してから）
-  //     const timer = setTimeout(() => {
-  //       speakQuestion(idiom.quiz.question, idiom.quiz.answer);
-  //     }, 1000);
-
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [results[idiom.id], attempts[idiom.id], idiom.quiz]);
 
   // 言語ペアを取得
   useEffect(() => {

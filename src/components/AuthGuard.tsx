@@ -26,17 +26,6 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   };
 
   useEffect(() => {
-    console.log(
-      "AuthGuard - session:",
-      session,
-      "pathname:",
-      pathname,
-      "isLoading:",
-      isLoading,
-      "hasInitialized:",
-      hasInitialized
-    );
-
     // セッションの初期化が完了するまで待つ
     if (session !== undefined && !hasInitialized) {
       setIsLoading(false);

@@ -28,9 +28,14 @@ export const AnimatedQuizContent = ({
             justifyContent: "center",
             alignItems: "center",
             minHeight: "200px",
+            position: "relative",
           }}
         >
-          <LoadingWithSound enableSound={false} />
+          <LoadingWithSound
+            message="Loading Quiz..."
+            enableSound={false}
+            fullscreen={false}
+          />
         </motion.div>
       ) : (
         <motion.div

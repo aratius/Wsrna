@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json([]);
     }
 
-    // 2. 各idiomに対してランダムなクイズを1つ取得
+    // 2. idiomのクイズ一覧を取得
     const idiomIds = todayIdioms.map(idiom => idiom.id);
     const { data: quizzes, error: quizzesError } = await supabase
       .from('quizzes')
@@ -61,7 +61,9 @@ export async function POST(req: NextRequest) {
           return null;
         }
 
-        const randomQuiz = idiomQuizzes[Math.floor(Math.random() * idiomQuizzes.length)];
+        // ほぼ同一タイミングでのリクエストに対して、同じクイズを返すようにする
+        const randomId = new Date().getHours() % idiomQuizzes.length;
+        const randomQuiz = idiomQuizzes[randomId];
         return {
           ...idiom,
           quiz: randomQuiz
