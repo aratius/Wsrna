@@ -66,9 +66,6 @@ export default function QuizCard({
     [id: string]: number[];
   }>({});
 
-  console.log("idiom.quiz", idiom.quiz.main_word);
-  console.log("idiom.quiz", idiom.quiz.sentence_translation);
-
   // ポップアップの状態を管理
   const [popupState, setPopupState] = useState<{
     isVisible: boolean;
