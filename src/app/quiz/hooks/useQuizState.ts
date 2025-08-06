@@ -48,74 +48,57 @@ export function useQuizState() {
     localStorage.setItem(key, count.toString());
   };
 
-    const handleAnswer = async (review: any, languagePairId: string) => {
-    const quiz = review.quiz;
-    const userAnswer = answers[review.id]?.trim();
+  const handleAnswer = async (idiom: any, languagePairId: string) => {
+    const quiz = idiom.quiz;
+    const userAnswer = answers[idiom.id]?.trim();
     if (!userAnswer) return;
 
     // 重複回答を防ぐ（正解の場合のみ）
     const isCorrect = userAnswer.toLowerCase() === quiz.answer.toLowerCase();
-    if (isCorrect && answeredQuestions.has(review.id)) {
-      console.log('Question already answered correctly:', review.id);
+    if (isCorrect && answeredQuestions.has(idiom.id)) {
+      console.log('Question already answered correctly:', idiom.id);
       return;
     }
 
-    // デバッグ: 重複呼び出しチェック
-    console.log('handleAnswer called:', { reviewId: review.id, userAnswer, isCorrect });
-
-    // 正解の場合のみ回答済みフラグを設定
     if (isCorrect) {
-      setAnsweredQuestions(prev => new Set(prev).add(review.id));
+      setAnsweredQuestions(prev => new Set(prev).add(idiom.id));
       // 正解時にNotification音を再生
       playNotification();
     } else {
       // 不正解時にCaution音を再生
       playError();
     }
-    setResults((prev) => ({ ...prev, [review.id]: isCorrect }));
-    setUpdating((prev) => ({ ...prev, [review.id]: true }));
+    setResults((prev) => ({ ...prev, [idiom.id]: isCorrect }));
+    setUpdating((prev) => ({ ...prev, [idiom.id]: true }));
 
     let attemptsCount = 0;
     if (!isCorrect) {
-      attemptsCount = (attempts[review.id] || 0) + 1;
+      attemptsCount = (attempts[idiom.id] || 0) + 1;
       setAttempts((prev) => ({
         ...prev,
-        [review.id]: attemptsCount,
+        [idiom.id]: attemptsCount,
       }));
     } else {
-      setAttempts((prev) => ({ ...prev, [review.id]: 0 }));
+      setAttempts((prev) => ({ ...prev, [idiom.id]: 0 }));
     }
 
     // 確定条件: 正解 OR 3回間違えて不正解確定
     const isDetermined = isCorrect || attemptsCount >= 3;
 
     if (isDetermined) {
-      console.log('Question determined, calling review-update API:', {
-        reviewId: review.id,
-        isCorrect,
-        attemptsCount,
-        isDetermined
-      });
-
-      await fetch("/api/review-update", {
+      await fetch("/api/idiom-update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user_id: review.user_id,
-          quiz_id: review.quiz_id,
+          user_id: idiom.user_id,
+          idiom_id: idiom.id,
           correct: isCorrect,
         }),
       });
     } else {
-      console.log('Question not determined yet, skipping review-update API:', {
-        reviewId: review.id,
-        isCorrect,
-        attemptsCount,
-        isDetermined
-      });
     }
 
-    setUpdating((prev) => ({ ...prev, [review.id]: false }));
+    setUpdating((prev) => ({ ...prev, [idiom.id]: false }));
 
     // カウントアップはNextボタン押下時に行うため、ここでは行わない
   };

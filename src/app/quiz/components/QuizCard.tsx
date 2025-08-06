@@ -11,7 +11,7 @@ import {
 } from "../../../lib/soundManager";
 
 interface QuizCardProps {
-  review: any;
+  idiom: any;
   currentIndex: number;
   totalCount: number;
   answers: { [id: string]: string };
@@ -23,7 +23,7 @@ interface QuizCardProps {
   detailsOpen: { [id: string]: boolean };
   dailyProgress: number;
   dailyQuizLimit: number;
-  onAnswer: (review: any) => void;
+  onAnswer: (idiom: any) => void;
   onShowHint: (id: string, quiz: any) => void;
   onSetShowHintModal: (
     callback: (prev: { [id: string]: boolean }) => { [id: string]: boolean }
@@ -41,7 +41,7 @@ interface QuizCardProps {
 }
 
 export default function QuizCard({
-  review,
+  idiom,
   currentIndex,
   totalCount,
   answers,
@@ -92,17 +92,6 @@ export default function QuizCard({
 
       const utterance = new SpeechSynthesisUtterance(completedQuestion);
 
-      // 言語設定（review.quizの言語情報から判定）
-      // reviewオブジェクトの構造を確認
-      console.log("Review object structure:", {
-        review: review,
-        reviewKeys: Object.keys(review),
-        quiz: review.quiz,
-        quizKeys: review.quiz ? Object.keys(review.quiz) : null,
-        languagePair: languagePair,
-        languagePairId: review.quiz?.language_pair_id,
-      });
-
       // 取得した言語ペアからto_langを使用
       const toLangCode = languagePair?.to_lang || "en";
       const language = supportedLanguages.find(
@@ -121,7 +110,7 @@ export default function QuizCard({
         // デバッグ情報
         console.log("Speech synthesis debug:", {
           question: completedQuestion,
-          toLang: review.quiz?.toLang,
+          toLang: idiom.quiz?.toLang,
           speechLang: toLang,
           availableVoices: voices.length,
           japaneseVoices: voices.filter((v) => v.lang.includes("ja")).length,
@@ -174,29 +163,29 @@ export default function QuizCard({
 
   // 自動読み上げは無効化（手動再生のみ）
   // useEffect(() => {
-  //   const isCorrect = results[review.id] === true;
-  //   const isIncorrect = results[review.id] === false;
-  //   const attemptsCount = attempts[review.id] || 0;
+  //   const isCorrect = results[idiom.id] === true;
+  //   const isIncorrect = results[idiom.id] === false;
+  //   const attemptsCount = attempts[idiom.id] || 0;
   //   const isDetermined = isCorrect || (isIncorrect && attemptsCount >= 3);
 
-  //   if (isDetermined && review.quiz?.question) {
+  //   if (isDetermined && idiom.quiz?.question) {
   //     // 少し遅延させてから読み上げ（ユーザーが結果を確認してから）
   //     const timer = setTimeout(() => {
-  //       speakQuestion(review.quiz.question, review.quiz.answer);
+  //       speakQuestion(idiom.quiz.question, idiom.quiz.answer);
   //     }, 1000);
 
   //     return () => clearTimeout(timer);
   //   }
-  // }, [results[review.id], attempts[review.id], review.quiz]);
+  // }, [results[idiom.id], attempts[idiom.id], idiom.quiz]);
 
   // 言語ペアを取得
   useEffect(() => {
     const fetchLanguagePair = async () => {
-      if (!review.quiz?.language_pair_id) return;
+      if (!idiom.quiz?.language_pair_id) return;
 
       try {
         const res = await fetch(
-          `/api/language-pairs/${review.quiz.language_pair_id}`
+          `/api/language-pairs/${idiom.quiz.language_pair_id}`
         );
         const data = await res.json();
         if (!data.error) {
@@ -208,7 +197,7 @@ export default function QuizCard({
     };
 
     fetchLanguagePair();
-  }, [review.quiz?.language_pair_id]);
+  }, [idiom.quiz?.language_pair_id]);
 
   // ポップアップ外クリックで閉じる処理
   useEffect(() => {
@@ -273,7 +262,7 @@ export default function QuizCard({
     // 既存のonSetAnswersを呼び出し
     onSetAnswers((a) => ({
       ...a,
-      [review.id]: userAnswer,
+      [idiom.id]: userAnswer,
     }));
   };
 
@@ -288,9 +277,9 @@ export default function QuizCard({
     charIndex: number,
     word: string
   ) => {
-    const isCorrect = results[review.id] === true;
-    const isIncorrect = results[review.id] === false;
-    const attemptsCount = attempts[review.id] || 0;
+    const isCorrect = results[idiom.id] === true;
+    const isIncorrect = results[idiom.id] === false;
+    const attemptsCount = attempts[idiom.id] || 0;
     const isShowFullAnswer = isCorrect || (isIncorrect && attemptsCount >= 3);
 
     // 正解/不正解確定時は全文字表示
@@ -299,8 +288,8 @@ export default function QuizCard({
     }
 
     // 部分正解の判定（文字単位）
-    const partialIndexes = partialCorrectIndexes[review.id] || [];
-    const answerWords = splitAnswerIntoWords(review.quiz.answer);
+    const partialIndexes = partialCorrectIndexes[idiom.id] || [];
+    const answerWords = splitAnswerIntoWords(idiom.quiz.answer);
 
     // 現在の文字の全体インデックスを計算
     let globalCharIndex = 0;
@@ -319,9 +308,9 @@ export default function QuizCard({
 
   // 文字の色を決定する関数
   const getCharColorClass = (wordIndex: number, charIndex: number) => {
-    const isCorrect = results[review.id] === true;
-    const isIncorrect = results[review.id] === false;
-    const attemptsCount = attempts[review.id] || 0;
+    const isCorrect = results[idiom.id] === true;
+    const isIncorrect = results[idiom.id] === false;
+    const attemptsCount = attempts[idiom.id] || 0;
     const isShowFullAnswer = isCorrect || (isIncorrect && attemptsCount >= 3);
 
     if (isShowFullAnswer) {
@@ -333,8 +322,8 @@ export default function QuizCard({
     }
 
     // 部分正解時は青色で表示（文字単位）
-    const partialIndexes = partialCorrectIndexes[review.id] || [];
-    const answerWords = splitAnswerIntoWords(review.quiz.answer);
+    const partialIndexes = partialCorrectIndexes[idiom.id] || [];
+    const answerWords = splitAnswerIntoWords(idiom.quiz.answer);
 
     // 現在の文字の全体インデックスを計算
     let globalCharIndex = 0;
@@ -374,7 +363,7 @@ export default function QuizCard({
 
       {/* ヒントモーダル */}
       <QuizHintModal
-        review={review}
+        idiom={idiom}
         hintIndexes={hintIndexes}
         showHintModal={showHintModal}
         onShowHint={onShowHint}
@@ -393,18 +382,18 @@ export default function QuizCard({
             </span>
             {/* 正解/不正解確定時に再生アイコンを表示 */}
             {(() => {
-              const isCorrect = results[review.id] === true;
-              const isIncorrect = results[review.id] === false;
-              const attemptsCount = attempts[review.id] || 0;
+              const isCorrect = results[idiom.id] === true;
+              const isIncorrect = results[idiom.id] === false;
+              const attemptsCount = attempts[idiom.id] || 0;
               const isDetermined =
                 isCorrect || (isIncorrect && attemptsCount >= 3);
 
-              if (isDetermined && review.quiz?.question) {
+              if (isDetermined && idiom.quiz?.question) {
                 return (
                   <button
                     className={styles["quiz__play-button"]}
                     onClick={() => {
-                      speakQuestion(review.quiz.question, review.quiz.answer);
+                      speakQuestion(idiom.quiz.question, idiom.quiz.answer);
                     }}
                     title="再生"
                   >
@@ -425,8 +414,8 @@ export default function QuizCard({
         </div>
         <div className={styles["quiz__section__text"]}>
           {(() => {
-            // review.quizがnullの場合のエラーハンドリング
-            if (!review.quiz) {
+            // idiom.quizがnullの場合のエラーハンドリング
+            if (!idiom.quiz) {
               return (
                 <div className={styles["quiz__error"]}>
                   Quiz data not found. Please try refreshing the page.
@@ -434,16 +423,16 @@ export default function QuizCard({
               );
             }
 
-            const answer = review.quiz.answer;
-            const attemptsCount = attempts[review.id] || 0;
-            const isCorrect = results[review.id] === true;
+            const answer = idiom.quiz.answer;
+            const attemptsCount = attempts[idiom.id] || 0;
+            const isCorrect = results[idiom.id] === true;
             const isShowFullAnswer =
-              isCorrect || (results[review.id] === false && attemptsCount >= 3);
+              isCorrect || (results[idiom.id] === false && attemptsCount >= 3);
 
             // 1つのテンプレートにまとめ、if分岐で内容を切り替える
-            const parts = review.quiz.question.split("____");
+            const parts = idiom.quiz.question.split("____");
             const answerWords = splitAnswerIntoWords(answer);
-            const dictionary = review.quiz.dictionary || {};
+            const dictionary = idiom.quiz.dictionary || {};
 
             // 単語にポップアップを追加する関数
             const renderWordWithPopup = (
@@ -681,7 +670,7 @@ export default function QuizCard({
 
             // 全体のテキストを一度に処理する関数
             const renderFullTextWithBlanks = () => {
-              const fullText = review.quiz.question;
+              const fullText = idiom.quiz.question;
               const blankIndex = fullText.indexOf("____");
 
               if (blankIndex === -1) {
@@ -797,7 +786,7 @@ export default function QuizCard({
 
                         let blankClass = styles["quiz__word-blank"];
                         if (isCorrect) blankClass += " " + styles["correct"];
-                        if (results[review.id] === false && attemptsCount >= 3)
+                        if (results[idiom.id] === false && attemptsCount >= 3)
                           blankClass += " " + styles["incorrect"];
 
                         return (
@@ -860,9 +849,9 @@ export default function QuizCard({
             return renderFullTextWithBlanks();
           })()}
         </div>
-        {review.quiz?.sentence_translation && (
+        {idiom.quiz?.sentence_translation && (
           <div className={styles["quiz__section__translation"]}>
-            - {review.quiz.sentence_translation}
+            - {idiom.quiz.sentence_translation}
           </div>
         )}
       </div>
@@ -880,56 +869,50 @@ export default function QuizCard({
           className={styles["quiz__form"]}
           onSubmit={(e) => {
             e.preventDefault();
-            onAnswer(review);
+            onAnswer(idiom);
           }}
         >
           <input
-            id={`answer-${review.id}`}
-            key={attempts[review.id] || 0}
+            id={`answer-${idiom.id}`}
+            key={attempts[idiom.id] || 0}
             className={
               styles["quiz__form__control"] +
               " " +
               styles["flex"] +
-              (results[review.id] === true
+              (results[idiom.id] === true
                 ? " " + styles["correct"]
-                : results[review.id] === false && (attempts[review.id] || 0) > 0
+                : results[idiom.id] === false && (attempts[idiom.id] || 0) > 0
                 ? " " + styles["incorrect"]
                 : "")
             }
             type="text"
             placeholder="Answer"
-            value={answers[review.id] || ""}
+            value={answers[idiom.id] || ""}
             onChange={handleInputChange}
             disabled={
-              results[review.id] === true ||
-              (results[review.id] === false && (attempts[review.id] || 0) >= 3)
+              results[idiom.id] === true ||
+              (results[idiom.id] === false && (attempts[idiom.id] || 0) >= 3)
             }
           />
           {/* ボタン切り替えロジック */}
-          {results[review.id] === undefined ||
-          (results[review.id] === false && (attempts[review.id] || 0) < 3) ? (
+          {results[idiom.id] === undefined ||
+          (results[idiom.id] === false && (attempts[idiom.id] || 0) < 3) ? (
             <button
               className={styles["quiz__form__button"]}
               type="submit"
-              disabled={updating[review.id]}
+              disabled={updating[idiom.id]}
               onClick={(e) => {
                 // Answerボタンクリック時に部分正解を計算
-                const userAnswer = answers[review.id] || "";
-                const correctAnswer = review.quiz.answer;
+                const userAnswer = answers[idiom.id] || "";
+                const correctAnswer = idiom.quiz.answer;
                 const partialIndexes = getPartialCorrectIndexes(
                   userAnswer,
                   correctAnswer
                 );
                 setPartialCorrectIndexes((prev) => ({
                   ...prev,
-                  [review.id]: partialIndexes,
+                  [idiom.id]: partialIndexes,
                 }));
-
-                console.log("Answer button clicked:", {
-                  reviewId: review.id,
-                  answer: answers[review.id],
-                  partialIndexes,
-                });
               }}
             >
               Answer
@@ -948,9 +931,9 @@ export default function QuizCard({
           )}
 
           {/* + Details 注釈リンクとアコーディオン（Nextボタンと同じ条件で表示） */}
-          {(results[review.id] === true ||
-            (results[review.id] === false &&
-              (attempts[review.id] || 0) >= 3)) && (
+          {(results[idiom.id] === true ||
+            (results[idiom.id] === false &&
+              (attempts[idiom.id] || 0) >= 3)) && (
             <div className={styles["quiz__details__wrapper"]}>
               <button
                 className={styles["quiz__details__toggle"]}
@@ -960,46 +943,42 @@ export default function QuizCard({
                   e.stopPropagation();
 
                   // ボタンクリック音を再生
-                  playTransition(!detailsOpen[review.id]);
+                  playTransition(!detailsOpen[idiom.id]);
 
-                  console.log("Details toggle clicked:", {
-                    reviewId: review.id,
-                    currentState: detailsOpen[review.id],
-                  });
                   onSetDetailsOpen((prev) => ({
                     ...prev,
-                    [review.id]: !prev[review.id],
+                    [idiom.id]: !prev[idiom.id],
                   }));
                 }}
               >
-                {detailsOpen[review.id] ? "− Details" : "+ Details"}
+                {detailsOpen[idiom.id] ? "− Details" : "+ Details"}
               </button>
               <div
                 className={
                   styles["quiz__details__content"] +
-                  (detailsOpen[review.id] ? " " + styles["open"] : "")
+                  (detailsOpen[idiom.id] ? " " + styles["open"] : "")
                 }
               >
                 {/* Main word/訳語 */}
-                {review.quiz?.main_word && (
+                {idiom.quiz?.main_word && (
                   <div className={styles["quiz__details__main-word__block"]}>
                     <span className={styles["quiz__details__main-word__text"]}>
-                      {review.quiz.main_word}
+                      {idiom.quiz.main_word}
                     </span>
-                    {Array.isArray(review.quiz.main_word_translations) &&
-                      review.quiz.main_word_translations.length > 0 && (
+                    {Array.isArray(idiom.quiz.main_word_translations) &&
+                      idiom.quiz.main_word_translations.length > 0 && (
                         <span
                           className={
                             styles["quiz__details__main-word__translation"]
                           }
                         >
                           [
-                          {review.quiz.main_word_translations.map(
+                          {idiom.quiz.main_word_translations.map(
                             (t: string, i: number) => (
                               <span key={i}>
                                 {t}
                                 {i <
-                                review.quiz.main_word_translations.length - 1
+                                idiom.quiz.main_word_translations.length - 1
                                   ? ", "
                                   : ""}
                               </span>
@@ -1011,7 +990,7 @@ export default function QuizCard({
                   </div>
                 )}
                 {/* Explanation */}
-                {review.quiz?.explanation && (
+                {idiom.quiz?.explanation && (
                   <div className={styles["quiz__details__explanation__box"]}>
                     <span
                       className={styles["quiz__details__explanation__label"]}
@@ -1021,7 +1000,7 @@ export default function QuizCard({
                     <span
                       className={styles["quiz__details__explanation__text"]}
                     >
-                      {review.quiz.explanation}
+                      {idiom.quiz.explanation}
                     </span>
                   </div>
                 )}

@@ -4,7 +4,7 @@ import styles from "../quiz.module.scss";
 import { playButtonClick, playTransition } from "../../../lib/soundManager";
 
 interface QuizHintModalProps {
-  review: any;
+  idiom: any;
   hintIndexes: { [id: string]: number };
   showHintModal: { [id: string]: boolean };
   onShowHint: (id: string, quiz: any) => void;
@@ -17,7 +17,7 @@ interface QuizHintModalProps {
 }
 
 export default function QuizHintModal({
-  review,
+  idiom,
   hintIndexes,
   showHintModal,
   onShowHint,
@@ -26,7 +26,7 @@ export default function QuizHintModal({
 }: QuizHintModalProps) {
   // ヒントモーダル外クリックで閉じる（モバイル対応）
   useEffect(() => {
-    if (!review || !showHintModal[review.id]) return;
+    if (!idiom || !showHintModal[idiom.id]) return;
 
     function handleClickOutside(e: MouseEvent | TouchEvent) {
       const popup = document.querySelector(`.${styles["quiz__hint__popup"]}`);
@@ -40,7 +40,7 @@ export default function QuizHintModal({
         return;
       }
 
-      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      onSetShowHintModal((prev) => ({ ...prev, [idiom.id]: false }));
     }
 
     // マウスとタッチイベントの両方に対応
@@ -51,10 +51,10 @@ export default function QuizHintModal({
       document.removeEventListener("click", handleClickOutside, true);
       document.removeEventListener("touchend", handleClickOutside, true);
     };
-  }, [review, showHintModal[review?.id], onSetShowHintModal]);
+  }, [idiom, showHintModal[idiom?.id], onSetShowHintModal]);
 
-  const currentHintIndex = hintIndexes[review.id] || 0;
-  const totalHints = review.quiz?.hint_levels?.length || 0;
+  const currentHintIndex = hintIndexes[idiom.id] || 0;
+  const totalHints = idiom.quiz?.hint_levels?.length || 0;
   const isLastHint = currentHintIndex >= totalHints - 1;
 
   const handleHintButtonClick = (e: React.MouseEvent | React.TouchEvent) => {
@@ -62,20 +62,15 @@ export default function QuizHintModal({
     e.stopPropagation(); // イベントの伝播を停止
 
     // ボタンクリック音を再生
-    playTransition(!showHintModal[review.id]);
+    playTransition(!showHintModal[idiom.id]);
 
-    console.log("Hint button clicked:", {
-      reviewId: review.id,
-      currentState: showHintModal[review.id],
-    });
-
-    if (showHintModal[review.id]) {
+    if (showHintModal[idiom.id]) {
       // ヒントが開いている場合は閉じる
-      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      onSetShowHintModal((prev) => ({ ...prev, [idiom.id]: false }));
     } else {
       // ヒントが閉じている場合は開く（ヒントを最初から表示）
-      onSetHintIndexes((prev) => ({ ...prev, [review.id]: 0 }));
-      onSetShowHintModal((prev) => ({ ...prev, [review.id]: true }));
+      onSetHintIndexes((prev) => ({ ...prev, [idiom.id]: 0 }));
+      onSetShowHintModal((prev) => ({ ...prev, [idiom.id]: true }));
     }
   };
 
@@ -85,22 +80,14 @@ export default function QuizHintModal({
     // ボタンクリック音を再生
     playButtonClick();
 
-    console.log("More button clicked:", {
-      currentHintIndex,
-      totalHints,
-      isLastHint,
-      hintIndexes: hintIndexes[review.id],
-      reviewId: review.id,
-    });
-
     if (isLastHint) {
       // 最後のヒントの場合は閉じる
       console.log("Closing modal (last hint)");
-      onSetShowHintModal((prev) => ({ ...prev, [review.id]: false }));
+      onSetShowHintModal((prev) => ({ ...prev, [idiom.id]: false }));
     } else {
       // まだヒントがある場合は次のヒントを表示
       console.log("Showing next hint");
-      onShowHint(review.id, review.quiz);
+      onShowHint(idiom.id, idiom.quiz);
     }
   };
 
@@ -131,10 +118,10 @@ export default function QuizHintModal({
       <div
         className={
           styles["quiz__hint__popup"] +
-          (showHintModal[review.id] ? " " + styles["visible"] : "")
+          (showHintModal[idiom.id] ? " " + styles["visible"] : "")
         }
       >
-        {review.quiz?.hint_levels && review.quiz.hint_levels.length > 0 ? (
+        {idiom.quiz?.hint_levels && idiom.quiz.hint_levels.length > 0 ? (
           <>
             {/* ヒントヘッダー */}
             <div className={styles["quiz__hint__header"]}>
@@ -144,7 +131,7 @@ export default function QuizHintModal({
               </span>
             </div>
             <div className={styles["quiz__hint__content"]}>
-              {review.quiz?.hint_levels[hintIndexes[review.id] || 0]}
+              {idiom.quiz?.hint_levels[hintIndexes[idiom.id] || 0]}
             </div>
             {/* ボタン（最後のヒントの時は「閉じる」、それ以外は「さらにヒント」） */}
             <button

@@ -18,7 +18,7 @@ import {
 
 export default function QuizPage() {
   const {
-    reviews,
+    idioms,
     languagePairs,
     selectedPairId,
     setSelectedPairId,
@@ -49,24 +49,24 @@ export default function QuizPage() {
   } = useQuizState();
 
   // API側でフィルタリング済みのため、そのまま使用
-  const filteredReviews = reviews;
+  const filteredIdioms = idioms;
 
   // 1問ずつ表示するロジック
-  const review = filteredReviews[currentIndex];
+  const idiom = filteredIdioms[currentIndex];
 
   // 動的なクイズ制限の確認（localStorageの解答数に基づく）
   const currentDailyProgress = selectedPairId
     ? getDailyProgress(selectedPairId)
     : 0;
   const dailyQuizLimit = selectedPairId
-    ? getDailyQuizLimit(selectedPairId, filteredReviews.length)
+    ? getDailyQuizLimit(selectedPairId, filteredIdioms.length)
     : 10;
   const isDailyLimitReached = currentDailyProgress >= dailyQuizLimit;
 
   // 終了条件: 問題がない OR 全問完了 OR 10問制限到達
   const isFinished =
-    filteredReviews.length > 0 &&
-    (currentIndex >= filteredReviews.length || isDailyLimitReached);
+    filteredIdioms.length > 0 &&
+    (currentIndex >= filteredIdioms.length || isDailyLimitReached);
 
   // タブ切り替え時にcurrentIndexリセット
   useEffect(() => {
@@ -128,7 +128,7 @@ export default function QuizPage() {
           isLoading={loading}
           className={styles["quiz__content"]}
         >
-          {(filteredReviews.length === 0 && !loading) || isFinished ? (
+          {(filteredIdioms.length === 0 && !loading) || isFinished ? (
             <AnimatedCompletionMessage>
               <div className={styles["quiz__no-quizzes"]}>
                 {isDailyLimitReached && dailyQuizLimit > 0 ? (
@@ -159,7 +159,7 @@ export default function QuizPage() {
                   </div>
                 ) : (
                   <div>
-                    <p>No quizzes to review.</p>
+                    <p>No quizzes to idiom.</p>
                     <button
                       className={styles["quiz__create-button"]}
                       onClick={() =>
@@ -173,12 +173,12 @@ export default function QuizPage() {
               </div>
             </AnimatedCompletionMessage>
           ) : (
-            review && (
+            idiom && (
               <AnimatedQuizCard delay={0.05}>
                 <QuizCard
-                  review={review}
+                  idiom={idiom}
                   currentIndex={currentIndex}
-                  totalCount={Math.min(filteredReviews.length, 10)}
+                  totalCount={Math.min(filteredIdioms.length, 10)}
                   answers={answers}
                   results={results}
                   attempts={attempts}
@@ -188,7 +188,7 @@ export default function QuizPage() {
                   detailsOpen={detailsOpen}
                   dailyProgress={currentDailyProgress}
                   dailyQuizLimit={dailyQuizLimit}
-                  onAnswer={(review) => handleAnswer(review, selectedPairId)}
+                  onAnswer={(idiom) => handleAnswer(idiom, selectedPairId)}
                   onShowHint={handleShowHint}
                   onSetShowHintModal={setShowHintModal}
                   onSetDetailsOpen={setDetailsOpen}

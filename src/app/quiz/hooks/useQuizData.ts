@@ -3,7 +3,7 @@ import { useSession } from "@supabase/auth-helpers-react";
 
 export function useQuizData() {
   const session = useSession();
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [idioms, setIdioms] = useState<any[]>([]);
   const [languagePairs, setLanguagePairs] = useState<any[]>([]);
   const [selectedPairId, setSelectedPairIdState] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -30,13 +30,13 @@ export function useQuizData() {
 
   // クイズデータ取得
   useEffect(() => {
-    const fetchReviews = async () => {
+    const fetchQuizzes = async () => {
       if (!session?.user?.id) return;
       setLoading(true);
       setError("");
       try {
         const currentSelectedPairId = selectedPairId;
-        const res = await fetch("/api/review-list", {
+        const res = await fetch("/api/quiz-list", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -47,13 +47,7 @@ export function useQuizData() {
         const data = await res.json();
         if (data.error) setError(data.error);
         else {
-          setReviews(data || []);
-          console.log("review-list data:", data);
-          // デバッグ: quizデータの確認
-          if (data && data.length > 0) {
-            console.log("Sample review data:", data[0]);
-            console.log("Quiz data exists:", !!data[0]?.quiz);
-          }
+          setIdioms(data || []);
         }
       } catch (e: any) {
         setError(e.message);
@@ -61,7 +55,7 @@ export function useQuizData() {
         setLoading(false);
       }
     };
-    fetchReviews();
+    fetchQuizzes();
   }, [session, languagePairs, selectedPairId]);
 
   // Language Pair取得
@@ -98,7 +92,7 @@ export function useQuizData() {
   }, [session]);
 
   return {
-    reviews,
+    idioms,
     languagePairs,
     selectedPairId,
     setSelectedPairId,
