@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 連続記録ベースの計算
-  const previousStreak = idiom.correct_streak || 0;
+  const previousStreak = Math.max(idiom.correct_streak, 0);
   const correct_streak = correct ? previousStreak + 1 : 0;
   const interval_days = getIntervalDays(correct_streak);
 

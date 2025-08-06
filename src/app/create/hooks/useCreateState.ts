@@ -112,101 +112,131 @@ export function useCreateState() {
     if (!session?.user?.id || quizzes.length === 0) return;
     setSubmitting(true);
     try {
-      // 既存main_word一覧を取得
+      // 1. 重複チェックを効率化（main_wordのみを取得）
       const { data: existing, error: fetchError } = await supabase
         .from("quizzes")
         .select("main_word")
-        .eq("user_id", session.user.id);
+        .eq("user_id", session.user.id)
+        .in("main_word", quizzes.map((q: any) => q.main_word));
+
       if (fetchError) {
         alert("Failed to check existing quizzes: " + fetchError.message);
         setSubmitting(false);
         return;
       }
-      const existingWords = (existing || []).map((q: any) => q.main_word);
-      // 重複しないクイズだけをinsert
-      const newQuizzes = quizzes.filter(
-        (q: any) => q.main_word && !existingWords.includes(q.main_word)
-      );
+
+      const existingWords = new Set((existing || []).map((q: any) => q.main_word));
+      const newQuizzes = quizzes.filter((q: any) => q.main_word && !existingWords.has(q.main_word));
+
       if (newQuizzes.length === 0) {
         alert("All main words are already registered.");
         setSubmitting(false);
         return;
       }
-      // idiomsテーブルにinsert（未登録なら）し、idiom_idを取得
-      const quizPayload = [];
-      for (const q of newQuizzes) {
-        // idioms APIにPOST
-        const idiomRes = await fetch("/api/idioms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: session.user.id,
-            main_word: q.main_word,
-            main_word_translations: q.main_word_translations,
-            explanation: q.explanation,
-            language_pair_id: selectedPairId,
-          }),
-        });
-        const idiom = await idiomRes.json();
-        if (idiom.error || !idiom.id) {
-          alert("Failed to save idiom: " + (idiom.error || "No idiom id"));
-          setSubmitting(false);
-          return;
+
+      // 2. 既存のidiomをチェック
+      const { data: existingIdioms, error: idiomCheckError } = await supabase
+        .from("idioms")
+        .select("id, main_word")
+        .eq("user_id", session.user.id)
+        .in("main_word", newQuizzes.map((q: any) => q.main_word));
+
+      if (idiomCheckError) {
+        alert("Failed to check existing idioms: " + idiomCheckError.message);
+        setSubmitting(false);
+        return;
+      }
+
+      const existingIdiomMap = new Map(existingIdioms?.map((i: any) => [i.main_word, i.id]) || []);
+
+      // 3. idiomの挿入・更新を個別処理
+      const idiomIdMap = new Map();
+
+      for (const quiz of newQuizzes) {
+        const existingIdiomId = existingIdiomMap.get(quiz.main_word);
+
+        if (existingIdiomId) {
+          // 既存のidiomを更新
+          const { data: updatedIdiom, error: updateError } = await supabase
+            .from("idioms")
+            .update({
+              main_word_translations: quiz.main_word_translations,
+              explanation: quiz.explanation,
+              language_pair_id: selectedPairId,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", existingIdiomId)
+            .select("id, main_word")
+            .single();
+
+          if (updateError) {
+            console.error(`Failed to update idiom for ${quiz.main_word}:`, updateError);
+            continue;
+          }
+
+          idiomIdMap.set(quiz.main_word, updatedIdiom.id);
+        } else {
+          // 新規のidiomを挿入
+          const { data: newIdiom, error: insertError } = await supabase
+            .from("idioms")
+            .insert({
+              user_id: session.user.id,
+              main_word: quiz.main_word,
+              main_word_translations: quiz.main_word_translations,
+              explanation: quiz.explanation,
+              language_pair_id: selectedPairId,
+              created_at: new Date().toISOString(),
+              correct_streak: -1,
+              next_review_at: new Date().toISOString().slice(0, 10),
+            })
+            .select("id, main_word")
+            .single();
+
+          if (insertError) {
+            console.error(`Failed to insert idiom for ${quiz.main_word}:`, insertError);
+            continue;
+          }
+
+          idiomIdMap.set(quiz.main_word, newIdiom.id);
         }
-        quizPayload.push({
+      }
+
+      // 4. 成功したidiomのクイズを一括挿入
+      const successfulQuizzes = newQuizzes.filter(q => idiomIdMap.has(q.main_word));
+
+      if (successfulQuizzes.length > 0) {
+        const quizPayload = successfulQuizzes.map((q: any) => ({
           user_id: session.user.id,
-          idiom_id: idiom.id,
+          idiom_id: idiomIdMap.get(q.main_word),
           question: q.question,
           answer: q.answer,
           main_word: q.main_word,
           main_word_translations: q.main_word_translations,
           sentence_translation: q.sentence_translation,
           explanation: q.explanation,
-          hint_levels: q.hint_levels, // hint_levelsを追加
-          dictionary: q.dictionary, // dictionaryを追加
+          hint_levels: q.hint_levels,
+          dictionary: q.dictionary,
           created_at: new Date().toISOString(),
           language_pair_id: selectedPairId,
-        });
-      }
-      const { error } = await supabase.from("quizzes").insert(quizPayload);
-      if (error) alert("Failed to save quizzes: " + error.message);
-      else {
-        // 新規クイズ保存後、idiomsテーブルのnext_review_atとcorrect_streakを初期化
-        const { data: inserted } = await supabase
-          .from("quizzes")
-          .select("id, idiom_id")
-          .eq("user_id", session.user.id)
-          .order("created_at", { ascending: false })
-          .limit(quizPayload.length);
+        }));
 
-        if (inserted && inserted.length > 0) {
-          // イディオムセットごとにグループ化
-          const idiomGroups = new Map<string, any[]>();
-          inserted.forEach((quiz: any) => {
-            const idiomId = quiz.idiom_id;
-            if (!idiomGroups.has(idiomId)) {
-              idiomGroups.set(idiomId, []);
-            }
-            idiomGroups.get(idiomId)!.push(quiz);
-          });
+        const { error: quizError } = await supabase.from("quizzes").insert(quizPayload);
 
-          // 各イディオムのnext_review_atとcorrect_streakを初期化
-          for (const [idiomId, quizzes] of idiomGroups) {
-            await supabase
-              .from("idioms")
-              .update({
-                next_review_at: new Date().toISOString().slice(0, 10), // 今日
-                correct_streak: 0
-              })
-              .eq("id", idiomId);
-          }
+        if (quizError) {
+          alert("Failed to save quizzes: " + quizError.message);
+        } else {
+          alert(`Saved ${successfulQuizzes.length} quizzes!`);
+          setQuizzes([]);
+          setShowModal(false); // プレビューモーダルを閉じる
+          setFromTranslation(""); // Fromフォームをクリア
+          setToText(""); // Toフォームをクリア
         }
-        playSuccess();
-        alert("Quizzes saved!");
-        setShowModal(false);
-        setToText("");
-        setFromTranslation("");
+      } else {
+        alert("No quizzes were saved due to errors.");
       }
+    } catch (error) {
+      console.error("Error saving quizzes:", error);
+      alert("An unexpected error occurred while saving quizzes.");
     } finally {
       setSubmitting(false);
     }

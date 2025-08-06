@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
             explanation,
             language_pair_id,
             created_at: new Date().toISOString(),
-            correct_streak: 0,
+            correct_streak: -1, // 未出題を示す初期値
             next_review_at: new Date().toISOString(),
           },
         ])

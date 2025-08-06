@@ -19,7 +19,8 @@ export async function POST(req: NextRequest) {
       .eq('user_id', user_id)
       .eq('language_pair_id', language_pair_id)
       .lte('next_review_at', today)
-      .order('correct_streak', { ascending: true })
+      // correct_streakが-1（未出題）を最優先、次にnext_review_at、最後にcorrect_streak
+      .order('correct_streak', { ascending: true, nullsFirst: true })
       .order('next_review_at', { ascending: true })
       .limit(10);
 
