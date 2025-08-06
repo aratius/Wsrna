@@ -11,43 +11,70 @@ export async function POST(req: NextRequest) {
   }
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
-  // 1. idiomsテーブルから今日復習予定のidiomを取得
-  // correct_streakが0のものを優先し、その後next_review_atで昇順ソート
-  const { data: todayIdioms, error: todayError } = await supabase
-    .from('idioms')
-    .select('*')
-    .eq('user_id', user_id)
-    .eq('language_pair_id', language_pair_id)
-    .lte('next_review_at', today)
-    .order('correct_streak', { ascending: true })
-    .order('next_review_at', { ascending: true });
+  try {
+    // 1. 今日復習予定のidiomを取得（優先順位付き、最大10件）
+    const { data: todayIdioms, error: idiomsError } = await supabase
+      .from('idioms')
+      .select('*')
+      .eq('user_id', user_id)
+      .eq('language_pair_id', language_pair_id)
+      .lte('next_review_at', today)
+      .order('correct_streak', { ascending: true })
+      .order('next_review_at', { ascending: true })
+      .limit(10);
 
-  if (todayError) {
-    return NextResponse.json({ error: todayError.message }, { status: 500 });
-  }
+    if (idiomsError) {
+      console.error('Error fetching idioms:', idiomsError);
+      return NextResponse.json({ error: idiomsError.message }, { status: 500 });
+    }
 
-  // 2. 各idiomに対応するクイズをランダムに1つ取得
-  const result = [];
-  for (const idiom of todayIdioms || []) {
-    const { data: quizzes, error: quizError } = await supabase
+    if (!todayIdioms || todayIdioms.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    // 2. 各idiomに対してランダムなクイズを1つ取得
+    const idiomIds = todayIdioms.map(idiom => idiom.id);
+    const { data: quizzes, error: quizzesError } = await supabase
       .from('quizzes')
       .select('*')
-      .eq('idiom_id', idiom.id)
+      .in('idiom_id', idiomIds);
 
-    if (quizError) {
-      console.error(`Error fetching quizzes for idiom ${idiom.id}:`, quizError);
-      continue;
+    if (quizzesError) {
+      console.error('Error fetching quizzes:', quizzesError);
+      return NextResponse.json({ error: quizzesError.message }, { status: 500 });
     }
 
-    if (quizzes && quizzes.length > 0) {
-      result.push({
-        ...idiom,
-        quiz: quizzes[Math.floor(Math.random() * quizzes.length)]
-      });
-    }
+    // 3. idiom_idごとにクイズをグループ化し、ランダム選択
+    const quizzesByIdiom = quizzes.reduce((acc, quiz) => {
+      if (!acc[quiz.idiom_id]) {
+        acc[quiz.idiom_id] = [];
+      }
+      acc[quiz.idiom_id].push(quiz);
+      return acc;
+    }, {} as Record<string, typeof quizzes>);
+
+    // 4. 各idiomに対してランダムなクイズを1つ選択
+    const result = todayIdioms
+      .map(idiom => {
+        const idiomQuizzes = quizzesByIdiom[idiom.id];
+        if (!idiomQuizzes || idiomQuizzes.length === 0) {
+          return null;
+        }
+
+        const randomQuiz = idiomQuizzes[Math.floor(Math.random() * idiomQuizzes.length)];
+        return {
+          ...idiom,
+          quiz: randomQuiz
+        };
+      })
+      .filter(Boolean);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
-
-  // 3. 最大10問まで返す（1日の上限）
-  const finalResult = result.slice(0, 10);
-  return NextResponse.json(finalResult);
 }
